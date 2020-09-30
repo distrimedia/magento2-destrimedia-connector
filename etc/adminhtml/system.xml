@@ -1,0 +1,190 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <section id="distrimedia" translate="label" type="text" sortOrder="100" showInDefault="1" showInWebsite="0"
+                 showInStore="0">
+            <label>DistriMedia Connector</label>
+            <tab>service</tab>
+            <resource>DistriMedia_Connector::settings</resource>
+            <group id="information" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="0"
+                   showInStore="0">
+                <label>Module Information</label>
+                <field id="current_version" translate="label comment" type="label" sortOrder="10" showInDefault="1"
+                       showInWebsite="0" showInStore="0">
+                    <label>Version</label>
+                    <frontend_model>DistriMedia\Connector\Model\Config\Frontend\Version</frontend_model>
+                </field>
+                <field id="documentation" translate="label comment" type="link" sortOrder="20" showInDefault="1"
+                       showInWebsite="0" showInStore="0">
+                    <label>Documentation</label>
+                    <frontend_model>DistriMedia\Connector\Model\Config\Frontend\Documentation</frontend_model>
+                </field>
+                <field id="access_token" translate="label comment" type="link" sortOrder="20" showInDefault="1"
+                       showInWebsite="0" showInStore="0">
+                    <label>Access Token</label>
+                    <frontend_model>DistriMedia\Connector\Model\Config\Frontend\AccessToken</frontend_model>
+                </field>
+                <field id="base_url" translate="label comment" type="link" sortOrder="20" showInDefault="1"
+                       showInWebsite="0" showInStore="0">
+                    <label>Base URL</label>
+                    <frontend_model>DistriMedia\Connector\Model\Config\Frontend\BaseUrl</frontend_model>
+                </field>
+            </group>
+            <group id="settings" translate="label" type="text" sortOrder="5" showInDefault="1" showInWebsite="0"
+                   showInStore="0">
+                <label>Configuration</label>
+                <field id="enabled" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="0"
+                       showInStore="0" canRestore="1">
+                    <label>Enable</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="webshop_code" translate="label" type="obscure" sortOrder="1" showInDefault="1"
+                       showInWebsite="0" showInStore="0" canRestore="1">
+                    <label>Webshop code</label>
+                    <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
+                    <depends>
+                        <field id="enabled">1</field>
+                    </depends>
+                </field>
+                <field id="api_uri" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="0"
+                       showInStore="0" canRestore="1">
+                    <label>Api URI</label>
+                    <comment>Please include the port if necessary</comment>
+                    <depends>
+                        <field id="enabled">1</field>
+                    </depends>
+                </field>
+                <field id="api_password" translate="label" type="obscure" sortOrder="1" showInDefault="1"
+                       showInWebsite="0" showInStore="0" canRestore="1">
+                    <label>Api Password</label>
+                    <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
+                    <depends>
+                        <field id="enabled">1</field>
+                    </depends>
+                </field>
+                <field id="ean_code_attribute" translate="label" type="select" sortOrder="1" showInDefault="1"
+                       showInWebsite="0" showInStore="0" canRestore="1">
+                    <label>Ean code attribute</label>
+                    <source_model>DistriMedia\Connector\Model\Config\Source\MagentoAttributes</source_model>
+                    <depends>
+                        <field id="enabled">1</field>
+                    </depends>
+                    <comment>Specify which product attribute will act as EAN code.</comment>
+                </field>
+                <field id="external_ref_attribute" translate="label" type="select" sortOrder="1" showInDefault="1"
+                       showInWebsite="0" showInStore="0" canRestore="1">
+                    <label>External Ref attribute</label>
+                    <source_model>DistriMedia\Connector\Model\Config\Source\MagentoAttributes</source_model>
+                    <depends>
+                        <field id="enabled">1</field>
+                    </depends>
+                    <comment>Specify which product attribute will act as External Ref</comment>
+                </field>
+                <field id="use_retention_days" translate="label" type="select" sortOrder="1" showInDefault="1"
+                       showInWebsite="0" showInStore="0" canRestore="1">
+                    <label>Use Retention days</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <depends>
+                        <field id="enabled">1</field>
+                    </depends>
+                    <comment>Automatically submit the order to DistriMedia after x days</comment>
+                </field>
+                <field id="retention_days" translate="label" type="text" sortOrder="1" showInDefault="1"
+                       showInWebsite="0" showInStore="0" canRestore="1">
+                    <label>Retention days</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <depends>
+                        <field id="use_retention_days">1</field>
+                        <field id="enabled">1</field>
+                    </depends>
+                </field>
+                <field id="use_cancellation_days" translate="label" type="select" sortOrder="1" showInDefault="1"
+                       showInWebsite="0" showInStore="0" canRestore="1">
+                    <label>Cancellation days</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <depends>
+                        <field id="enabled">1</field>
+                    </depends>
+                    <comment>Automatically cancel the order in DistriMedia after x days</comment>
+                </field>
+                <field id="cancellation_days" translate="label" type="text" sortOrder="1" showInDefault="1"
+                       showInWebsite="0" showInStore="0" canRestore="1">
+                    <label>Cancellation days</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <depends>
+                        <field id="use_cancellation_days">1</field>
+                        <field id="enabled">1</field>
+
+                    </depends>
+                </field>
+                <field id="send_invoices" translate="label" type="select" sortOrder="1" showInDefault="1"
+                       showInWebsite="0" showInStore="0" canRestore="1">
+                    <label>Send Invoices</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <depends>
+                        <field id="enabled">1</field>
+                    </depends>
+                    <comment>Send invoice PDF to DistriMedia with the order</comment>
+                </field>
+            </group>
+            <group id="stock_cron" translate="label" type="text" sortOrder="260" showInDefault="1" showInWebsite="0"
+                   showInStore="0">
+                <label>Stock Run Settings</label>
+                <field id="time" translate="label" type="time" sortOrder="2" showInDefault="1" showInWebsite="0"
+                       showInStore="0">
+                    <label>Start Time</label>
+                    <comment>The cronjob runs once a day. In this field you can specify on which moment this should be
+                        done
+                    </comment>
+                    <backend_model>DistriMedia\Connector\Model\Config\Backend\StockCron</backend_model>
+                    <depends>
+                        <field id="enabled">1</field>
+                    </depends>
+                </field>
+                <field id="error_email" translate="label" type="text" sortOrder="3" showInDefault="1" showInWebsite="0"
+                       showInStore="0">
+                    <label>Error Email Recipient</label>
+                    <validate>validate-email</validate>
+                    <depends>
+                        <field id="enabled">1</field>
+                    </depends>
+                </field>
+                <field id="error_email_identity" translate="label" type="select" sortOrder="4" showInDefault="1"
+                       showInWebsite="0" showInStore="0" canRestore="1">
+                    <label>Error Email Sender</label>
+                    <source_model>Magento\Config\Model\Config\Source\Email\Identity</source_model>
+                    <depends>
+                        <field id="enabled">1</field>
+                    </depends>
+                </field>
+                <field id="error_email_template" translate="label comment" type="select" sortOrder="5" showInDefault="1"
+                       showInWebsite="0" showInStore="0" canRestore="1">
+                    <label>Error Email Template</label>
+                    <comment>Email template chosen based on theme fallback when "Default" option is selected.</comment>
+                    <source_model>Magento\Config\Model\Config\Source\Email\Template</source_model>
+                    <depends>
+                        <field id="enabled">1</field>
+                    </depends>
+                </field>
+                <field id="start_new_stock_sync" translate="button_label" sortOrder="30" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <button_label>Start new Stock Sync Import</button_label>
+                    <frontend_model>DistriMedia\Connector\Model\Config\Frontend\StartStockSync</frontend_model>
+                </field>
+            </group>
+            <group id="bpost" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="0">
+                <label>Bpost Settings</label>
+                <field id="use_bpost_lockers_and_pickup" translate="label" type="select" sortOrder="1" showInDefault="1"
+                       showInWebsite="0" showInStore="0" canRestore="1">
+                    <label>Use Bpost lockers and pickup points</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <depends>
+                        <field id="enabled">1</field>
+                    </depends>
+                    <comment>
+                        <![CDATA[Please make sure that the <a href="https://marketplace.magento.com/bpost-shipping.html">Bpost Shipping module</a> is installed]]></comment>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>

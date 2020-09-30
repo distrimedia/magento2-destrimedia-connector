@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Cron:etc/crontab.xsd">
+    <group id="distrimedia_connector">
+        <job name="distrimedia_connector_sync_orders" instance="DistriMedia\Connector\Cron\SyncOrders" method="execute">
+            <schedule>* * * * *</schedule>
+        </job>
+    </group>
+    <group id="default">
+        <job name="distrimedia_connector_sync_stock" instance="DistriMedia\Connector\Cron\SyncStock" method="execute">
+            <config_path>crontab/default/jobs/distrimedia_connector_sync_stock/schedule/cron_expr</config_path>
+        </job>
+    </group>
+</config>

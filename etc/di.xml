@@ -1,0 +1,88 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <preference for="DistriMedia\Connector\Model\ConfigInterface"
+                type="DistriMedia\Connector\Model\Config" />
+
+    <!-- services -->
+    <preference for="DistriMedia\Connector\Service\StockSyncInterface"
+                type="DistriMedia\Connector\Service\StockSync" />
+
+    <preference for="DistriMedia\Connector\Service\OrderSyncInterface"
+                type="DistriMedia\Connector\Service\OrderSync" />
+
+    <preference for="DistriMedia\Connector\Model\OrderFetcherInterface"
+                type="DistriMedia\Connector\Model\OrderFetcher" />
+
+    <preference for="DistriMedia\Connector\Api\InventoryChangeManagementInterface"
+                type="DistriMedia\Connector\Model\InventoryChangeManagement" />
+
+    <preference for="DistriMedia\Connector\Api\OrderStatusChangeManagementInterface"
+                type="DistriMedia\Connector\Model\OrderStatusChangeManagement" />
+    <!-- /services -->
+
+    <!-- data objects -->
+    <preference for="DistriMedia\Connector\Api\Data\InventoryInterface"
+                type="DistriMedia\Connector\Model\Data\Inventory" />
+    <!-- /data objects -->
+
+    <!-- logger -->
+    <type name="DistriMedia\Connector\Logger\Handler\ConnectorHandler">
+        <arguments>
+            <argument name="filesystem" xsi:type="object">Magento\Framework\Filesystem\Driver\File</argument>
+        </arguments>
+    </type>
+
+    <virtualType name="DistriMedia\Connector\Logger\ConnectorLogger" type="Magento\Framework\Logger\Monolog">
+        <arguments>
+            <argument name="handlers"  xsi:type="array">
+                <item name="error" xsi:type="object">DistriMedia\Connector\Logger\Handler\ConnectorHandler</item>
+                <item name="debug" xsi:type="object">DistriMedia\Connector\Logger\Handler\ConnectorHandler</item>
+                <item name="info" xsi:type="object">DistriMedia\Connector\Logger\Handler\ConnectorHandler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <type name="DistriMedia\Connector\Api\OrderStatusChangeManagemen">
+        <arguments>
+            <argument name="logger" xsi:type="object">DistriMedia\Connector\Logger\ConnectorLogger</argument>
+        </arguments>
+    </type>
+    <!--  /logger -->
+
+    <!-- order grid mapping -->
+    <virtualType name="Magento\Sales\Model\ResourceModel\Order\Grid" type="Magento\Sales\Model\ResourceModel\Grid">
+        <arguments>
+            <argument name="columns" xsi:type="array">
+                <item name="distri_media_sync_status" xsi:type="string">sales_order.distri_media_sync_status</item>
+                <item name="distri_media_increment_id" xsi:type="string">sales_order.distri_media_increment_id</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <!-- /order grid mapping -->
+
+    <!-- order_extension_attributes: save and load order extension attributes -->
+    <type name="Magento\Sales\Model\OrderRepository">
+        <plugin name="distrimedia_connector_set_extension_attrs_on_order"
+                type="DistriMedia\Connector\Plugin\SetExtensionAttributesOnOrder"/>
+    </type>
+    <!-- /order_extension_attributes -->
+
+    <!-- change order address -->
+    <type name="Magento\Sales\Api\OrderAddressRepositoryInterface">
+        <plugin name="distrimedia_connector_sync_updated_address"
+                type="DistriMedia\Connector\Plugin\SyncUpdatedShippingAddress"/>
+    </type>
+
+    <!-- sensitive data -->
+    <type name="Magento\Config\Model\Config\TypePool">
+        <arguments>
+            <argument name="sensitive" xsi:type="array">
+                <item name="distrimedia/settings/webshop_code" xsi:type="string">1</item>
+                <item name="distrimedia/settings/api_password" xsi:type="string">1</item>
+                <item name="distrimedia/stock_cron/error_email" xsi:type="string">1</item>
+            </argument>
+        </arguments>
+    </type>
+    <!-- /sensitive data -->
+</config>

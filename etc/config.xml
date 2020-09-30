@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <distrimedia>
+            <settings>
+                <enabled>0</enabled>
+                <base_uri>http://devewms.distrimedia.be:8080/</base_uri>
+                <external_ref_attribute>sku</external_ref_attribute>
+                <ean_code_attribute>dm_ean_code</ean_code_attribute>
+                <use_cancellation_days>1</use_cancellation_days>
+                <cancellation_days>999</cancellation_days>
+                <retention_days>999</retention_days>
+                <use_retention_days>1</use_retention_days>
+                <send_invoices>1</send_invoices>
+            </settings>
+            <stock_cron>
+                <error_email />
+                <error_email_template>distrimedia_stock_cron_error_email_template</error_email_template>
+                <error_email_identity>general</error_email_identity>
+            </stock_cron>
+        </distrimedia>
+    </default>
+</config>

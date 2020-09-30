@@ -1,0 +1,27 @@
+{
+    "name": "distrimedia/magento2-distrimedia-connector",
+    "description": "DistriMedia Connector module",
+    "type": "magento2-module",
+    "keywords": ["magento", "magento2", "distrimedia"],
+    "authors": [
+        {
+            "name": "Tristan Hofman",
+            "email": "tristan@baldwin.be"
+        }
+    ],
+    "require": {
+        "magento/framework": "^102.0.0",
+        "distrimedia/soap-client": "dev-master",
+        "magento/module-sales": "^102.0.5-p2",
+        "magento/module-catalog-inventory": "^100.3.5",
+        "magento/module-asynchronous-operations": "^100.3.5"
+    },
+    "autoload": {
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+            "DistriMedia\\Connector\\": ""
+        }
+    }
+}

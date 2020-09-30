@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * @author Amasty Team
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
+ * @package Amasty_Base
+ */
+-->
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+    <menu>
+        <add id="MenuDistriMedia_Connector::menu"
+             title="DistriMedia"
+             module="DistriMedia_Connector"
+             translate="title"
+             sortOrder="69"
+             resource="MenuDistriMedia_Connector::menu"/>
+        <add id="DistriMedia_Connector::settings"
+             title="Configuration"
+             module="DistriMedia_Connector"
+             translate="title"
+             sortOrder="9998"
+             action="adminhtml/system_config/edit/section/distrimedia"
+             parent="MenuDistriMedia_Connector::menu"
+             resource="DistriMedia_Connector::settings"/>
+        <add id="DistriMedia_Connector::integrations"
+             title="Authorisation keys"
+             translate="title"
+             module="Magento_Integration"
+             sortOrder="10"
+             parent="MenuDistriMedia_Connector::menu"
+             action="adminhtml/integration"
+             resource="Magento_Integration::integrations"/>
+    </menu>
+</config>

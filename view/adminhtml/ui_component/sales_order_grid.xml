@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<listing xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
+    <columns name="sales_order_columns">
+        <column name="distri_media_sync_status" component="Magento_Ui/js/grid/columns/select">
+            <settings>
+                <filter>select</filter>
+                <options class="DistriMedia\Connector\Ui\Component\Listing\Column\SyncStatus\Options"/>
+                <dataType>select</dataType>
+                <label translate="true">DistriMedia Sync Status</label>
+            </settings>
+        </column>
+        <column name="distri_media_increment_id">
+            <settings>
+                <filter>text</filter>
+                <label translate="true">DistriMedia Order ID</label>
+            </settings>
+        </column>
+    </columns>
+</listing>

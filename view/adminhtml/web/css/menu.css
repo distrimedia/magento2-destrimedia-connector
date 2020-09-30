@@ -1,0 +1,9 @@
+.admin__menu #menu-menudistrimedia-connector-menu > a:before {
+    background: url(../images/distrimedia.svg) no-repeat;
+    width: 16px;
+    height: 19px;
+    content: '';
+    display: inline-block;
+    margin-right: 12px;
+    vertical-align: top;
+}

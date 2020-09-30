@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Webapi:etc/webapi.xsd">
+    <route url="/V1/distrimedia/stock/change" method="POST">
+        <service class="DistriMedia\Connector\Api\InventoryChangeManagementInterface" method="execute"/>
+        <resources>
+            <resource ref="DistriMedia_Connector::stock" />
+        </resources>
+    </route>
+    <route url="/V1/distrimedia/order/change" method="POST">
+        <service class="DistriMedia\Connector\Api\OrderStatusChangeManagementInterface" method="execute"/>
+        <resources>
+            <resource ref="DistriMedia_Connector::orders" />
+        </resources>
+    </route>
+</routes>

@@ -1,0 +1,43 @@
+<?php
+// @codingStandardsIgnoreFile
+?>
+<?php
+/**
+ * @var \DistriMedia\Connector\Model\Config\Frontend\StartStockSync $block
+ */
+?>
+<script>
+    require(['prototype'], function(){
+        function StartStockSync() {
+            var validationMessage = $('validation_result');
+
+            new Ajax.Request('<?= /* @escapeNotVerified */ $block->getAjaxUrl() ?>', {
+                onSuccess: function(response) {
+                    var result = '<?php /* @escapeNotVerified */ echo __('Error while scheduling a new Full Import.') ?>';
+                    try {
+                        if (response.responseText.isJSON()) {
+                            response = response.responseText.evalJSON();
+                            result = response.message;
+                        }
+                        if (response.valid === 1) {
+                            validationMessage.removeClassName('hidden').addClassName('success')
+                        } else {
+                            validationMessage.removeClassName('hidden').addClassName('error')
+                        }
+                    } catch (e) {
+                        validationMessage.removeClassName('hidden').addClassName('error')
+                    }
+                    validationMessage.update(result);
+                }
+            });
+        }
+
+        window.startStockSync = StartStockSync;
+    });
+</script>
+<div class="actions">
+    <button onclick="javascript:startStockSync(); return false;" type="button" id="<?php echo $block->getHtmlId() ?>">
+        <span><?php echo $block->escapeHtml($block->getButtonLabel()) ?></span>
+    </button>
+    <div id="validation_result" class="message-validation hidden"></div>
+</div>

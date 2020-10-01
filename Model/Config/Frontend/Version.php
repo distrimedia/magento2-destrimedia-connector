@@ -1,4 +1,8 @@
 <?php
+/**
+ * Copyright © 2018 Baldwin All rights reserved.
+ * @author: Baldwin
+ */
 
 namespace DistriMedia\Connector\Model\Config\Frontend;
 

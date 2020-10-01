@@ -78,4 +78,20 @@ interface ConfigInterface
      * @return int|null
      */
     public function getConsumerId(): ? int;
+
+    /**
+     * @return string
+     */
+    public function getErrorEmailRecipient(): string;
+
+    /**
+     * @return string
+     */
+    public function getErrorEmailIdentity(): string;
+
+    /**
+     * @return string
+     */
+    public function getErrorEmailTemplate(): string;
+
 }

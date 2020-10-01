@@ -68,10 +68,24 @@
     </type>
     <!-- /order_extension_attributes -->
 
+    <!-- order_item_extension_attributes: save and load order extension attributes -->
+    <type name="Magento\Sales\Model\Order\ItemRepository">
+        <plugin name="distrimedia_connector_set_extension_attrs_on_order_item"
+                type="DistriMedia\Connector\Plugin\SetExtensionAttributesOnOrderItem"/>
+    </type>
+    <!-- /order_extension_attributes -->
+
+
     <!-- change order address -->
     <type name="Magento\Sales\Api\OrderAddressRepositoryInterface">
         <plugin name="distrimedia_connector_sync_updated_address"
                 type="DistriMedia\Connector\Plugin\SyncUpdatedShippingAddress"/>
+    </type>
+
+    <!-- we should try to cancel the order in distri media of a credit memo is created -->
+    <type name="Magento\Sales\Api\CreditmemoManagementInterface">
+        <plugin name="distrimedia_connector_cancel_order_after_credit_memo_creation"
+                type="DistriMedia\Connector\Plugin\CancelOrderAfterCreditMemoCreation"/>
     </type>
 
     <!-- sensitive data -->

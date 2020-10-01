@@ -3,4 +3,7 @@
         <attribute code="distri_media_sync_status" type="string"/>
         <attribute code="distri_media_increment_id" type="string"/>
     </extension_attributes>
+    <extension_attributes for="Magento\Sales\Api\Data\OrderItemInterface">
+        <attribute code="distri_media_ean_code" type="string"/>
+    </extension_attributes>
 </config>

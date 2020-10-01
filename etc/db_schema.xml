@@ -7,13 +7,16 @@
 -->
 <schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
-    <table name="sales_order" resource="sales" engine="innodb" comment="Sales Flat Order">
+    <table name="sales_order">
         <column xsi:type="smallint" name="distri_media_sync_status" padding="5" unsigned="true" nullable="false" default="0" comment="DistriMedia Sync Status"/>
         <column xsi:type="varchar" name="distri_media_increment_id" length="255" nullable="true"  comment="DistriMedia Increment Id"/>
 
     </table>
-    <table name="sales_order_grid" resource="sales" engine="innodb" comment="Sales Flat Order">
+    <table name="sales_order_grid">
         <column xsi:type="smallint" name="distri_media_sync_status" padding="5" unsigned="true" nullable="false" default="0" comment="DistriMedia Sync Status"/>
         <column xsi:type="varchar" name="distri_media_increment_id" length="255" nullable="true"  comment="DistriMedia Increment Id"/>
+    </table>
+    <table name="sales_order_item">
+        <column xsi:type="varchar" name="distri_media_ean_code" length="255" nullable="true"  comment="DistriMedia Ean Code"/>
     </table>
 </schema>

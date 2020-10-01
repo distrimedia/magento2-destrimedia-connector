@@ -1,2 +1,2 @@
 Contact: info@distrimedia.be
-Preferred-Languages: en, nl, ro
+Preferred-Languages: en, nl

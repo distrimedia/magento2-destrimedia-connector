@@ -6,9 +6,11 @@ namespace DistriMedia\Connector\Service;
 
 use DistriMedia\Connector\Model\OrderFetcherInterface;
 use DistriMedia\Connector\Model\ConfigInterface;
+use DistriMedia\SoapClient\Struct\Carrier;
 use DistriMedia\SoapClient\Struct\Order as DistriMediaOrder;
 use DistriMedia\SoapClient\Struct\Customer as DistriMediaCustomer;
 use DistriMedia\SoapClient\Struct\AdditionalDocument as DistriMediaDocument;
+use DistriMedia\SoapClient\Struct\OrderItem;
 use DistriMedia\SoapClient\Struct\OrderLine as DistriMediaOrderLine;
 use DistriMedia\SoapClient\Struct\Product as DistriMediaProduct;
 use DistriMedia\SoapClient\Struct\OrderItem as DistriMediaOrderItem;
@@ -41,6 +43,9 @@ class OrderBuilder
         self::BPOST_SHIPPING_METHOD_PARCEL_LOCKER,
         self::BPOST_SHIPPING_METHOD_PICKUP_POINT
     ];
+
+    const CODE_PARCELLOCKER = 'bpostParcellocker';
+    const CODE_PICKUPPOINT = 'bpostPickuppoint';
 
     /**
      * @var PdfInvoiceFactory
@@ -117,17 +122,17 @@ class OrderBuilder
      * @param MagentoOrder $order
      * @return DistriMediaCustomer
      */
-    public function getDistriMediaCustomerFromMagentoOrder(MagentoOrder $order, \Magento\Sales\Api\Data\OrderAddressInterface $billingAddress = null): DistriMediaCustomer
+    public function getDistriMediaCustomerFromMagentoOrder(MagentoOrder $order, \Magento\Sales\Api\Data\OrderAddressInterface $shippingAddress = null): DistriMediaCustomer
     {
         $distriMediaCustomer = new DistriMediaCustomer();
         $distriMediaCustomer->setEmail($order->getCustomerEmail());
 
-        if ($billingAddress === null) {
+        if ($shippingAddress === null) {
             //We set the billing information on the customer
-            $billingAddress = $order->getBillingAddress();
+            $shippingAddress = $order->getShippingAddress();
         }
 
-        $streetArray = $billingAddress->getStreet() ?: [];
+        $streetArray = $shippingAddress->getStreet() ?: [];
 
         //When Bpost is used, different data is required on the Customer.
         $shippingMethod = $order->getShippingMethod();
@@ -142,14 +147,14 @@ class OrderBuilder
         } else {
             $distriMediaCustomer->setAddress1(implode(" ", $streetArray));
             $distriMediaCustomer->setName($order->getCustomerFirstname() . " " . $order->getCustomerLastname());
-            $distriMediaCustomer->setPostcode1($billingAddress->getPostcode());
-            $distriMediaCustomer->setCity($billingAddress->getCity());
-            $distriMediaCustomer->setCountry($billingAddress->getCountryId());
+            $distriMediaCustomer->setPostcode1($shippingAddress->getPostcode());
+            $distriMediaCustomer->setCity($shippingAddress->getCity());
+            $distriMediaCustomer->setCountry($shippingAddress->getCountryId());
         }
 
         //there is no difference between mobile and telephone in magento2
-        $distriMediaCustomer->setTelephone($billingAddress->getTelephone());
-        $distriMediaCustomer->setMobile($billingAddress->getTelephone());
+        $distriMediaCustomer->setTelephone($shippingAddress->getTelephone());
+        $distriMediaCustomer->setMobile($shippingAddress->getTelephone());
 
         return $distriMediaCustomer;
     }
@@ -186,6 +191,12 @@ class OrderBuilder
         $shippingMethod = $order->getShippingMethod();
         if ($this->config->useBPostLockersAndPickup() && $this->isBpostShippingMethod($shippingMethod)) {
             $distriMediaOrderItem->setShipmentMethod($this->getShippingMethodFromOrder($order));
+
+            $carrier = $this->getShippingCarrierFromOrder($order);
+
+            if ($carrier) {
+                $distriMediaOrderItem->setCarrier($carrier);
+            }
         }
 
         return $distriMediaOrderItem;
@@ -202,6 +213,16 @@ class OrderBuilder
         $description = strtolower($order->getShippingDescription());
 
         return $description;
+    }
+
+    public function getShippingCarrierFromOrder($order): ? string
+    {
+        switch ($order->getShippingMethod()) {
+            case self::CODE_PICKUPPOINT:
+                return Carrier::CARRIER_BPPUGO;
+            case self::CODE_PARCELLOCKER:
+                return Carrier::CARRIER_BP247;
+        }
     }
 
     /**

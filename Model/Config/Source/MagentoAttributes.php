@@ -9,7 +9,7 @@ use Magento\Catalog\Api\ProductAttributeRepositoryInterface;
 
 /**
  * I am responsible for listing all the product attributes in an array
- * @package DistriMedia\Connector\Model\Config\Source
+ * @package Baldwin\MedipimConnector\Model\Config\Source
  */
 class MagentoAttributes implements \Magento\Framework\Option\ArrayInterface
 {

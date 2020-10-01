@@ -27,6 +27,9 @@ class Config implements ConfigInterface
     const XML_PATH_DISTRIMEDIA_SETTINGS_SEND_INVOICES = 'distrimedia/settings/send_invoices';
     const XML_PATH_DISTRIMEDIA_BPOST_USE_BPOST_LOCKERS_AND_PICKUP = 'distrimedia/bpost/use_bpost_lockers_and_pickup';
     const XML_PATH_DISTRIMEDIA_CONSUMER_ID = 'distrimedia/settings/consumer_id';
+    const XML_PATH_ERROR_TEMPLATE = 'distrimedia/settings/error_email_template';
+    const XML_PATH_ERROR_IDENTITY = 'distrimedia/settings/error_email_identity';
+    const XML_PATH_ERROR_RECIPIENT = 'distrimedia/settings/error_email';
 
     private $scopeConfig;
     private $encryptor;
@@ -193,6 +196,36 @@ class Config implements ConfigInterface
     public function getConsumerId(): ? int
     {
         $value = (int) $this->scopeConfig->getValue(self::XML_PATH_DISTRIMEDIA_CONSUMER_ID) ?: null;
+
+        return $value;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getErrorEmailTemplate(): string
+    {
+        $value = (string) $this->scopeConfig->getValue(self::XML_PATH_ERROR_TEMPLATE) ?: null;
+
+        return $value;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getErrorEmailRecipient(): string
+    {
+        $value = (string) $this->scopeConfig->getValue(self::XML_PATH_ERROR_RECIPIENT) ?: null;
+
+        return $value;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getErrorEmailIdentity(): string
+    {
+        $value = (string) $this->scopeConfig->getValue(self::XML_PATH_ERROR_IDENTITY) ?: null;
 
         return $value;
     }

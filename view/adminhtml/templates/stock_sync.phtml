@@ -39,5 +39,7 @@
     <button onclick="javascript:startStockSync(); return false;" type="button" id="<?php echo $block->getHtmlId() ?>">
         <span><?php echo $block->escapeHtml($block->getButtonLabel()) ?></span>
     </button>
+    <p><?= $block->escapeHtml(__("Status: ") . " " . $block->getStatus()); ?></p>
+    <p><?= $block->escapeHtml(__("Last Executed: ") . " " . $block->getLastExecutionDate()); ?></p>
     <div id="validation_result" class="message-validation hidden"></div>
 </div>

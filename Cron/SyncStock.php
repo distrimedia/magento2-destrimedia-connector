@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace DistriMedia\Connector\Cron;
 
-use DistriMedia\Connector\Model\ConfigInterface;
+use DistriMedia\Connector\Helper\ErrorHandlingHelper;
+use DistriMedia\Connector\Model\Flag\LastExecutionFlag;
+use DistriMedia\Connector\Model\Flag\Status;
 use DistriMedia\Connector\Service\StockSyncInterface;
-use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\Mail\Template\TransportBuilder;
-use Magento\Framework\Translate\Inline\StateInterface;
+use Magento\Framework\Stdlib\DateTime\DateTime;
 
 /**
  * I am responsible for syncing the complete inventory once a day.
@@ -17,30 +17,28 @@ use Magento\Framework\Translate\Inline\StateInterface;
  */
 class SyncStock
 {
-    const XML_PATH_ERROR_TEMPLATE = 'distrimedia/stock_cron/error_email_template';
-    const XML_PATH_ERROR_IDENTITY = 'distrimedia/stock_cron/error_email_identity';
-    const XML_PATH_ERROR_RECIPIENT = 'distrimedia/stock_cron/error_email';
 
     private $stockSync;
-    private $_errors = [];
-    private $scopeConfig;
-    private $transportBuilder;
-    private $inlineTranslation;
     private $config;
+    private $lastExecutionFlag;
+    private $statusFlag;
+    private $dateTime;
+
+    private $statusFlagData;
 
     public function __construct(
         StockSyncInterface $stockSync,
-        ScopeConfigInterface $scopeConfig,
-        TransportBuilder $transportBuilder,
-        StateInterface $inlineTranslation,
-        ConfigInterface $config
+        ErrorHandlingHelper $errorHandlingHelper,
+        LastExecutionFlag $lastExecutionFlag,
+        Status $statusFlag,
+        DateTime $dateTime
     )
     {
         $this->stockSync = $stockSync;
-        $this->scopeConfig = $scopeConfig;
-        $this->transportBuilder = $transportBuilder;
-        $this->inlineTranslation = $inlineTranslation;
-        $this->config = $config;
+        $this->errorHandlingHelper = $errorHandlingHelper;
+        $this->lastExecutionFlag = $lastExecutionFlag;
+        $this->statusFlag = $statusFlag;
+        $this->dateTime = $dateTime;
     }
 
     /**
@@ -50,8 +48,14 @@ class SyncStock
     public function execute()
     {
         if ($this->config->isEnabled()) {
+            $lastExecutionFlag = $this->lastExecutionFlag->loadSelf();
+            $now = $this->dateTime->gmtDate();
+            $lastExecutionFlag->setFlagData($now);
+            $lastExecutionFlag->save();
+
+            $this->updateStatus(Status::STATUS_RUNNING);
+
             $this->processStock();
-            $this->_sendErrorEmail();
         }
 
         return $this;
@@ -59,56 +63,23 @@ class SyncStock
 
     public function processStock()
     {
-        $this->_errors = $this->stockSync->fetchAllStock();
+        $errors = $this->stockSync->fetchAllStock();
+        if (!empty($errors)) {
+            $this->errorHandlingHelper->sendErrorEmail($errors);
+            $this->updateStatus(Status::STATUS_ERROR);
+        } else {
+            $this->updateStatus(Status::STATUS_SUCCESS);
+        }
     }
 
-    /**
-     * Send email to administrator if error
-     *
-     * @return $this
-     */
-    protected function _sendErrorEmail()
+    private function updateStatus(string $status)
     {
-        if (count($this->_errors)) {
-            if (!$this->scopeConfig->getValue(
-                self::XML_PATH_ERROR_TEMPLATE,
-                \Magento\Store\Model\ScopeInterface::SCOPE_STORE
-            )
-            ) {
-                return $this;
-            }
-
-            $this->inlineTranslation->suspend();
-
-            $transport = $this->transportBuilder->setTemplateIdentifier(
-                $this->scopeConfig->getValue(
-                    self::XML_PATH_ERROR_TEMPLATE,
-                    \Magento\Store\Model\ScopeInterface::SCOPE_STORE
-                )
-            )->setTemplateOptions(
-                [
-                    'area' => \Magento\Backend\App\Area\FrontNameResolver::AREA_CODE,
-                    'store' => \Magento\Store\Model\Store::DEFAULT_STORE_ID,
-                ]
-            )->setTemplateVars(
-                ['warnings' => implode("<br />", $this->_errors)]
-            )->setFrom(
-                $this->scopeConfig->getValue(
-                    self::XML_PATH_ERROR_IDENTITY,
-                    \Magento\Store\Model\ScopeInterface::SCOPE_STORE
-                )
-            )->addTo(
-                $this->scopeConfig->getValue(
-                    self::XML_PATH_ERROR_RECIPIENT,
-                    \Magento\Store\Model\ScopeInterface::SCOPE_STORE
-                )
-            )->getTransport();
-
-            $transport->sendMessage();
-
-            $this->inlineTranslation->resume();
-            $this->_errors[] = [];
+        if ($this->statusFlagData === null) {
+            $statusFlag = $this->statusFlag->loadSelf();
+            $this->statusFlagData = $statusFlag;
         }
-        return $this;
+
+        $this->statusFlagData->setFlagData($status);
+        $this->statusFlagData->save();
     }
 }

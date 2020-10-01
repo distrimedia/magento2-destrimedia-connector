@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace DistriMedia\Connector\Model;
 
 use DistriMedia\Connector\Api\OrderStatusChangeManagementInterface;
+use DistriMedia\Connector\Helper\ErrorHandlingHelper;
 use DistriMedia\Connector\Service\OrderSyncInterface;
 use DistriMedia\Connector\Ui\Component\Listing\Column\SyncStatus\Options;
 use DistriMedia\SoapClient\Struct\Response\Inventory\StockItem;
+use Magento\Framework\Notification\NotifierPool;
 use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\Webapi\Rest\Request\Deserializer\Xml;
 use Magento\ProductAlert\Model\Stock;
@@ -43,17 +45,17 @@ class OrderStatusChangeManagement implements OrderStatusChangeManagementInterfac
     private $objectManager;
     private $shipmentManagement;
     private $logger;
+    private $config;
+    private $productCollectionFactory;
+    private $eanAttribute;
+    private $errorHandlingHelper;
 
     /**
      * @var ProductCollection $productCollection
      */
     private $productCollection;
 
-    private $config;
-
-    private $productCollectionFactory;
-
-    private $eanAttribute;
+    private $notifierPool;
 
     public function __construct(
         Xml $deserializer,
@@ -66,7 +68,9 @@ class OrderStatusChangeManagement implements OrderStatusChangeManagementInterfac
         ShipmentManagementInterface $shipmentManagement,
         LoggerInterface $logger,
         ConfigInterface $config,
-        ProductCollectionFactory $productCollectionFactory
+        ProductCollectionFactory $productCollectionFactory,
+        ErrorHandlingHelper $errorHandlingHelper,
+        NotifierPool $notifierPool
     )
     {
         $this->deserializer = $deserializer;
@@ -80,6 +84,8 @@ class OrderStatusChangeManagement implements OrderStatusChangeManagementInterfac
         $this->logger = $logger;
         $this->config = $config;
         $this->productCollectionFactory = $productCollectionFactory;
+        $this->errorHandlingHelper = $errorHandlingHelper;
+        $this->notifierPool = $notifierPool;
     }
 
     public function execute(
@@ -113,7 +119,7 @@ class OrderStatusChangeManagement implements OrderStatusChangeManagementInterfac
 
         switch ($OrderStatus) {
             case Options::STATUS_CANCELLED:
-                $this->cancelOrder($order);
+                $this->notifyShopOwner($order);
                 break;
             case Options::STATUS_PARTLY_SHIPPED:
             case Options::STATUS_SHIPPED:
@@ -124,14 +130,13 @@ class OrderStatusChangeManagement implements OrderStatusChangeManagementInterfac
     }
 
     /**
-     * @param array $data
-     * @return bool
+     * @param Order $order
      */
-    private function cancelOrder(Order $order): bool
+    private function notifyShopOwner(Order $order): void
     {
-        $result = $this->orderManagement->cancel($order->getIncrementId());
-
-        return $result;
+        $message =__('Order %1 has been canceled by DistriMedia ERP', $order->getIncrementId());
+        $this->notifierPool->addMajor($message->getText(), $message->getText());
+        $this->errorHandlingHelper->sendErrorEmail([$message->getText()]);
     }
 
     private function updateOrderStatus(Order $order, array $data)
@@ -230,7 +235,7 @@ class OrderStatusChangeManagement implements OrderStatusChangeManagementInterfac
     }
 
     /**
-     * I try to match the order items with the data sent to this endpoint
+     * I try to match the order items with the data sent to this endpoint based on the EAN CODE saved on the order item
      * @param array $orderItems
      * @param Order $order
      * @return array
@@ -249,11 +254,15 @@ class OrderStatusChangeManagement implements OrderStatusChangeManagementInterfac
             $eanCode = $orderItem[StockItem::EAN];
             $match = false;
             foreach ($m2OrderItems as $m2OrderItem) {
-                $product = $this->getProductByAttribute($eanCode);
-                if ($m2OrderItem->getSku() === $product->getSku()) {
-                    $orderItems[$key]['orderItem'] = $m2OrderItem;
-                    $match = true;
-                    break;
+                $orderItemExtensionAttrs = $m2OrderItem->getExtensionAttributes();
+
+                if ($orderItemExtensionAttrs) {
+                    $orderItemEanCode = $orderItemExtensionAttrs->getDistriMediaEanCode();
+                    if ($eanCode === $orderItemEanCode) {
+                        $orderItems[$key]['orderItem'] = $m2OrderItem;
+                        $match = true;
+                        break;
+                    }
                 }
             }
 
@@ -263,23 +272,5 @@ class OrderStatusChangeManagement implements OrderStatusChangeManagementInterfac
         }
 
         return $orderItems;
-    }
-
-    /**
-     * @param $eanCode
-     * @return \Magento\Framework\DataObject|null
-     */
-    private function getProductByAttribute($eanCode)
-    {
-        if ($this->eanAttribute === null) {
-            $this->eanAttribute = $this->config->getEanCodeAttributeCode();
-        }
-        if ($this->productCollection === null) {
-            $this->productCollection = $this->productCollectionFactory->create()
-                ->addAttributeToSelect($this->eanAttribute)
-                ->addAttributeToSelect('sku');
-        }
-
-        return $this->productCollection->getItemByColumnValue($this->eanAttribute, $eanCode);
     }
 }

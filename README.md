@@ -17,14 +17,14 @@ For this module to work following requirements are defined:
 ## Installation 
 
 1. Use composer package manager to install the module
-`composer require distrimedia/magento2-distrimedia-connector`
+`composer require baldwin/magento2-distrimedia-connector`
 2. Enable the module 
 `bin/magento module:enable DistriMedia_Connector`
 3. Run upgrade scripts
 `bin/magento setup:upgrade`
 
 ## Configuration 
-Provide your DistriMedia webshopcode and password in the configuration form.
+Provide your DistriMedia webshopcode, uri and password in the configuration form.
 Please [contact](mailto:info@distrimedia.be) DistriMedia to receive these credentials
                                                       
 You can find these settings in `Stores - Configuration - Services - DistriMedia Connector`
@@ -42,9 +42,10 @@ Make sure the access token has the required permissions. (Orders and Stock Integ
 It's possible to integrate with the official [Bpost module](https://marketplace.magento.com/bpost-shipping.html). Enable this option to send the shipping Information to DistriMedia
 ### Stock Run Settings
 Here you can define when the stock cron job will run to update the complete inventory.
-Also define an email address in the Recipient field.
- 
+You can also manually schedule the cron job. A new task will be added to the execution.
+
 When saving the configuration, always make sure to flush the Magento Config Cache.
+
 
 ## License
 

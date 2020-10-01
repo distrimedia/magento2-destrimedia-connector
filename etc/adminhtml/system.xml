@@ -118,30 +118,6 @@
 
                     </depends>
                 </field>
-                <field id="send_invoices" translate="label" type="select" sortOrder="1" showInDefault="1"
-                       showInWebsite="0" showInStore="0" canRestore="1">
-                    <label>Send Invoices</label>
-                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                    <depends>
-                        <field id="enabled">1</field>
-                    </depends>
-                    <comment>Send invoice PDF to DistriMedia with the order</comment>
-                </field>
-            </group>
-            <group id="stock_cron" translate="label" type="text" sortOrder="260" showInDefault="1" showInWebsite="0"
-                   showInStore="0">
-                <label>Stock Run Settings</label>
-                <field id="time" translate="label" type="time" sortOrder="2" showInDefault="1" showInWebsite="0"
-                       showInStore="0">
-                    <label>Start Time</label>
-                    <comment>The cronjob runs once a day. In this field you can specify on which moment this should be
-                        done
-                    </comment>
-                    <backend_model>DistriMedia\Connector\Model\Config\Backend\StockCron</backend_model>
-                    <depends>
-                        <field id="enabled">1</field>
-                    </depends>
-                </field>
                 <field id="error_email" translate="label" type="text" sortOrder="3" showInDefault="1" showInWebsite="0"
                        showInStore="0">
                     <label>Error Email Recipient</label>
@@ -163,6 +139,30 @@
                     <label>Error Email Template</label>
                     <comment>Email template chosen based on theme fallback when "Default" option is selected.</comment>
                     <source_model>Magento\Config\Model\Config\Source\Email\Template</source_model>
+                    <depends>
+                        <field id="enabled">1</field>
+                    </depends>
+                </field>
+                <field id="send_invoices" translate="label" type="select" sortOrder="1" showInDefault="1"
+                       showInWebsite="0" showInStore="0" canRestore="1">
+                    <label>Send Invoices</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <depends>
+                        <field id="enabled">1</field>
+                    </depends>
+                    <comment>Send invoice PDF to DistriMedia with the order</comment>
+                </field>
+            </group>
+            <group id="stock_cron" translate="label" type="text" sortOrder="260" showInDefault="1" showInWebsite="0"
+                   showInStore="0">
+                <label>Stock Run Settings</label>
+                <field id="time" translate="label" type="time" sortOrder="2" showInDefault="1" showInWebsite="0"
+                       showInStore="0">
+                    <label>Start Time</label>
+                    <comment>The cronjob runs once a day. In this field you can specify on which moment this should be
+                        done
+                    </comment>
+                    <backend_model>DistriMedia\Connector\Model\Config\Backend\StockCron</backend_model>
                     <depends>
                         <field id="enabled">1</field>
                     </depends>

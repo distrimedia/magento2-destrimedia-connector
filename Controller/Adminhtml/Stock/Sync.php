@@ -6,6 +6,7 @@
  */
 namespace DistriMedia\Connector\Controller\Adminhtml\Stock;
 
+use DistriMedia\Connector\Model\Flag\Status;
 use Magento\Cron\Model\ResourceModel\Schedule\Collection as CronScheduleCollection;
 use Magento\Cron\Model\Schedule;
 
@@ -23,18 +24,22 @@ class Sync extends Action implements HttpPostActionInterface
     private $resultJsonFactory;
     private $dateTime;
     private $cronScheduleCollection;
+    private $statusFlagData;
+    private $statusFlag;
 
     public function __construct(
         Context $context,
         JsonFactory $resultJsonFactory,
         DateTime $dateTime,
-        CronScheduleCollection $cronScheduleCollection
+        CronScheduleCollection $cronScheduleCollection,
+        Status $statusFlag
     ) {
         parent::__construct($context);
 
         $this->resultJsonFactory = $resultJsonFactory;
         $this->dateTime = $dateTime;
         $this->cronScheduleCollection = $cronScheduleCollection;
+        $this->statusFlag = $statusFlag;
     }
 
     public function execute()
@@ -47,6 +52,7 @@ class Sync extends Action implements HttpPostActionInterface
 
             $success = true;
             $message = __("Stock Sync has been scheduled and will start shortly (schedule id: %1)", $scheduleId);
+            $this->updateStatus(Status::STATUS_PENDING);
         } catch (\Exception $ex) {
             $message = "ERROR: {$ex->getMessage()}";
         }
@@ -72,5 +78,16 @@ class Sync extends Action implements HttpPostActionInterface
             ->save();
 
         return $schedule->getScheduleId();
+    }
+
+    private function updateStatus(string $status)
+    {
+        if ($this->statusFlagData === null) {
+            $statusFlag = $this->statusFlag->loadSelf();
+            $this->statusFlagData = $statusFlag;
+        }
+
+        $this->statusFlagData->setFlagData($status);
+        $this->statusFlagData->save();
     }
 }

@@ -6,5 +6,5 @@
  */
 -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Email:etc/email_templates.xsd">
-    <template id="distrimedia_stock_cron_error_email_template" label="Cron Error Warning" file="cron_error.html" type="html" module="DistriMedia_Connector" area="adminhtml"/>
+    <template id="distrimedia_settings_error_email_template" label="Cron Error Warning" file="cron_error.html" type="html" module="DistriMedia_Connector" area="adminhtml"/>
 </config>

@@ -12,7 +12,7 @@
     "require": {
         "magento/framework": "^102.0.0",
         "distrimedia/soap-client": "dev-master",
-        "magento/module-sales": "^102.0.5-p2",
+        "magento/module-sales": "^102.0.5",
         "magento/module-catalog-inventory": "^100.3.5",
         "magento/module-asynchronous-operations": "^100.3.5"
     },

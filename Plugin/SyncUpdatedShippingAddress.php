@@ -44,7 +44,7 @@ class SyncUpdatedShippingAddress
     public function aroundSave(OrderAddressRepositoryInterface $subject, $proceed, OrderAddressInterface $orderAddress)
     {
         if($this->config->isEnabled()) {
-            if ($orderAddress->getAddressType() === 'billing') {
+            if ($orderAddress->getAddressType() === 'shipping') {
                 $orderId = $orderAddress->getParentId();
 
                 if (!empty($orderId)) {

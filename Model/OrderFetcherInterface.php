@@ -17,12 +17,7 @@ interface OrderFetcherInterface
     /**
      * @return OrderSearchResultInterface
      */
-    public function getUnSyncedOrders(): OrderSearchResultInterface;
-
-    /**
-     * @return OrderSearchResultInterface
-     */
-    public function getCanceledOrders(): OrderSearchResultInterface;
+    public function getOrdersInProgress(): OrderSearchResultInterface;
 
     /**
      * @param MagentoOrder $order

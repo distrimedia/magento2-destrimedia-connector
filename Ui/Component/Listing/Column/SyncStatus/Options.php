@@ -11,8 +11,9 @@ class Options implements OptionSourceInterface
 {
     const SYNC_STATUS_NOT_SYNCED = 0;
     const SYNC_STATUS_SYNCED     = 1;
-    const SYNC_STATUS_FAILED     = 2;
-    const SYNC_STATUS_PENDING_CANCELED   = 3;
+    const SYNC_STATUS_RETRY      = 2;
+    const SYNC_STATUS_FAILED     = 3;
+    const SYNC_STATUS_PENDING_CANCELED   = 4;
 
     const STATUS_RECEIVED_IN_SYSTEM = 'RCV';
     const STATUS_READY_FOR_PICKING = 'PCK';
@@ -33,6 +34,7 @@ class Options implements OptionSourceInterface
         return [
             ['value' => self::SYNC_STATUS_NOT_SYNCED, 'label' => __('Not Synced')],
             ['value' => self::SYNC_STATUS_SYNCED, 'label' => __('Synced')],
+            ['value' => self::SYNC_STATUS_RETRY, 'label' => __('Retrying')],
             ['value' => self::SYNC_STATUS_FAILED,   'label' => __('Failed')],
             ['value' => self::SYNC_STATUS_PENDING_CANCELED,   'label' => __('Pending Cancel')],
             ['value' => self::STATUS_RECEIVED_IN_SYSTEM,   'label' => __('Received in system')],

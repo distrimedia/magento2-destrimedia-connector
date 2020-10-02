@@ -30,11 +30,15 @@ class ErrorHandlingHelper
      *
      * @return $this
      */
-    public function sendErrorEmail(array $errors)
+    public function sendErrorEmail(array $errors, string $subject = '', string $title = '')
     {
         $template = $this->config->getErrorEmailTemplate();
         $identity = $this->config->getErrorEmailIdentity();
         $recipient = $this->config->getErrorEmailRecipient();
+
+        if (!$recipient) {
+            throw new \Exception("No Error email recipient defined");
+        }
 
         if (count($errors)) {
             if (!$template) {
@@ -51,7 +55,11 @@ class ErrorHandlingHelper
                     'store' => \Magento\Store\Model\Store::DEFAULT_STORE_ID,
                 ]
                 )->setTemplateVars(
-                    ['warnings' => implode("<br />", $errors)]
+                    [
+                        'warnings' => implode("<br />", $errors),
+                        'subject' => $subject,
+                        'title' => $title
+                    ]
                 )->setFrom($identity)
                 ->addTo($recipient)
                 ->getTransport();

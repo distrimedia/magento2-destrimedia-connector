@@ -36,14 +36,22 @@
     <virtualType name="DistriMedia\Connector\Logger\ConnectorLogger" type="Magento\Framework\Logger\Monolog">
         <arguments>
             <argument name="handlers"  xsi:type="array">
-                <item name="error" xsi:type="object">DistriMedia\Connector\Logger\Handler\ConnectorHandler</item>
-                <item name="debug" xsi:type="object">DistriMedia\Connector\Logger\Handler\ConnectorHandler</item>
                 <item name="info" xsi:type="object">DistriMedia\Connector\Logger\Handler\ConnectorHandler</item>
             </argument>
         </arguments>
     </virtualType>
 
-    <type name="DistriMedia\Connector\Api\OrderStatusChangeManagemen">
+    <type name="DistriMedia\Connector\Service\OrderSync">
+        <arguments>
+            <argument name="logger" xsi:type="object">DistriMedia\Connector\Logger\ConnectorLogger</argument>
+        </arguments>
+    </type>
+    <type name="DistriMedia\Connector\Model\OrderStatusChangeManagement">
+        <arguments>
+            <argument name="logger" xsi:type="object">DistriMedia\Connector\Logger\ConnectorLogger</argument>
+        </arguments>
+    </type>
+    <type name="DistriMedia\Connector\Plugin\SyncUpdatedShippingAddress">
         <arguments>
             <argument name="logger" xsi:type="object">DistriMedia\Connector\Logger\ConnectorLogger</argument>
         </arguments>
@@ -55,6 +63,7 @@
         <arguments>
             <argument name="columns" xsi:type="array">
                 <item name="distri_media_sync_status" xsi:type="string">sales_order.distri_media_sync_status</item>
+                <item name="distri_media_sync_attempts" xsi:type="string">sales_order.distri_media_sync_attempts</item>
                 <item name="distri_media_increment_id" xsi:type="string">sales_order.distri_media_increment_id</item>
             </argument>
         </arguments>
@@ -94,7 +103,6 @@
             <argument name="sensitive" xsi:type="array">
                 <item name="distrimedia/settings/webshop_code" xsi:type="string">1</item>
                 <item name="distrimedia/settings/api_password" xsi:type="string">1</item>
-                <item name="distrimedia/stock_cron/error_email" xsi:type="string">1</item>
             </argument>
         </arguments>
     </type>

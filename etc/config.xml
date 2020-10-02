@@ -13,12 +13,10 @@
                 <retention_days>999</retention_days>
                 <use_retention_days>1</use_retention_days>
                 <send_invoices>1</send_invoices>
-            </settings>
-            <stock_cron>
-                <error_email />
                 <error_email_template>distrimedia_settings_error_email_template</error_email_template>
                 <error_email_identity>general</error_email_identity>
-            </stock_cron>
+                <error_email />
+            </settings>
         </distrimedia>
     </default>
 </config>

@@ -10,6 +10,7 @@ use Magento\Sales\Api\Data\OrderExtensionFactory;
 class SetExtensionAttributesOnOrder
 {
     const DISTRI_MEDIA_SYNC_STATUS = 'distri_media_sync_status';
+    const DISTRI_MEDIA_SYNC_ATTEMPTS = 'distri_media_sync_attempts';
     const DISTRI_MEDIA_INCREMENT_ID = 'distri_media_increment_id';
 
     /**
@@ -41,6 +42,7 @@ class SetExtensionAttributesOnOrder
         $extensionAttributes = $order->getExtensionAttributes() ?: $this->extensionFactory->create();
 
         $extensionAttributes->setDistriMediaSyncStatus($order->getData(self::DISTRI_MEDIA_SYNC_STATUS));
+        $extensionAttributes->setDistriMediaSyncAttempts($order->getData(self::DISTRI_MEDIA_SYNC_ATTEMPTS));
         $extensionAttributes->setDistriMediaIncrementId($order->getData(self::DISTRI_MEDIA_INCREMENT_ID));
 
         $order->setExtensionAttributes($extensionAttributes);
@@ -56,6 +58,9 @@ class SetExtensionAttributesOnOrder
         if ($extensionAttributes !== null) {
             if ($extensionAttributes->getDistriMediaSyncStatus() !== null) {
                 $order->setDistriMediaSyncStatus($extensionAttributes->getDistriMediaSyncStatus());
+            }
+            if ($extensionAttributes->getDistriMediaSyncAttempts() !== null) {
+                $order->setDistriMediaSyncAttempts($extensionAttributes->getDistriMediaSyncAttempts());
             }
 
             if ($extensionAttributes->getDistriMediaIncrementId() !== null) {

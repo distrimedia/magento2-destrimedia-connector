@@ -12,6 +12,7 @@ use Magento\Framework\Api\FilterFactory;
 use Magento\Framework\Api\Search\FilterGroupFactory;
 use Magento\Framework\Api\SearchCriteriaFactory;
 use Magento\Sales\Model\Order;
+use DistriMedia\Connector\Ui\Component\Listing\Column\SyncStatus\Options;
 
 /**
  * I am responsible for syncing Paid orders and canceled orders to DistriMedia
@@ -22,6 +23,8 @@ class SyncOrders
     private $orderSync;
     private $orderFetcher;
     private $config;
+
+    const MAX_SYNC_ATTEMPTS = 3;
 
     public function __construct(
         OrderSyncInterface $orderSync,
@@ -40,24 +43,18 @@ class SyncOrders
     public function execute()
     {
         if ($this->config->isEnabled()) {
-            $orders = $this->orderFetcher->getUnSyncedOrders();
+            $orders = $this->orderFetcher->getOrdersInProgress();
+
             /* @var Order $order */
             foreach ($orders as $order) {
-                $result = $this->isOrderCompletelyPaid($order);
-                if ($result) {
+                $isPaid = $this->isOrderCompletelyPaid($order);
+                $orderExtAttrs = $order->getExtensionAttributes();
+                $syncStatus = (int) $orderExtAttrs->getDistriMediaSyncStatus();
+                $syncAttempts = (int) $orderExtAttrs->getDistriMediaSyncAttempts();
+                $correctStatus = in_array($syncStatus, [Options::SYNC_STATUS_NOT_SYNCED, Options::SYNC_STATUS_RETRY]) ? true : false;
+
+                if ($isPaid && $correctStatus && $syncAttempts < self::MAX_SYNC_ATTEMPTS) {
                     $this->orderSync->preprareOrderForSync($order);
-                }
-            }
-
-            $canceledOrders = $this->orderFetcher->getCanceledOrders();
-
-            foreach ($canceledOrders as $order) {
-                if (!empty($referenceId)) {
-                    try {
-                        $this->orderSync->cancelOrder($order);
-                    } catch (InvalidOrderException $invalidOrderException) {
-                        //already logged
-                    }
                 }
             }
 

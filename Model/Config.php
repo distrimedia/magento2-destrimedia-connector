@@ -203,7 +203,7 @@ class Config implements ConfigInterface
     /**
      * @inheritDoc
      */
-    public function getErrorEmailTemplate(): string
+    public function getErrorEmailTemplate(): ? string
     {
         $value = (string) $this->scopeConfig->getValue(self::XML_PATH_ERROR_TEMPLATE) ?: null;
 
@@ -213,7 +213,7 @@ class Config implements ConfigInterface
     /**
      * @inheritDoc
      */
-    public function getErrorEmailRecipient(): string
+    public function getErrorEmailRecipient(): ? string
     {
         $value = (string) $this->scopeConfig->getValue(self::XML_PATH_ERROR_RECIPIENT) ?: null;
 
@@ -223,7 +223,7 @@ class Config implements ConfigInterface
     /**
      * @inheritDoc
      */
-    public function getErrorEmailIdentity(): string
+    public function getErrorEmailIdentity(): ? string
     {
         $value = (string) $this->scopeConfig->getValue(self::XML_PATH_ERROR_IDENTITY) ?: null;
 

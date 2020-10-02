@@ -53,56 +53,18 @@ class OrderFetcher implements OrderFetcherInterface
     /**
      * @inheridoc
      */
-    public function getUnSyncedOrders(): OrderSearchResultInterface
+    public function getOrdersInProgress(): OrderSearchResultInterface
     {
         /* @var Filter $paidOrderFilter */
         $paidOrderFilter = $this->filterFactory->create()
-            ->setField(Order::STATE)
+            ->setField('main_table.' . Order::STATE)
             ->setValue(Order::STATE_PROCESSING)
             ->setConditionType('eq');
 
-        /* @var Filter $notSyncedFilter */
-        $notSyncedFilter = $this->filterFactory->create()
-            ->setField('distri_media_sync_status')
-            ->setValue(Options::SYNC_STATUS_NOT_SYNCED)
-            ->setConditionType('eq');
-
         /* @var FilterGroup $filterGroup */
         $filterGroup = $this->filterGroupFactory
             ->create()
-            ->setFilters([$paidOrderFilter, $notSyncedFilter]);
-
-        /* @var SearchCriteria $searchCriteria */
-        $searchCriteria = $this->searchCriteriaFactory
-            ->create()
-            ->setFilterGroups([$filterGroup]);
-
-        $orders = $this->orderRepository->getList($searchCriteria);
-
-        return $orders;
-    }
-
-    /**
-     * @inheridoc
-     */
-    public function getCanceledOrders(): OrderSearchResultInterface
-    {
-        /* @var Filter $paidOrderFilter */
-        $paidOrderFilter = $this->filterFactory->create()
-            ->setField(Order::STATE)
-            ->setValue(Order::STATE_CANCELED)
-            ->setConditionType('eq');
-
-        /* @var Filter $notSyncedFilter */
-        $notSyncedFilter = $this->filterFactory->create()
-            ->setField('distri_media_sync_status')
-            ->setValue(Options::SYNC_STATUS_SYNCED)
-            ->setConditionType('eq');
-
-        /* @var FilterGroup $filterGroup */
-        $filterGroup = $this->filterGroupFactory
-            ->create()
-            ->setFilters([$paidOrderFilter, $notSyncedFilter]);
+            ->setFilters([$paidOrderFilter]);
 
         /* @var SearchCriteria $searchCriteria */
         $searchCriteria = $this->searchCriteriaFactory

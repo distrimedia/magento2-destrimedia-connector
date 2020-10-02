@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace DistriMedia\Connector\Service;
 
+use DistriMedia\Connector\Cron\SyncOrders;
 use DistriMedia\Connector\Model\ConfigInterface;
 use DistriMedia\Connector\Ui\Component\Listing\Column\SyncStatus\Options;
 use DistriMedia\SoapClient\InvalidOrderException;
@@ -55,7 +56,7 @@ class OrderSync extends AbstractSync implements OrderSyncInterface
             $webshopCode = $this->config->getWebshopCode();
 
             if (!empty($uri) && !empty($password) && !empty($webshopCode)) {
-                $this->distriMediaOrderService = new DistriMediaOrderService($uri, $webshopCode, $password);
+                $this->distriMediaOrderService = new DistriMediaOrderService($uri, $webshopCode, $password, $this->logger);
             } else {
                 throw new \Exception("Invalid DistriMedia Configuration. Some fields are missing (uri, webshopcode or password)");
             }
@@ -74,7 +75,7 @@ class OrderSync extends AbstractSync implements OrderSyncInterface
     /**
      * @inheritDoc
      */
-    public function cancelOrder(OrderInterface $order): ? bool
+    public function cancelOrder(OrderInterface $order): ?bool
     {
         $this->init();
         try {
@@ -107,38 +108,54 @@ class OrderSync extends AbstractSync implements OrderSyncInterface
         $extensionAttributes = $order->getExtensionAttributes() ?: $this->extensionFactory->create();
 
         $queueStatus = $extensionAttributes->getDistriMediaSyncStatus();
-        if ((int)$queueStatus === Options::SYNC_STATUS_NOT_SYNCED) {
-            try {
-                $status = Options::SYNC_STATUS_FAILED;
 
-                /* @var OrderBuilder $orderBuilder */
-                $orderBuilder = $this->orderBuilderFactory->create();
-                $distriMediaOrder = $orderBuilder->convert($order);
+        $status = Options::SYNC_STATUS_FAILED;
 
-                /* @var DistriMediaOrderResponse $result */
-                $result = $this->syncDistriMediaOrder($distriMediaOrder);
+        $attempts = (int)$extensionAttributes->getDistriMediaSyncAttempts();
 
-                if ($result instanceof DistriMediaOrderResponse) {
-                    $incrementId = $result->getOrderID();
+        try {
+            /* @var OrderBuilder $orderBuilder */
+            $orderBuilder = $this->orderBuilderFactory->create();
+            $distriMediaOrder = $orderBuilder->convert($order);
 
-                    if ($incrementId !== null) {
-                        $extensionAttributes->setDistriMediaIncrementId($incrementId);
-                        $status = Options::SYNC_STATUS_SYNCED;
-                    } else {
-                        throw new \Exception($result->getReason());
-                    }
+            /* @var DistriMediaOrderResponse $result */
+            $result = $this->syncDistriMediaOrder($distriMediaOrder);
+
+            if ($result instanceof DistriMediaOrderResponse) {
+                $incrementId = $result->getOrderID();
+
+                if ($incrementId !== null) {
+                    $extensionAttributes->setDistriMediaIncrementId($incrementId);
+                    $status = Options::SYNC_STATUS_SYNCED;
+                } else {
+                    throw new \Exception($result->getReason());
                 }
+            }
+        } catch (\Exception $e) {
+            $this->logger->critical(
+                "DistriMedia SyncOrders Cron: failed to sync message: " . $e->getMessage()
+            );
+        }
 
-                //update the model
-                $extensionAttributes->setDistriMediaSyncStatus($status);
+        $attempts++;
 
-                $order->setExtensionAttributes($extensionAttributes);
-                $this->orderRepository->save($order);
-            } catch (\Exception $e) {
+        $extensionAttributes->setDistriMediaSyncAttempts($attempts);
+
+        if ($status === Options::SYNC_STATUS_FAILED) {
+            if ($attempts < SyncOrders::MAX_SYNC_ATTEMPTS) {
+                $status = Options::SYNC_STATUS_RETRY;
+            } else {
                 $this->logger->critical(
-                    "DistriMedia SyncOrders Cron: failed to sync message: " . $e->getMessage()
+                    "DistriMedia SyncOrders Cron: failed to sync order {$order->getIncrementId()}. Max attempts "
+                    . SyncOrders::MAX_SYNC_ATTEMPTS . " reached"
                 );
             }
         }
+
+        //update the model
+        $extensionAttributes->setDistriMediaSyncStatus($status);
+
+        $order->setExtensionAttributes($extensionAttributes);
+        $this->orderRepository->save($order);
     }
 }

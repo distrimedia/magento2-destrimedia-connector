@@ -6,11 +6,13 @@ namespace DistriMedia\Connector\Plugin;
 
 use DistriMedia\Connector\Model\ConfigInterface;
 use DistriMedia\Connector\Service\OrderBuilder;
+use Magento\Config\Model\Config\Backend\Admin\Custom;
 use Magento\Framework\Message\ManagerInterface;
 use Magento\Sales\Api\Data\OrderAddressInterface;
 use Magento\Sales\Api\OrderAddressRepositoryInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use DistriMedia\SoapClient\Service\Customer as CustomerService;
+use Psr\Log\LoggerInterface;
 
 /**
  * I am responsible for syncing the updated address to DistriMedia
@@ -25,20 +27,21 @@ class SyncUpdatedShippingAddress
     private $customerService;
     private $messageManager;
     private $config;
+    private $logger;
 
     public function __construct(
         OrderRepositoryInterface $orderRepository,
         OrderBuilder $orderBuilder,
-        CustomerService $customerService,
         ManagerInterface $messageManager,
-        ConfigInterface $config
+        ConfigInterface $config,
+        LoggerInterface  $logger
     )
     {
         $this->orderRepository = $orderRepository;
         $this->orderBuilder = $orderBuilder;
-        $this->customerService = $customerService;
         $this->messageManager = $messageManager;
         $this->config = $config;
+        $this->logger = $logger;
     }
 
     public function aroundSave(OrderAddressRepositoryInterface $subject, $proceed, OrderAddressInterface $orderAddress)
@@ -55,7 +58,12 @@ class SyncUpdatedShippingAddress
 
                     $distriMediaCustomer = $this->orderBuilder->getDistriMediaCustomerFromMagentoOrder($order, $orderAddress);
 
-                    $this->customerService->changeCustomer($distriMediaCustomer, $distriMediaIncrementId);
+                    $uri = $this->config->getApiUri();
+                    $password = $this->config->getApiPassword();
+                    $webshopCode = $this->config->getWebshopCode();
+
+                    $customerService = new CustomerService($uri, $password, $webshopCode, $this->logger);
+                    $customerService->changeCustomer($distriMediaCustomer, $distriMediaIncrementId);
 
                     return $proceed($orderAddress);
                 }

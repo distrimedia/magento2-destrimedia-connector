@@ -47,38 +47,18 @@ class OrderBuilder
     const CODE_PARCELLOCKER = 'bpostParcellocker';
     const CODE_PICKUPPOINT = 'bpostPickuppoint';
 
-    /**
-     * @var PdfInvoiceFactory
-     */
     private $pdfInvoiceFactory;
-
-    /**
-     * @var ConfigInterface
-     */
     private $config;
-
-    /**
-     * @var ProductCollectionFactory
-     */
-    private $productCollectionFactory;
-
-    /**
-     * @var ProductCollection
-     */
-    private $_productCollection;
-
     private $orderFetcher;
 
     public function __construct(
         PdfInvoiceFactory $pdfInvoiceFactor,
         ConfigInterface $config,
-        ProductCollectionFactory $productCollectionFactory,
         OrderFetcherInterface $orderFetcher
     )
     {
         $this->pdfInvoiceFactory = $pdfInvoiceFactor;
         $this->config = $config;
-        $this->productCollectionFactory = $productCollectionFactory;
         $this->orderFetcher = $orderFetcher;
     }
 
@@ -239,66 +219,24 @@ class OrderBuilder
         foreach ($items as $item) {
             $orderLine = new DistriMediaOrderLine();
             $product = new DistriMediaProduct();
+            $orderItemExtAttrs = $item->getExtensionAttributes();
 
-            $m2Product = $this->getProductBySku($order, $item->getSku());
+            //ean code
+            $eanCode = $orderItemExtAttrs->getDistriMediaEanCode() ?: '';
+            $product->setEan($eanCode);
 
-            if ($m2Product) {
-                //ean code
-                $eanCodeAttr = $this->config->getEanCodeAttributeCode();
-                $eanCode = $m2Product->getData($eanCodeAttr);
-                $product->setEan($eanCode);
+            //external ref
+            $externalRef = $orderItemExtAttrs->getDistriMediaExternalRef() ?: '';
+            $product->setExternalRef($externalRef);
 
-                //external ref
-                $externalRef = $this->config->getExternalRefAttributeCode();
-                $externalRef = $m2Product->getData($externalRef);
-                $product->setExternalRef($externalRef);
-
-                $product->setDescription1($m2Product->getData('name') ?: '');
-                $orderLine->setPieces((int)$item->getQtyInvoiced());
-                $orderLine->setProduct($product);
-                $orderLine->setProductId($eanCode);
-                $orderLines[] = $orderLine;
-            } else {
-                throw new \Exception("Could not find product of order item with id {$item->getItemId()}");
-            }
+            $product->setDescription1($item->getName() ?: '');
+            $orderLine->setPieces((int)$item->getQtyInvoiced());
+            $orderLine->setProduct($product);
+            $orderLine->setProductId($eanCode);
+            $orderLines[] = $orderLine;
         }
 
         return $orderLines;
-    }
-
-    /**
-     * I am responsible for building a product collection from the order
-     */
-    private function buildProductCollectionOfOrder(MagentoOrder $order): void
-    {
-        $eanCodeAttr = $this->config->getEanCodeAttributeCode();
-        $externalRefAttr = $this->config->getExternalRefAttributeCode();
-
-        $pids = [];
-        $items = $order->getItems();
-        foreach ($items as $item) {
-            $pids[] = $item->getProductId();
-        }
-
-        $this->_productCollection = $this->productCollectionFactory->create()
-            ->addAttributeToSelect($eanCodeAttr)
-            ->addAttributeToSelect($externalRefAttr)
-            ->addAttributeToSelect('name')
-            ->addAttributeToFilter("entity_id", ['in' => $pids]);
-    }
-
-    /**
-     * @param MagentoOrder $order
-     * @param string $sku
-     * @return \Magento\Framework\DataObject|null
-     */
-    public function getProductBySku(MagentoOrder $order, string $sku)
-    {
-        if ($this->_productCollection === null) {
-            $this->buildProductCollectionOfOrder($order);
-        }
-
-        return $this->_productCollection->getItemByColumnValue('sku', $sku);
     }
 
     /**

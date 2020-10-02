@@ -106,6 +106,10 @@ class OrderStatusChangeManagement implements OrderStatusChangeManagementInterfac
         /* @var Order $order */
         $order = $this->orderFetcher->getOrderByDistriMediaIncrementId($OrderID);
 
+        if (!$order) {
+            throw new \Exception("Could not find order with DistriMedia Increment ID {$OrderID}");
+        }
+
         $data = [
             self::ORDER_ID => $OrderID,
             self::ORDER_STATUS => $OrderStatus,
@@ -134,9 +138,12 @@ class OrderStatusChangeManagement implements OrderStatusChangeManagementInterfac
      */
     private function notifyShopOwner(Order $order): void
     {
-        $message =__('Order %1 has been canceled by DistriMedia ERP', $order->getIncrementId());
+
+        $subject = __('Manual Action required. Order %1 has been canceled by DistriMedia ERP', $order->getIncrementId())->getText();
+        $message =__('Order %1 has been canceled by DistriMedia ERP', $order->getIncrementId())->getText();
         $this->notifierPool->addMajor($message->getText(), $message->getText());
-        $this->errorHandlingHelper->sendErrorEmail([$message->getText()]);
+        $this->errorHandlingHelper->sendErrorEmail([$message->getText()], $subject, $subject);
+        $this->logger->critical($message);
     }
 
     private function updateOrderStatus(Order $order, array $data)

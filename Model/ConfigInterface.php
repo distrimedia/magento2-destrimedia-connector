@@ -82,16 +82,16 @@ interface ConfigInterface
     /**
      * @return string
      */
-    public function getErrorEmailRecipient(): string;
+    public function getErrorEmailRecipient(): ? string;
 
     /**
      * @return string
      */
-    public function getErrorEmailIdentity(): string;
+    public function getErrorEmailIdentity(): ? string;
 
     /**
      * @return string
      */
-    public function getErrorEmailTemplate(): string;
+    public function getErrorEmailTemplate(): ? string;
 
 }

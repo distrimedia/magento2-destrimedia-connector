@@ -141,6 +141,7 @@ class StockSync extends AbstractSync implements StockSyncInterface
 
             if ($useMsi === true) {
                 $topic = self::PRODUCT_MSI_MASS_SCHEDULE_POST;
+                $bulkMessage = ['sourceItems' => [$bulkMessage]];
             }
 
             $massSchedule->publishMass(

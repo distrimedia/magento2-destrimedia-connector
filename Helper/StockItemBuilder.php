@@ -67,9 +67,10 @@ class StockItemBuilder
      * @param string|null $sourceCode
      * @return mixed
      */
-    public function createSourceItemInterface(int $qty, string $sku, string $sourceCode = null) {
-        $sourceItemInterface = ObjectManager::getInstance()->create('Magento\InventoryApi\Api\Data\SourceItemInterface');
-        $sourceItemInterface->setStatus((int) $qty > 0);
+    public function createSourceItemInterface(int $qty, string $sku, string $sourceCode = 'default') {
+        $sourceItemInterfaceFactory = ObjectManager::getInstance()->create('Magento\InventoryApi\Api\Data\SourceItemInterfaceFactory');
+        $sourceItemInterface = $sourceItemInterfaceFactory->create();
+        $sourceItemInterface->setStatus((int) ($qty > 0));
         $sourceItemInterface->setQuantity($qty);
         $sourceItemInterface->setSku($sku);
         $sourceItemInterface->setSourceCode($sourceCode);

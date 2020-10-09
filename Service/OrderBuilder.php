@@ -102,7 +102,9 @@ class OrderBuilder
      * @param MagentoOrder $order
      * @return DistriMediaCustomer
      */
-    public function getDistriMediaCustomerFromMagentoOrder(MagentoOrder $order, \Magento\Sales\Api\Data\OrderAddressInterface $shippingAddress = null): DistriMediaCustomer
+    public function getDistriMediaCustomerFromMagentoOrder(
+        MagentoOrder $order, 
+        \Magento\Sales\Api\Data\OrderAddressInterface $shippingAddress = null): DistriMediaCustomer
     {
         $distriMediaCustomer = new DistriMediaCustomer();
         $distriMediaCustomer->setEmail($order->getCustomerEmail());

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace DistriMedia\Connector\Model\Config\Frontend;
 
 use DistriMedia\Connector\Model\ConfigInterface;

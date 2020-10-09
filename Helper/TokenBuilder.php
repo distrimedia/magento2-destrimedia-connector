@@ -73,7 +73,7 @@ class TokenBuilder
                 ->getFirstItem();
         }
 
-        if ($integration) {
+        if ($integration !== null) {
             $this->authorizationService->grantPermissions($integration->getId(), $resources);
 
             $this->oauthService->createAccessToken($integration->getConsumerId());

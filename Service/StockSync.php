@@ -20,7 +20,6 @@ class StockSync extends AbstractSync implements StockSyncInterface
     const SKU_ATTRIBUTE = 'sku';
     const PRODUCT_MASS_SCHEDULE_PUT = 'async.magento.cataloginventory.api.stockregistryinterface.updatestockitembysku.put';
     const PRODUCT_MSI_MASS_SCHEDULE_POST = 'async.magento.inventoryapi.api.sourceitemssaveinterface.execute.post';
-
     const MSI_MODULE = 'Magento_Inventory';
 
     /**

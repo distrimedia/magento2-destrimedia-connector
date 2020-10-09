@@ -56,9 +56,16 @@ class OrderSync extends AbstractSync implements OrderSyncInterface
             $webshopCode = $this->config->getWebshopCode();
 
             if (!empty($uri) && !empty($password) && !empty($webshopCode)) {
-                $this->distriMediaOrderService = new DistriMediaOrderService($uri, $webshopCode, $password, $this->logger);
+                $this->distriMediaOrderService = new DistriMediaOrderService(
+                    $uri, 
+                    $webshopCode, 
+                    $password, 
+                    $this->logger
+                );
             } else {
-                throw new \Exception("Invalid DistriMedia Configuration. Some fields are missing (uri, webshopcode or password)");
+                throw new \Exception(
+                    "Invalid DistriMedia Configuration. Some fields are missing (uri, webshopcode or password)"
+                );
             }
         }
     }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace DistriMedia\Connector\Model\Config\Frontend;
 
 use Magento\Config\Block\System\Config\Form\Field;

@@ -62,7 +62,6 @@ class SetExtensionAttributesOnOrder
             if ($extensionAttributes->getDistriMediaSyncAttempts() !== null) {
                 $order->setDistriMediaSyncAttempts($extensionAttributes->getDistriMediaSyncAttempts());
             }
-
             if ($extensionAttributes->getDistriMediaIncrementId() !== null) {
                 $order->setDistriMediaIncrementId($extensionAttributes->getDistriMediaIncrementId());
             }

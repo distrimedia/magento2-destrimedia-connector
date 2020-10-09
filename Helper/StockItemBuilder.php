@@ -61,7 +61,8 @@ class StockItemBuilder
     }
 
     /**
-     * There is no way to inject the msi module if we want to support use of both with our without msi, so we need to use the object manager
+     * There is no way to inject the msi module if we want to support use of both with our without msi
+     * so we need to use the object manager
      * @param int $qty
      * @param string $sku
      * @param string|null $sourceCode

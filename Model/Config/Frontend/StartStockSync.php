@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace DistriMedia\Connector\Model\Config\Frontend;
 
 
@@ -77,5 +79,4 @@ class StartStockSync extends Field
 
         return $flag->getFlagData();
     }
-
 }

@@ -76,14 +76,23 @@ class SyncStock
      */
     public function processStock()
     {
-        $errors = $this->stockSync->fetchAllStock();
-        if (!empty($errors)) {
+        try {
+            $errors = $this->stockSync->fetchAllStock();
+            if (!empty($errors)) {
+                $hasErrors = true;
+            } else {
+                $this->updateStatus(Status::STATUS_SUCCESS);
+            }
+        } catch (\Excecption $exception) {
+            $errors[] = $exception;
+            $hasErrors = true;
+        }
+
+        if ($hasErrors === true) {
             $subject = __('DistriMedia Connector Stock cron log')->getText();
             $title = __('DistriMedia Connector Stock cron log')->getText();
             $this->errorHandlingHelper->sendErrorEmail($errors, $subject, $title);
             $this->updateStatus(Status::STATUS_ERROR);
-        } else {
-            $this->updateStatus(Status::STATUS_SUCCESS);
         }
     }
 

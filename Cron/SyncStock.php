@@ -86,7 +86,7 @@ class SyncStock
                 $this->updateStatus(Status::STATUS_SUCCESS);
             }
         } catch (\Exception $exception) {
-            $errors[] = $exception;
+            $errors[] = $exception->getMessage();
             $hasErrors = true;
         }
 

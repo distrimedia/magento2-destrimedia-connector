@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace DistriMedia\Connector\Service;
 
+use DistriMedia\Connector\Model\Config\Source\SendInvoices;
 use DistriMedia\Connector\Model\OrderFetcherInterface;
 use DistriMedia\Connector\Model\ConfigInterface;
 use DistriMedia\SoapClient\Struct\Carrier;
@@ -80,7 +81,37 @@ class OrderBuilder
         $orderLines = $this->getDistriMediaOrderLinesFromOrder($order);
         $distriMediaOrder->setOrderLines($orderLines);
 
-        if ($this->config->sendInvoices()) {
+        $this->addInvoices($distriMediaOrder, $order);
+
+        return $distriMediaOrder;
+    }
+
+    private function addInvoices(DistriMediaOrder $distriMediaOrder, MagentoOrder $order)
+    {
+        $sendInvoicesConfig = $this->config->sendInvoices();
+        $sendInvoices = false;
+
+        switch ($sendInvoicesConfig) {
+            case SendInvoices::SEND_INVOICES_NEVER:
+                break;
+            case SendInvoices::SEND_INVOICES_ALWAYS:
+                $sendInvoices = true;
+                break;
+            case SendInvoices::SEND_INVOICES_ONLY_OUTSIDE_EU:
+                $address = $order->getShippingAddress();
+                if ($address instanceof \Magento\Sales\Model\Order\Address) {
+                    $shippingCountry = $address->getCountryId();
+                    $euCountries = $this->config->getEuCountries();
+                    if (in_array($shippingCountry, $euCountries)) {
+                        $sendInvoices = true;
+                    }
+                }
+                break;
+            default:
+                break;
+        }
+
+        if ($sendInvoices === true) {
             $invoices = $this->orderFetcher->getPaidInvoicesByOrder($order);
             $documents = [];
 
@@ -92,10 +123,7 @@ class OrderBuilder
 
             $distriMediaOrder->setAdditionalDocuments($documents);
         }
-
-        return $distriMediaOrder;
     }
-
     /**
      * I am responsible for creating a distriMediaCustomer from a Magento order
      * This function is public so that it can be interceptable by a pluign.
@@ -103,7 +131,7 @@ class OrderBuilder
      * @return DistriMediaCustomer
      */
     public function getDistriMediaCustomerFromMagentoOrder(
-        MagentoOrder $order, 
+        MagentoOrder $order,
         \Magento\Sales\Api\Data\OrderAddressInterface $shippingAddress = null): DistriMediaCustomer
     {
         $distriMediaCustomer = new DistriMediaCustomer();

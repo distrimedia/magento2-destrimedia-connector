@@ -94,4 +94,8 @@ interface ConfigInterface
      */
     public function getErrorEmailTemplate(): ? string;
 
+    /**
+     * @return array
+     */
+    public function getEuCountries(): array;
 }

@@ -30,6 +30,7 @@ class Config implements ConfigInterface
     const XML_PATH_ERROR_TEMPLATE = 'distrimedia/settings/error_email_template';
     const XML_PATH_ERROR_IDENTITY = 'distrimedia/settings/error_email_identity';
     const XML_PATH_ERROR_RECIPIENT = 'distrimedia/settings/error_email';
+    const XML_PATH_EU_COUNTRIES = 'general/country/eu_countries';
 
     private $scopeConfig;
     private $encryptor;
@@ -145,7 +146,7 @@ class Config implements ConfigInterface
      */
     public function getCancellationDays(): int
     {
-        $value = (int) $this->scopeConfig->getValue(self::XML_PATH_DISTRIMEDIA_SETTINGS_EXTERNAL_CANCELLATION_DAYS) ?: 0;
+        $value = (int)$this->scopeConfig->getValue(self::XML_PATH_DISTRIMEDIA_SETTINGS_EXTERNAL_CANCELLATION_DAYS) ?: 0;
 
         return $value;
     }
@@ -165,7 +166,7 @@ class Config implements ConfigInterface
      */
     public function getRetentionDays(): int
     {
-        $value = (int) $this->scopeConfig->getValue(self::XML_PATH_DISTRIMEDIA_SETTINGS_EXTERNAL_RETENTION_DAYS) ?: 0;
+        $value = (int)$this->scopeConfig->getValue(self::XML_PATH_DISTRIMEDIA_SETTINGS_EXTERNAL_RETENTION_DAYS) ?: 0;
 
         return $value;
     }
@@ -193,9 +194,9 @@ class Config implements ConfigInterface
     /**
      * @inheritDoc
      */
-    public function getConsumerId(): ? int
+    public function getConsumerId(): ?int
     {
-        $value = (int) $this->scopeConfig->getValue(self::XML_PATH_DISTRIMEDIA_CONSUMER_ID) ?: null;
+        $value = (int)$this->scopeConfig->getValue(self::XML_PATH_DISTRIMEDIA_CONSUMER_ID) ?: null;
 
         return $value;
     }
@@ -203,9 +204,9 @@ class Config implements ConfigInterface
     /**
      * @inheritDoc
      */
-    public function getErrorEmailTemplate(): ? string
+    public function getErrorEmailTemplate(): ?string
     {
-        $value = (string) $this->scopeConfig->getValue(self::XML_PATH_ERROR_TEMPLATE) ?: null;
+        $value = (string)$this->scopeConfig->getValue(self::XML_PATH_ERROR_TEMPLATE) ?: null;
 
         return $value;
     }
@@ -213,9 +214,9 @@ class Config implements ConfigInterface
     /**
      * @inheritDoc
      */
-    public function getErrorEmailRecipient(): ? string
+    public function getErrorEmailRecipient(): ?string
     {
-        $value = (string) $this->scopeConfig->getValue(self::XML_PATH_ERROR_RECIPIENT) ?: null;
+        $value = (string)$this->scopeConfig->getValue(self::XML_PATH_ERROR_RECIPIENT) ?: null;
 
         return $value;
     }
@@ -223,10 +224,26 @@ class Config implements ConfigInterface
     /**
      * @inheritDoc
      */
-    public function getErrorEmailIdentity(): ? string
+    public function getErrorEmailIdentity(): ?string
     {
-        $value = (string) $this->scopeConfig->getValue(self::XML_PATH_ERROR_IDENTITY) ?: null;
+        $value = (string)$this->scopeConfig->getValue(self::XML_PATH_ERROR_IDENTITY) ?: null;
 
         return $value;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getEuCountries(): array
+    {
+        $result = [];
+
+        $value = $this->scopeConfig->getValue(self::XML_PATH_EU_COUNTRIES) ?: null;
+
+        if (is_string($value)) {
+            $result = explode(",", $value);
+        }
+
+        return $result;
     }
 }

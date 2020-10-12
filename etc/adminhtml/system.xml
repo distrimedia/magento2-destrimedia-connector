@@ -146,7 +146,7 @@
                 <field id="send_invoices" translate="label" type="select" sortOrder="1" showInDefault="1"
                        showInWebsite="0" showInStore="0" canRestore="1">
                     <label>Send Invoices</label>
-                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <source_model>DistriMedia\Connector\Model\Config\Source\SendInvoices</source_model>
                     <depends>
                         <field id="enabled">1</field>
                     </depends>

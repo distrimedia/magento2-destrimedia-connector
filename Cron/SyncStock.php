@@ -76,6 +76,8 @@ class SyncStock
      */
     public function processStock()
     {
+        $hasErrors = false;
+
         try {
             $errors = $this->stockSync->fetchAllStock();
             if (!empty($errors)) {
@@ -83,7 +85,7 @@ class SyncStock
             } else {
                 $this->updateStatus(Status::STATUS_SUCCESS);
             }
-        } catch (\Excecption $exception) {
+        } catch (\Exception $exception) {
             $errors[] = $exception;
             $hasErrors = true;
         }

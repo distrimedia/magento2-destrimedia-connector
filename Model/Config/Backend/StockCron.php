@@ -36,7 +36,7 @@ class StockCron extends ConfigValue
 
     public function afterSave()
     {
-        $time = $this->getData('groups/baldwin_stock_subscription_cron/fields/time/value');
+        $time = $this->getData('groups/stock_subscription_cron/fields/time/value');
 
         $cronExprArray = [
             (int)$time[1], //Minute

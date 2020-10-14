@@ -153,7 +153,7 @@
                     <comment>Send invoice PDF to DistriMedia with the order</comment>
                 </field>
             </group>
-            <group id="stock_cron" translate="label" type="text" sortOrder="260" showInDefault="1" showInWebsite="0"
+            <group id="stock_subscription_cron" translate="label" type="text" sortOrder="260" showInDefault="1" showInWebsite="0"
                    showInStore="0">
                 <label>Stock Run Settings</label>
                 <field id="time" translate="label" type="time" sortOrder="2" showInDefault="1" showInWebsite="0"

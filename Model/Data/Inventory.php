@@ -76,6 +76,22 @@ class Inventory extends AbstractModel implements InventoryInterface
     /**
      * @inheridoc
      */
+    public function getExternalRef()
+    {
+        return $this->getData(self::EXT_REF);
+    }
+
+    /**
+     * @inheridoc
+     */
+    public function setExternalRef($extRef)
+    {
+        return $this->setData(self::EXT_REF, $extRef);
+    }
+
+    /**
+     * @inheridoc
+     */
     public function getClaimable()
     {
         return $this->getData(self::CLAIMABLE);

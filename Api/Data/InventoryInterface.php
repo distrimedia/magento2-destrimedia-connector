@@ -10,6 +10,7 @@ interface InventoryInterface
     const EAN = 'EAN';
     const PIECES = 'Pieces';
     const EXT_REF = 'ExtRef';
+    const EXTERNAL_REF = 'ExternalRef';
     const CLAIMABLE = 'Claimable';
     const CLAIMED = 'Claimed';
     const PROBLEM = 'Problem';
@@ -60,6 +61,17 @@ interface InventoryInterface
      * @return \DistriMedia\Connector\Api\Data\InventoryInterface
      */
     public function setExtRef($extRef);
+
+    /**
+     * @return mixed
+     */
+    public function getExternalRef();
+
+    /**
+     * @param $extRef
+     * @return \DistriMedia\Connector\Api\Data\InventoryInterface
+     */
+    public function setExternalRef($extRef);
 
     /**
      * @return mixed

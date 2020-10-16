@@ -6,6 +6,7 @@ namespace DistriMedia\Connector\Api\Data;
 
 interface InventoryInterface
 {
+    const PRODUCT = 'Product';
     const EAN = 'EAN';
     const PIECES = 'Pieces';
     const EXT_REF = 'ExtRef';
@@ -15,6 +16,17 @@ interface InventoryInterface
     const OVERDUE = 'Overdue';
     const BLOCKED = 'Blocked';
     const DLB = 'DLB';
+
+    /**
+     * @return string
+     */
+    public function getProduct();
+
+    /**
+     * @param $product
+     * @return \DistriMedia\Connector\Api\Data\InventoryInterface
+     */
+    public function setProduct($product);
 
     /**
      * @return string

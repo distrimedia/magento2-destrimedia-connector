@@ -12,6 +12,22 @@ class Inventory extends AbstractModel implements InventoryInterface
     /**
      * @inheridoc
      */
+    public function getProduct()
+    {
+        return $this->getData(self::PRODUCT);
+    }
+
+    /**
+     * @inheridoc
+     */
+    public function setProduct($product)
+    {
+        return $this->setData(self::PRODUCT, $product);
+    }
+
+    /**
+     * @inheridoc
+     */
     public function getEAN()
     {
         return $this->getData(self::EAN);

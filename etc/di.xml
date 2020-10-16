@@ -26,6 +26,11 @@
                 type="DistriMedia\Connector\Model\Data\Inventory" />
     <!-- /data objects -->
 
+    <!-- hook the logger in rest class -->
+    <type name="Magento\Webapi\Controller\Rest">
+        <plugin name="rest-api-log" type="DistriMedia\Connector\Plugin\RestApiLog"/>
+    </type>
+
     <!-- logger -->
     <type name="DistriMedia\Connector\Logger\Handler\ConnectorHandler">
         <arguments>

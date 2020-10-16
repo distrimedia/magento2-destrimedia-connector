@@ -18,7 +18,7 @@ class RestApiLog
 
     private $logger;
 
-    const PUSH_REQUESTS = [
+    const PUSH_REQUEST_ENDPOINTS = [
         '/rest/V1/distrimedia/stock/change',
         '/rest/V1/distrimedia/order/change'
     ];
@@ -34,11 +34,13 @@ class RestApiLog
         RequestInterface $request
     )
     {
-        if (strpos($request->getPathInfo(), self::PAAZL_URI) !== false) {
-            $this->logger->info('SOURCE: ' . $request->getClientIp());
-            $this->logger->info('METHOD: ' . $request->getMethod());
-            $this->logger->info('PATH: ' . $request->getPathInfo());
-            $this->logger->info('CONTENT: ' . $request->getContent() . PHP_EOL);
+        foreach (self::PUSH_REQUEST_ENDPOINTS as $endpoint) {
+            if (strpos($request->getPathInfo(), $endpoint) !== false) {
+                $this->logger->info('SOURCE: ' . $request->getClientIp());
+                $this->logger->info('METHOD: ' . $request->getMethod());
+                $this->logger->info('PATH: ' . $request->getPathInfo());
+                $this->logger->info('CONTENT: ' . $request->getContent() . PHP_EOL);
+            }
         }
     }
 }

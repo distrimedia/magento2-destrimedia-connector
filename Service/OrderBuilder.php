@@ -200,9 +200,11 @@ class OrderBuilder
 
         $shippingMethod = $order->getShippingMethod();
         if ($this->config->useBPostLockersAndPickup() && $this->isBpostShippingMethod($shippingMethod)) {
-            $distriMediaOrderItem->setShipmentMethod($this->getShippingMethodFromOrder($order));
 
             $carrier = $this->getShippingCarrierFromOrder($order);
+
+            //we currently set the carrier in the shipping method as well.. Magento uses a shipping method that is too long.
+            $distriMediaOrderItem->setShipmentMethod($carrier); //$this->getShippingMethodFromOrder($order));
 
             if ($carrier) {
                 $distriMediaOrderItem->setCarrier($carrier);

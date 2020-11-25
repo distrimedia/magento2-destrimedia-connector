@@ -24,6 +24,12 @@ interface ConfigInterface
     public function getApiPassword(): string;
 
     /**
+     * Returns after how many seconds the connection to DistriMedia will time out.
+     * @return int
+     */
+    public function getTimeoutAterInSeconds(): int;
+
+    /**
      * Webshop code, this is an encrypted value
      * @return string
      */

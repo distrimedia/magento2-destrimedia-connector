@@ -22,4 +22,15 @@
             </settings>
         </column>
     </columns>
+    <listingToolbar name="listing_top">
+        <massaction name="listing_massaction">
+            <action name="retry">
+                <settings>
+                    <url path="distrimedia/order/massRetrySyncOrders"/>
+                    <type>retry_distrimedia_sync</type>
+                    <label translate="true">Retry DistriMedia Sync</label>
+                </settings>
+            </action>
+        </massaction>
+    </listingToolbar>
 </listing>

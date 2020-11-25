@@ -17,6 +17,7 @@ class Config implements ConfigInterface
     const XML_PATH_DISTRIMEDIA_SETTINGS_ENABLED = 'distrimedia/settings/enabled';
     const XML_PATH_DISTRIMEDIA_SETTINGS_API_URI = 'distrimedia/settings/api_uri';
     const XML_PATH_DISTRIMEDIA_SETTINGS_API_PASSWORD = 'distrimedia/settings/api_password';
+    const XML_PATH_DISTRIMEDIA_SETTINGS_TIMEOUT_AFTER_IN_SECONDS = 'distrimedia/settings/timout_after_seconds';
     const XML_PATH_DISTRIMEDIA_SETTINGS_WEBSHOP_CODE = 'distrimedia/settings/webshop_code';
     const XML_PATH_DISTRIMEDIA_SETTINGS_EAN_CODE_ATTRIBUTE = 'distrimedia/settings/ean_code_attribute';
     const XML_PATH_DISTRIMEDIA_SETTINGS_EXTERNAL_REF_ATTRIBUTE = 'distrimedia/settings/external_ref_attribute';
@@ -69,6 +70,16 @@ class Config implements ConfigInterface
         if (!empty($value)) {
             $value = $this->encryptor->decrypt($value);
         }
+
+        return $value;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getTimeoutAterInSeconds(): int
+    {
+        $value = $this->scopeConfig->getValue(self::XML_PATH_DISTRIMEDIA_SETTINGS_TIMEOUT_AFTER_IN_SECONDS) ?: 0;
 
         return $value;
     }

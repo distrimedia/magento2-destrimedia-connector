@@ -220,18 +220,28 @@ class OrderBuilder
      */
     public function getShippingMethodFromOrder(MagentoOrder $order): string
     {
-        $description = strtolower($order->getShippingDescription());
+        $shippingMethod = '';
 
-        return $description;
+        $shippingMethodData = explode("_", $order->getShippingMethod());
+        if (!empty($shippingMethodData)) {
+            $shippingMethod = reset($shippingMethodData);
+        }
+
+        return $shippingMethod;
     }
 
     public function getShippingCarrierFromOrder($order): ? string
     {
-        switch ($order->getShippingMethod()) {
-            case self::CODE_PICKUPPOINT:
-                return Carrier::CARRIER_BPPUGO;
-            case self::CODE_PARCELLOCKER:
-                return Carrier::CARRIER_BP247;
+        $shippingMethodData = explode("_", $order->getShippingMethod());
+
+        if (!empty($shippingMethodData)) {
+            $shippingMethod = reset($shippingMethodData);
+            switch ($order->getShippingMethod()) {
+                case self::CODE_PICKUPPOINT:
+                    return Carrier::CARRIER_BPPUGO;
+                case self::CODE_PARCELLOCKER:
+                    return Carrier::CARRIER_BP247;
+            }
         }
     }
 

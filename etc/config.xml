@@ -14,6 +14,7 @@
                 <send_invoices>1</send_invoices>
                 <error_email_template>distrimedia_settings_error_email_template</error_email_template>
                 <error_email_identity>general</error_email_identity>
+                <timout_after_seconds>3</timout_after_seconds>
                 <error_email />
             </settings>
         </distrimedia>

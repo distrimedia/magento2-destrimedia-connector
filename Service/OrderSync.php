@@ -54,12 +54,13 @@ class OrderSync extends AbstractSync implements OrderSyncInterface
             $uri = $this->config->getApiUri();
             $password = $this->config->getApiPassword();
             $webshopCode = $this->config->getWebshopCode();
-
-            if (!empty($uri) && !empty($password) && !empty($webshopCode)) {
+            $maxTimeout = $this->config->getTimeoutAterInSeconds();
+            if (!empty($uri) && !empty($password) && !empty($webshopCode) && !empty($maxTimeout)) {
                 $this->distriMediaOrderService = new DistriMediaOrderService(
                     $uri,
                     $webshopCode,
                     $password,
+                    $maxTimeout,
                     $this->logger
                 );
             } else {

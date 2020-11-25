@@ -118,7 +118,7 @@ class OrderBuilder
             //in magento it's possible for 1 order to have multiple invoices.
             foreach ($invoices as $invoice) {
                 $invoiceDocuments = $this->getDistriMediaDocumentsfromInvoice($invoice);
-                array_merge($documents, $invoiceDocuments);
+                $documents = array_merge($documents, $invoiceDocuments);
             }
 
             $distriMediaOrder->setAdditionalDocuments($documents);

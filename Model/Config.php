@@ -79,7 +79,7 @@ class Config implements ConfigInterface
      */
     public function getTimeoutAterInSeconds(): int
     {
-        $value = $this->scopeConfig->getValue(self::XML_PATH_DISTRIMEDIA_SETTINGS_TIMEOUT_AFTER_IN_SECONDS) ?: 0;
+        $value = (int) $this->scopeConfig->getValue(self::XML_PATH_DISTRIMEDIA_SETTINGS_TIMEOUT_AFTER_IN_SECONDS) ?: 0;
 
         return $value;
     }

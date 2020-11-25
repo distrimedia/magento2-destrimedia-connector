@@ -124,6 +124,7 @@ class OrderBuilder
             $distriMediaOrder->setAdditionalDocuments($documents);
         }
     }
+
     /**
      * I am responsible for creating a distriMediaCustomer from a Magento order
      * This function is public so that it can be interceptable by a pluign.
@@ -191,7 +192,7 @@ class OrderBuilder
         $distriMediaOrderItem = new DistriMediaOrderItem();
 
         //we only want the first two letters.
-        $locale = $this->config->getLocaleOfStoreId((int) $order->getStoreId());
+        $locale = $this->config->getLocaleOfStoreId((int)$order->getStoreId());
         $language = substr($locale, 0, 2);
         $distriMediaOrderItem->setLanguage($language);
 
@@ -201,7 +202,7 @@ class OrderBuilder
         $shippingMethod = $order->getShippingMethod();
         if ($this->config->useBPostLockersAndPickup() && $this->isBpostShippingMethod($shippingMethod)) {
 
-            $carrier = $this->getShippingCarrierFromOrder($order);
+            $carrier = $this->getShippingCarrierFromShippingMethod($shippingMethod);
 
             //we currently set the carrier in the shipping method as well.. Magento uses a shipping method that is too long.
             $distriMediaOrderItem->setShipmentMethod($carrier); //$this->getShippingMethodFromOrder($order));
@@ -232,19 +233,18 @@ class OrderBuilder
         return $shippingMethod;
     }
 
-    public function getShippingCarrierFromOrder($order): ? string
+    public function getShippingCarrierFromShippingMethod(string $shippingMethod): ? string
     {
-        $shippingMethodData = explode("_", $order->getShippingMethod());
+        $result = '';
 
-        if (!empty($shippingMethodData)) {
-            $shippingMethod = reset($shippingMethodData);
-            switch ($order->getShippingMethod()) {
-                case self::CODE_PICKUPPOINT:
-                    return Carrier::CARRIER_BPPUGO;
-                case self::CODE_PARCELLOCKER:
-                    return Carrier::CARRIER_BP247;
-            }
+        switch ($shippingMethod) {
+            case self::BPOST_SHIPPING_METHOD_PICKUP_POINT:
+                $result = Carrier::CARRIER_BPPUGO;
+            case self::BPOST_SHIPPING_METHOD_PARCEL_LOCKER:
+                $result = Carrier::CARRIER_BP247;
         }
+
+        return $result;
     }
 
     /**

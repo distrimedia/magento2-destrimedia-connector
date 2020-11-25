@@ -43,10 +43,11 @@ class SyncOrders
     public function execute()
     {
         if ($this->config->isEnabled()) {
-            $orders = $this->orderFetcher->getOrdersInProgress();
+            $orders = $this->orderFetcher->getUnsyncedOrdersInProgress();
 
             /* @var Order $order */
             foreach ($orders as $order) {
+                $order = $this->orderFetcher->getOrderByEntityId($order->getId());
                 $isPaid = $this->isOrderCompletelyPaid($order);
                 $orderExtAttrs = $order->getExtensionAttributes();
                 $syncStatus = (int) $orderExtAttrs->getDistriMediaSyncStatus();

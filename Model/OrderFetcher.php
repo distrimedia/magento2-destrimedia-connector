@@ -18,6 +18,7 @@ use Magento\Sales\Api\Data\OrderSearchResultInterface;
 use Magento\Sales\Api\InvoiceRepositoryInterface;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Api\OrderRepositoryInterface;
+use Magento\Sales\Model\ResourceModel\Order\Collection;
 use Magento\Sales\Model\ResourceModel\Order\CollectionFactory as OrderCollectionFactory;
 
 /**
@@ -53,27 +54,19 @@ class OrderFetcher implements OrderFetcherInterface
     /**
      * @inheridoc
      */
-    public function getOrdersInProgress(): OrderSearchResultInterface
+    public function getUnsyncedOrdersInProgress(): Collection
     {
-        /* @var Filter $paidOrderFilter */
-        $paidOrderFilter = $this->filterFactory->create()
-            ->setField('main_table.' . Order::STATE)
-            ->setValue(Order::STATE_PROCESSING)
-            ->setConditionType('eq');
+        $orderCollection = $this->orderCollectionFactory->create()
+            ->addFieldToSelect("*")
+            ->addFieldToFilter("distri_media_increment_id", ['null' => true])
+            ->addFieldToFilter("state", ['eq' => 'processing']);
 
-        /* @var FilterGroup $filterGroup */
-        $filterGroup = $this->filterGroupFactory
-            ->create()
-            ->setFilters([$paidOrderFilter]);
+        return $orderCollection;
+    }
 
-        /* @var SearchCriteria $searchCriteria */
-        $searchCriteria = $this->searchCriteriaFactory
-            ->create()
-            ->setFilterGroups([$filterGroup]);
-
-        $orders = $this->orderRepository->getList($searchCriteria);
-
-        return $orders;
+    public function getOrderByEntityId($entityId): OrderInterface
+    {
+        return $this->orderRepository->get($entityId);
     }
 
     /**

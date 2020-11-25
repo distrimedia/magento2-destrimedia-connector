@@ -57,9 +57,9 @@ class OrderSync extends AbstractSync implements OrderSyncInterface
 
             if (!empty($uri) && !empty($password) && !empty($webshopCode)) {
                 $this->distriMediaOrderService = new DistriMediaOrderService(
-                    $uri, 
-                    $webshopCode, 
-                    $password, 
+                    $uri,
+                    $webshopCode,
+                    $password,
                     $this->logger
                 );
             } else {
@@ -140,7 +140,7 @@ class OrderSync extends AbstractSync implements OrderSyncInterface
             }
         } catch (\Exception $e) {
             $this->logger->critical(
-                "DistriMedia SyncOrders Cron: failed to sync message: " . $e->getMessage()
+                "DistriMedia SyncOrders Cron: failed to sync message for order {$order->getIncrementId()}: " . $e->getMessage()
             );
         }
 

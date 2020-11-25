@@ -89,6 +89,9 @@ class OrderFetcher implements OrderFetcherInterface
             ->setValue(\Magento\Sales\Model\Order\Invoice::STATE_PAID)
             ->setConditionType('eq');
 
+        $filterInvoiceGroup = $this->filterGroupFactory->create()
+            ->setFilters([$paidInvoicesFilter]);
+
         /* @var Filter $orderFilter */
         $orderFilter = $this->filterFactory->create();
         $orderFilter
@@ -97,10 +100,10 @@ class OrderFetcher implements OrderFetcherInterface
             ->setConditionType('eq');
 
 
-        $filterGroup = $this->filterGroupFactory->create()
-            ->setFilters([$paidInvoicesFilter, $orderFilter]);
+        $filterOrderGroup = $this->filterGroupFactory->create()
+            ->setFilters([$orderFilter]);
 
-        $searchCriteria = $this->searchCriteriaFactory->create()->setFilterGroups([$filterGroup]);
+        $searchCriteria = $this->searchCriteriaFactory->create()->setFilterGroups([$filterInvoiceGroup, $filterOrderGroup]);
 
         $invoices = $this->invoiceRepository->getList($searchCriteria);
 

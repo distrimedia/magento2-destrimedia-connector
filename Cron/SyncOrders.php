@@ -51,9 +51,9 @@ class SyncOrders
                 $orderExtAttrs = $order->getExtensionAttributes();
                 $syncStatus = (int) $orderExtAttrs->getDistriMediaSyncStatus();
                 $syncAttempts = (int) $orderExtAttrs->getDistriMediaSyncAttempts();
-                $correctStatus = in_array($syncStatus, [Options::SYNC_STATUS_NOT_SYNCED, Options::SYNC_STATUS_RETRY]) ? true : false;
+                $allowedStatus = in_array($syncStatus, [Options::SYNC_STATUS_NOT_SYNCED, Options::SYNC_STATUS_RETRY]) ? true : false;
 
-                if ($isPaid && $correctStatus && $syncAttempts < self::MAX_SYNC_ATTEMPTS) {
+                if ($isPaid && $allowedStatus && $syncAttempts < self::MAX_SYNC_ATTEMPTS) {
                     $this->orderSync->preprareOrderForSync($order);
                 }
             }

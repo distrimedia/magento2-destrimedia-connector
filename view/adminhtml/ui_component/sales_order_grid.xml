@@ -9,6 +9,12 @@
                 <label translate="true">DistriMedia Sync Status</label>
             </settings>
         </column>
+        <column name="distri_media_sync_attempts">
+            <settings>
+                <filter>text</filter>
+                <label translate="true">DistriMedia Sync Attempts</label>
+            </settings>
+        </column>
         <column name="distri_media_increment_id">
             <settings>
                 <filter>text</filter>

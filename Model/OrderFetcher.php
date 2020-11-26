@@ -42,7 +42,8 @@ class OrderFetcher implements OrderFetcherInterface
         FilterGroupFactory $filterGroupFactory,
         SearchCriteriaFactory $searchCriteriaFactory,
         OrderCollectionFactory $orderCollectionFactory
-    ) {
+    )
+    {
         $this->orderRepository = $orderRepository;
         $this->filterFactory = $filterFactory;
         $this->filterGroupFactory = $filterGroupFactory;
@@ -106,11 +107,16 @@ class OrderFetcher implements OrderFetcherInterface
     /**
      * @inheridoc
      */
-    public function getOrderByDistriMediaIncrementId(string $incrementId)
+    public function getOrderByDistriMediaData(string $magentoIncrementID, string $distriMediaIncrementID)
     {
         $order = $this->orderCollectionFactory->create()
             ->addFieldToSelect("*")
-            ->addFieldToFilter('distri_media_increment_id', ['eq' => $incrementId])
+            ->addFieldToFilter(
+                [
+                    'increment_id', ['eq' => $magentoIncrementID],
+                    'distri_media_increment_id', ['eq' => $distriMediaIncrementID]
+                ]
+            )
             ->getFirstItem();
 
         return $order;

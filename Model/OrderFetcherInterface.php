@@ -37,5 +37,5 @@ interface OrderFetcherInterface
      * @param string $distriMediaIncrementId
      * @return mixed
      */
-    public function getOrderByDistriMediaIncrementId(string $distriMediaIncrementId);
+    public function getOrderByDistriMediaData(string $distriMediaIncrementId);
 }

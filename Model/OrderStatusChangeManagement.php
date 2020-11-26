@@ -28,8 +28,17 @@ use Magento\Catalog\Model\ResourceModel\Product\Collection as ProductCollection;
 class OrderStatusChangeManagement implements OrderStatusChangeManagementInterface
 {
     const ORDER_STATUS = 'OrderStatus';
+
+    /**
+     * Magento Increment ID
+     */
     const ORDER_NUMBER = 'OrderNumber';
+
+    /**
+     * Internal DistriMedia ID
+     */
     const ORDER_ID = 'OrderID';
+
     const NUMBER_COLLI = 'NumberColli';
     const CARRIER = 'Carrier';
     const TRACK_AND_TRACE_URL = 'TrackAndTraceURL';
@@ -104,10 +113,10 @@ class OrderStatusChangeManagement implements OrderStatusChangeManagementInterfac
         }
 
         /* @var Order $order */
-        $order = $this->orderFetcher->getOrderByDistriMediaIncrementId($OrderID);
+        $order = $this->orderFetcher->getOrderByDistriMediaData($OrderNumber, $OrderID);
 
         if (!$order) {
-            throw new \Exception("Could not find order with DistriMedia Increment ID {$OrderID}");
+            throw new \Exception("Could not find order with DistriMedia Inc ID {$OrderID} or Magento Inc ID {$OrderNumber}");
         }
 
         $data = [

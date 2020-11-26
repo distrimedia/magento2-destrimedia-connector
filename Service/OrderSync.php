@@ -19,6 +19,8 @@ use Psr\Log\LoggerInterface;
 
 class OrderSync extends AbstractSync implements OrderSyncInterface
 {
+    const ORDER_EXISTS_MESSAGE = 'Ordernumber %1 already exists';
+
     /**
      * @var DistriMediaOrderService
      */
@@ -140,9 +142,14 @@ class OrderSync extends AbstractSync implements OrderSyncInterface
                 }
             }
         } catch (\Exception $e) {
-            $this->logger->critical(
-                "DistriMedia SyncOrders Cron: failed to sync message for order {$order->getIncrementId()}: " . $e->getMessage()
-            );
+            //if the order already exists, we set the status to synced.
+            if (strpos($e->getMessage(), __(self::ORDER_EXISTS_MESSAGE, $order->getIncrementId())->render()) !== false) {
+                $status = Options::SYNC_STATUS_SYNCED;
+            } else {
+                $this->logger->critical(
+                    "DistriMedia SyncOrders Cron: failed to sync message for order {$order->getIncrementId()}: " . $e->getMessage()
+                );
+            }
         }
 
         $attempts++;

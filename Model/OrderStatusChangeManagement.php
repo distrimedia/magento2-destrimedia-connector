@@ -159,6 +159,7 @@ class OrderStatusChangeManagement implements OrderStatusChangeManagementInterfac
     private function updateOrderStatus(Order $order, array $data)
     {
         $order->setDistriMediaSyncStatus($data[self::ORDER_STATUS]);
+        $order->setDistriMediaIncrementId($data[self::ORDER_ID]);
 
         $order->save();
     }

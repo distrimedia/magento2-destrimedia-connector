@@ -13,6 +13,7 @@ use Magento\Framework\Notification\NotifierPool;
 use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\Webapi\Rest\Request\Deserializer\Xml;
 use Magento\ProductAlert\Model\Stock;
+use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Api\Data\ShipmentInterface;
 use Magento\Sales\Api\OrderManagementInterface;
 use Magento\Sales\Api\ShipmentManagementInterface;
@@ -115,7 +116,7 @@ class OrderStatusChangeManagement implements OrderStatusChangeManagementInterfac
         /* @var Order $order */
         $order = $this->orderFetcher->getOrderByDistriMediaData($OrderNumber, $OrderID);
 
-        if (!$order) {
+        if ($order === null) {
             throw new \Exception("Could not find order with DistriMedia Inc ID {$OrderID} or Magento Inc ID {$OrderNumber}");
         }
 

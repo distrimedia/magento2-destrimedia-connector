@@ -34,8 +34,9 @@ interface OrderFetcherInterface
     public function getPaidInvoicesByOrder(MagentoOrder $order): InvoiceSearchResultInterface;
 
     /**
-     * @param string $distriMediaIncrementId
-     * @return mixed
+     * @param string $magentoIncrementID
+     * @param string $distriMediaIncrementID
+     * @return MagentoOrder|null
      */
-    public function getOrderByDistriMediaData(string $distriMediaIncrementId);
+    public function getOrderByDistriMediaData(string $magentoIncrementID, string $distriMediaIncrementID): ?MagentoOrder;
 }

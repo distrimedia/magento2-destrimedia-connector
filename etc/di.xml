@@ -24,6 +24,16 @@
     <!-- data objects -->
     <preference for="DistriMedia\Connector\Api\Data\InventoryInterface"
                 type="DistriMedia\Connector\Model\Data\Inventory" />
+    <preference for="DistriMedia\Connector\Api\Data\ShippedItemInterface"
+                type="DistriMedia\Connector\Model\Data\ShippedItem" />
+    <preference for="DistriMedia\Connector\Api\Data\TrackIdInterface"
+                type="DistriMedia\Connector\Model\Data\TrackId" />
+    <preference for="DistriMedia\Connector\Api\Data\PackageInterface"
+                type="DistriMedia\Connector\Model\Data\Package" />
+    <preference for="DistriMedia\Connector\Api\Data\OrderlineInterface"
+                type="DistriMedia\Connector\Model\Data\Orderline" />
+    <preference for="DistriMedia\Connector\Api\Data\ProductInterface"
+                type="DistriMedia\Connector\Model\Data\Product" />
     <!-- /data objects -->
 
     <!-- hook the logger in rest class -->

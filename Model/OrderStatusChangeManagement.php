@@ -5,9 +5,12 @@ declare(strict_types=1);
 namespace DistriMedia\Connector\Model;
 
 use DistriMedia\Connector\Api\OrderStatusChangeManagementInterface;
+use DistriMedia\Connector\Api\Data\ShippedItemInterface;
+use DistriMedia\Connector\Api\Data\ProductInterface;
 use DistriMedia\Connector\Helper\ErrorHandlingHelper;
 use DistriMedia\Connector\Service\OrderSyncInterface;
 use DistriMedia\Connector\Ui\Component\Listing\Column\SyncStatus\Options;
+use DistriMedia\SoapClient\Struct\OrderItem;
 use DistriMedia\SoapClient\Struct\Response\Inventory\StockItem;
 use Magento\Framework\Notification\NotifierPool;
 use Magento\Framework\ObjectManagerInterface;
@@ -98,15 +101,18 @@ class OrderStatusChangeManagement implements OrderStatusChangeManagementInterfac
         $this->notifierPool = $notifierPool;
     }
 
+    /**
+     * @inheritDoc
+     */
     public function execute(
+        string $OrderStatus,
         string $OrderID,
         string $OrderNumber,
-        string $OrderStatus,
-        string $NumberColli,
-        string $Carrier,
-        string $TrackAndTraceURL,
-        $TrackIDs,
-        $ShippedItems
+        string $NumberColli = null,
+        string $Carrier = null,
+        string $TrackAndTraceURL = null,
+        array $TrackIDs = [],
+        array $ShippedItems = []
     )
     {
         if (!$this->config->isEnabled()) {
@@ -140,7 +146,10 @@ class OrderStatusChangeManagement implements OrderStatusChangeManagementInterfac
                 $this->shipOrder($order, $data);
                 break;
         }
+
         $this->updateOrderStatus($order, $data);
+
+        return 200;
     }
 
     /**
@@ -158,10 +167,12 @@ class OrderStatusChangeManagement implements OrderStatusChangeManagementInterfac
 
     private function updateOrderStatus(Order $order, array $data)
     {
-        $order->setDistriMediaSyncStatus($data[self::ORDER_STATUS]);
-        $order->setDistriMediaIncrementId($data[self::ORDER_ID]);
-
-        $order->save();
+        try {
+            $order->setDistriMediaSyncStatus($data[self::ORDER_STATUS]);
+            $order->save();
+        } catch (\Exception $exception) {
+            $this->logger->critical("Error updating Order {$order->getIncrementId()}: " . $exception->getMessage());
+        }
     }
 
     private function shipOrder(Order $order, array $data)
@@ -192,20 +203,33 @@ class OrderStatusChangeManagement implements OrderStatusChangeManagementInterfac
             $track->setTitle("BPost");
             $track->setCarrierCode($data[self::CARRIER]);
 
-            $m2OrderItems = $this->getOrderItems($data[self::SHIPPED_ITEMS]['Product'], $order);
+            $m2OrderItems = [];
+
+            if (array_key_exists(self::SHIPPED_ITEMS, $data)) {
+                $shippedItems = $data[self::SHIPPED_ITEMS];
+                $m2OrderItems = $this->getOrderItems($shippedItems, $order);
+            }
 
             if (empty($m2OrderItems)) {
                 throw new \Exception(("No order items found"));
             }
 
             foreach ($m2OrderItems as $item) {
+                /* @var \Magento\Sales\Model\Order\Item $orderItem */
                 $orderItem = $item['orderItem'];
+
+                /* @var ShippedItemInterface $shippedItem */
+                $shippedItem = $item['shippedItem'];
+
+                /* @var ProductInterface $product */
+                $product = $item['product'];
+
                 // Check if order item has qty to ship or is virtual
                 if (!$orderItem->getQtyToShip() || $orderItem->getIsVirtual()) {
                     continue;
                 }
 
-                $qtyShipped = $item[StockItem::PIECES];
+                $qtyShipped = $product->getPieces();
 
                 // Create shipment item with qty
                 $shipmentItem = $converter->itemToShipmentItem($orderItem)->setQty($qtyShipped);
@@ -259,36 +283,44 @@ class OrderStatusChangeManagement implements OrderStatusChangeManagementInterfac
      * @return array
      * @throws \Exception
      */
-    private function getOrderItems(array $orderItems, Order $order)
+    private function getOrderItems(array $shippedItems, Order $order)
     {
+        $result =  [];
         $m2OrderItems = $order->getAllItems();
 
-        //this means that there's only product
-        if (array_key_exists(StockItem::EAN, $orderItems)) {
-            $orderItems = [$orderItems];
-        }
+         /** @var ShippedItemInterface $shippedItem */
+        foreach ($shippedItems as $key => $shippedItem) {
 
-        foreach ($orderItems as $key => $orderItem) {
-            $eanCode = $orderItem[StockItem::EAN];
-            $match = false;
-            foreach ($m2OrderItems as $m2OrderItem) {
-                $orderItemExtensionAttrs = $m2OrderItem->getExtensionAttributes();
+            /* @var ProductInterface $product */
+            $products = $shippedItem->getProduct();
+            foreach ($products as $product) {
+                $eanCode = $product->getEAN();
+                $match = false;
+                foreach ($m2OrderItems as $m2OrderItem) {
+                    $orderItemExtensionAttrs = $m2OrderItem->getExtensionAttributes();
 
-                if ($orderItemExtensionAttrs) {
-                    $orderItemEanCode = $orderItemExtensionAttrs->getDistriMediaEanCode();
-                    if ($eanCode === $orderItemEanCode) {
-                        $orderItems[$key]['orderItem'] = $m2OrderItem;
-                        $match = true;
-                        break;
+                    if ($orderItemExtensionAttrs) {
+                        $orderItemEanCode = $orderItemExtensionAttrs->getDistriMediaEanCode();
+                        if ($eanCode === $orderItemEanCode) {
+                            $orderItems[$key]['orderItem'] = $m2OrderItem;
+                            $result[] = [
+                                'orderItem' => $m2OrderItem,
+                                'shippedItem' => $shippedItem,
+                                'product' => $product
+                            ];
+                            $match = true;
+                            break;
+                        }
                     }
+                }
+
+                if (!$match) {
+                    throw new \Exception("No order item found for ean code = {$eanCode}");
                 }
             }
 
-            if (!$match) {
-                throw new \Exception("No order item found for ean code = {$eanCode}");
-            }
         }
 
-        return $orderItems;
+        return $result;
     }
 }

@@ -15,6 +15,7 @@ use DistriMedia\Connector\Service\OrderSyncInterface;
 use DistriMedia\Connector\Ui\Component\Listing\Column\SyncStatus\Options;
 use DistriMedia\SoapClient\Struct\OrderItem;
 use DistriMedia\SoapClient\Struct\Response\Inventory\StockItem;
+use Exception;
 use Magento\Framework\Notification\NotifierPool;
 use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\Webapi\Rest\Request\Deserializer\Xml;
@@ -22,6 +23,7 @@ use Magento\ProductAlert\Model\Stock;
 use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Api\Data\ShipmentInterface;
 use Magento\Sales\Api\OrderManagementInterface;
+use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Sales\Api\ShipmentManagementInterface;
 use Magento\Sales\Model\Convert\OrderFactory as OrderConverterFactory;
 use Magento\Sales\Model\Order;
@@ -78,12 +80,15 @@ class OrderStatusChangeManagement implements OrderStatusChangeManagementInterfac
 
     private $productInterfaceFactory;
 
+    private $orderRepository;
+
     public function __construct(
         Xml $deserializer,
         OrderSyncInterface $orderSync,
         OrderManagementInterface $orderManagement,
         OrderFetcherInterface $orderFetcher,
         OrderConverterFactory $orderConverterFactory,
+        OrderRepositoryInterface $orderRepository,
         TrackFactory $trackFactory,
         ObjectManagerInterface $objectManager,
         ShipmentManagementInterface $shipmentManagement,
@@ -111,6 +116,7 @@ class OrderStatusChangeManagement implements OrderStatusChangeManagementInterfac
         $this->notifierPool = $notifierPool;
         $this->shippedItemInterfaceFactory = $shippedItemInterfaceFactory;
         $this->productInterfaceFactory = $productInterfaceFactory;
+        $this->orderRepository = $orderRepository;
     }
 
     /**
@@ -172,7 +178,7 @@ class OrderStatusChangeManagement implements OrderStatusChangeManagementInterfac
 
         $this->updateOrderStatus($order, $data);
 
-        return self::STATUS_OK;
+        return '<Status>' . self::STATUS_OK . '</Status>';
     }
 
     /**
@@ -191,8 +197,19 @@ class OrderStatusChangeManagement implements OrderStatusChangeManagementInterfac
     private function updateOrderStatus(Order $order, array $data)
     {
         try {
-            $order->setDistriMediaSyncStatus($data[self::ORDER_STATUS]);
-            $order->save();
+            $possibleOptions = Options::getDistriMediaStatusses();
+            $extAttrs = $order->getExtensionAttributes();
+
+            $status = $data[self::ORDER_STATUS];
+            $internalStatus = isset($possibleOptions[$status]) ? $possibleOptions[$status] : null;
+
+            if (!$internalStatus) {
+                throw new Exception("Cannot find status {$status}");
+            }
+
+            $extAttrs->setDistriMediaSyncStatus($internalStatus);
+            $order->setExtensionAttributes($extAttrs);
+            $this->orderRepository->save($order);
         } catch (\Exception $exception) {
             $this->logger->critical("Error updating Order {$order->getIncrementId()}: " . $exception->getMessage());
         }

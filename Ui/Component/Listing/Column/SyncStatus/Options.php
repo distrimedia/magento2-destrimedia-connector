@@ -15,6 +15,15 @@ class Options implements OptionSourceInterface
     const SYNC_STATUS_FAILED     = 3;
     const SYNC_STATUS_PENDING_CANCELED   = 4;
 
+    const SYNC_STATUS_RCV = 5;
+    const SYNC_STATUS_PCK = 6;
+    const SYNC_STATUS_SCN = 7;
+    const SYNC_STATUS_RDY = 8;
+    const SYNC_STATUS_LBL = 9;
+    const SYNC_STATUS_SHP = 10;
+    const SYNC_STATUS_PSH = 11;
+    const SYNC_STATUS_CNL = 12;
+
     const STATUS_RECEIVED_IN_SYSTEM = 'RCV';
     const STATUS_READY_FOR_PICKING = 'PCK';
     const STATUS_IS_BEING_PROCESSED = 'SCN';
@@ -42,8 +51,25 @@ class Options implements OptionSourceInterface
             ['value' => self::STATUS_PACKED_AND_WAITED_FOR_SHIPMENT_LABEL,   'label' => __('Packed, waiting for shipment label')],
             ['value' => self::STATUS_PACKED_AND_LABELED_WAITING_FOR_SHIPMENT,   'label' => __('Packed and labeled, waiting for shipment')],
             ['value' => self::STATUS_SHIPPED,   'label' => __('Shipped')],
-            ['value' => self::STATUS_SHIPPED,   'label' => __('Partly hipped')],
+            ['value' => self::STATUS_PARTLY_SHIPPED,   'label' => __('Partly Shipped')],
             ['value' => self::STATUS_CANCELLED,   'label' => __('Canceled')],
+        ];
+    }
+
+    /**
+     * Maps the Distrimedia id with the internal status
+     * @return array
+     */
+    public static function getDistriMediaStatusses()
+    {
+        return [
+           self::STATUS_RECEIVED_IN_SYSTEM => self::SYNC_STATUS_RCV,
+            self::STATUS_READY_FOR_PICKING => self::SYNC_STATUS_PCK,
+            self::STATUS_PACKED_AND_WAITED_FOR_SHIPMENT_LABEL  => self::SYNC_STATUS_RDY,
+            self::STATUS_PACKED_AND_LABELED_WAITING_FOR_SHIPMENT => self::SYNC_STATUS_LBL,
+            self::STATUS_SHIPPED => self::STATUS_SHIPPED,
+            self::STATUS_PARTLY_SHIPPED => self::SYNC_STATUS_PSH,
+            self::STATUS_CANCELLED => self::SYNC_STATUS_CNL,
         ];
     }
 }

@@ -53,7 +53,7 @@ class OrderStatusChangeManagement implements OrderStatusChangeManagementInterfac
     const TRACK_AND_TRACE_URL = 'TrackAndTraceURL';
     const TRACK_IDS = 'TrackIDs';
     const SHIPPED_ITEMS = 'ShippedItems';
-    const STATUS_OK = 200;
+    const STATUS_OK = 'OK';
 
     private $deserializer;
     private $orderSync;

@@ -67,7 +67,7 @@ class Options implements OptionSourceInterface
             self::STATUS_READY_FOR_PICKING => self::SYNC_STATUS_PCK,
             self::STATUS_PACKED_AND_WAITED_FOR_SHIPMENT_LABEL  => self::SYNC_STATUS_RDY,
             self::STATUS_PACKED_AND_LABELED_WAITING_FOR_SHIPMENT => self::SYNC_STATUS_LBL,
-            self::STATUS_SHIPPED => self::STATUS_SHIPPED,
+            self::STATUS_SHIPPED => self::SYNC_STATUS_SHP,
             self::STATUS_PARTLY_SHIPPED => self::SYNC_STATUS_PSH,
             self::STATUS_CANCELLED => self::SYNC_STATUS_CNL,
         ];

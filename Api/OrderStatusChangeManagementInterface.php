@@ -13,8 +13,8 @@ interface OrderStatusChangeManagementInterface
      * @param string|null $NumberColli
      * @param string|null $Carrier
      * @param string|null $TrackAndTraceURL
-     * @param DistriMedia\Connector\Api\Data\TrackIdInterface[] $TrackIDs
-     * @param DistriMedia\Connector\Api\Data\ShippedItemInterface[] $ShippedItems
+     * @param mixed $TrackIDs
+     * @param mixed $ShippedItems
      * @return string
      */
     public function execute(
@@ -24,7 +24,7 @@ interface OrderStatusChangeManagementInterface
         string $NumberColli = null,
         string $Carrier = null,
         string $TrackAndTraceURL = null,
-        array $TrackIDs = [],
-        array $ShippedItems = []
+        $TrackIDs = [],
+        $ShippedItems = []
     );
 }

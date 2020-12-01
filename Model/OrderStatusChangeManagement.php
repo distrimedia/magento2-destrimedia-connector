@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace DistriMedia\Connector\Model;
 
+use DistriMedia\Connector\Api\Data\TrackIdInterface;
 use DistriMedia\Connector\Api\OrderStatusChangeManagementInterface;
 use DistriMedia\Connector\Api\Data\ShippedItemInterface;
+use DistriMedia\Connector\Api\Data\ShippedItemInterfaceFactory;
 use DistriMedia\Connector\Api\Data\ProductInterface;
+use DistriMedia\Connector\Api\Data\ProductInterfaceFactory;
 use DistriMedia\Connector\Helper\ErrorHandlingHelper;
 use DistriMedia\Connector\Service\OrderSyncInterface;
 use DistriMedia\Connector\Ui\Component\Listing\Column\SyncStatus\Options;
@@ -48,6 +51,7 @@ class OrderStatusChangeManagement implements OrderStatusChangeManagementInterfac
     const TRACK_AND_TRACE_URL = 'TrackAndTraceURL';
     const TRACK_IDS = 'TrackIDs';
     const SHIPPED_ITEMS = 'ShippedItems';
+    const STATUS_OK = 200;
 
     private $deserializer;
     private $orderSync;
@@ -70,6 +74,10 @@ class OrderStatusChangeManagement implements OrderStatusChangeManagementInterfac
 
     private $notifierPool;
 
+    private $shippedItemInterfaceFactory;
+
+    private $productInterfaceFactory;
+
     public function __construct(
         Xml $deserializer,
         OrderSyncInterface $orderSync,
@@ -83,7 +91,9 @@ class OrderStatusChangeManagement implements OrderStatusChangeManagementInterfac
         ConfigInterface $config,
         ProductCollectionFactory $productCollectionFactory,
         ErrorHandlingHelper $errorHandlingHelper,
-        NotifierPool $notifierPool
+        NotifierPool $notifierPool,
+        ShippedItemInterfaceFactory $shippedItemInterfaceFactory,
+        ProductInterfaceFactory $productInterfaceFactory
     )
     {
         $this->deserializer = $deserializer;
@@ -99,6 +109,8 @@ class OrderStatusChangeManagement implements OrderStatusChangeManagementInterfac
         $this->productCollectionFactory = $productCollectionFactory;
         $this->errorHandlingHelper = $errorHandlingHelper;
         $this->notifierPool = $notifierPool;
+        $this->shippedItemInterfaceFactory = $shippedItemInterfaceFactory;
+        $this->productInterfaceFactory = $productInterfaceFactory;
     }
 
     /**
@@ -111,8 +123,8 @@ class OrderStatusChangeManagement implements OrderStatusChangeManagementInterfac
         string $NumberColli = null,
         string $Carrier = null,
         string $TrackAndTraceURL = null,
-        array $TrackIDs = [],
-        array $ShippedItems = []
+        $TrackIDs = [],
+        $ShippedItems = []
     )
     {
         if (!$this->config->isEnabled()) {
@@ -125,6 +137,17 @@ class OrderStatusChangeManagement implements OrderStatusChangeManagementInterfac
         if ($order === null) {
             throw new \Exception("Could not find order with DistriMedia Inc ID {$OrderID} or Magento Inc ID {$OrderNumber}");
         }
+
+        //this means that there's only 1 track ID
+        if (array_key_exists(TrackIdInterface::TRACK_ID, $TrackIDs)) {
+            $TrackIDs = [$TrackIDs];
+        }
+
+        //this means that there's only 1 shipped item
+        if (array_key_exists(ShippedItemInterface::PRODUCT, $ShippedItems)) {
+            $ShippedItems = [$ShippedItems];
+        }
+
 
         $data = [
             self::ORDER_ID => $OrderID,
@@ -149,7 +172,7 @@ class OrderStatusChangeManagement implements OrderStatusChangeManagementInterfac
 
         $this->updateOrderStatus($order, $data);
 
-        return 200;
+        return self::STATUS_OK;
     }
 
     /**
@@ -158,10 +181,10 @@ class OrderStatusChangeManagement implements OrderStatusChangeManagementInterfac
     private function notifyShopOwner(Order $order): void
     {
 
-        $subject = __('Manual Action required. Order %1 has been canceled by DistriMedia ERP', $order->getIncrementId())->getText();
-        $message =__('Order %1 has been canceled by DistriMedia ERP', $order->getIncrementId())->getText();
-        $this->notifierPool->addMajor($message->getText(), $message->getText());
-        $this->errorHandlingHelper->sendErrorEmail([$message->getText()], $subject, $subject);
+        $subject = __('Manual Action required. Order %1 has been canceled by DistriMedia ERP', $order->getIncrementId())->render();
+        $message = __('Order %1 has been canceled by DistriMedia ERP', $order->getIncrementId())->render();
+        $this->notifierPool->addMajor($message, $message);
+        $this->errorHandlingHelper->sendErrorEmail([$message], $subject, $subject);
         $this->logger->critical($message);
     }
 
@@ -285,15 +308,16 @@ class OrderStatusChangeManagement implements OrderStatusChangeManagementInterfac
      */
     private function getOrderItems(array $shippedItems, Order $order)
     {
-        $result =  [];
+        $result = [];
         $m2OrderItems = $order->getAllItems();
 
-         /** @var ShippedItemInterface $shippedItem */
-        foreach ($shippedItems as $key => $shippedItem) {
-
+        /** @var ShippedItemInterface $shippedItem */
+        foreach ($shippedItems as $key => $shippedItemData) {
+            $shippedItem = $this->shippedItemInterfaceFactory->create(['data' => $shippedItemData]);
             /* @var ProductInterface $product */
             $products = $shippedItem->getProduct();
-            foreach ($products as $product) {
+            foreach ($products as $productData) {
+                $product = $this->productInterfaceFactory->create(['data' => $productData]);
                 $eanCode = $product->getEAN();
                 $match = false;
                 foreach ($m2OrderItems as $m2OrderItem) {

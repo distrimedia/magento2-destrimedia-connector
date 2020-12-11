@@ -19,6 +19,7 @@ use DistriMedia\SoapClient\Struct\OrderItem as DistriMediaOrderItem;
 use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory as ProductCollectionFactory;
 use Magento\Catalog\Model\ResourceModel\Product\Collection as ProductCollection;
 
+use Magento\Framework\View\Asset\NotationResolver\Variable;
 use Magento\Sales\Api\Data\InvoiceInterface as MagentoInvoice;
 use Magento\Sales\Model\Order\Pdf\InvoiceFactory as PdfInvoiceFactory;
 use Magento\Sales\Model\Order\Pdf\Invoice as PdfInvoice;
@@ -147,6 +148,7 @@ class OrderBuilder
 
         //When Bpost is used, different data is required on the Customer.
         $shippingMethod = $order->getShippingMethod();
+
         if ($this->config->useBPostLockersAndPickup() && $this->isBpostShippingMethod($shippingMethod)) {
             $distriMediaCustomer->setName($order->getData(self::BPOST_POINT_OFFICE));
             $distriMediaCustomer->setName2($order->getCustomerFirstname() . " " . $order->getCustomerLastname());
@@ -155,6 +157,8 @@ class OrderBuilder
             $distriMediaCustomer->setPostcode1($order->getData(self::BPOST_POINT_ZIP));
             $distriMediaCustomer->setCity($order->getData(self::BPOST_POINT_CITY));
             $distriMediaCustomer->setCountry("BE");
+            $servicePoint = $this->getShippingCarrierFromShippingMethod($shippingMethod) . " " . $order->getData('bpost_point_id');
+            $distriMediaCustomer->setServicePoint($servicePoint);
         } else {
             $distriMediaCustomer->setAddress1(implode(" ", $streetArray));
             $distriMediaCustomer->setName($order->getCustomerFirstname() . " " . $order->getCustomerLastname());
@@ -235,6 +239,10 @@ class OrderBuilder
 
     public function getShippingCarrierFromShippingMethod(string $shippingMethod): ? string
     {
+        $shippingMethod = strtolower($shippingMethod);
+        $shippingMethod = explode("_", $shippingMethod);
+        $shippingMethod = reset($shippingMethod);
+
         $result = '';
 
         switch ($shippingMethod) {

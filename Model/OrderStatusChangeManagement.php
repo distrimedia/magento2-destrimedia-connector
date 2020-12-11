@@ -239,9 +239,10 @@ class OrderStatusChangeManagement implements OrderStatusChangeManagementInterfac
 
             $trackNumber = $data[self::TRACK_AND_TRACE_URL];
 
-            $track->setDescription($trackNumber);
+            $track->setDescription('BPost');
             $track->setTitle("BPost");
             $track->setCarrierCode($data[self::CARRIER]);
+            $track->setNumber($trackNumber);
 
             $m2OrderItems = [];
 
@@ -333,6 +334,9 @@ class OrderStatusChangeManagement implements OrderStatusChangeManagementInterfac
             $shippedItem = $this->shippedItemInterfaceFactory->create(['data' => $shippedItemData]);
             /* @var ProductInterface $product */
             $products = $shippedItem->getProduct();
+            if (array_key_exists(ProductInterface::EAN, $products)) {
+                $products = [$products];
+            }
             foreach ($products as $productData) {
                 $product = $this->productInterfaceFactory->create(['data' => $productData]);
                 $eanCode = $product->getEAN();

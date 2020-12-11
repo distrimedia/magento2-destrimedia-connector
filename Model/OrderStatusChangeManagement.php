@@ -166,17 +166,21 @@ class OrderStatusChangeManagement implements OrderStatusChangeManagementInterfac
             self::SHIPPED_ITEMS => $ShippedItems
         ];
 
-        switch ($OrderStatus) {
-            case Options::STATUS_CANCELLED:
-                $this->notifyShopOwner($order);
-                break;
-            case Options::STATUS_PARTLY_SHIPPED:
-            case Options::STATUS_SHIPPED:
-                $this->shipOrder($order, $data);
-                break;
-        }
+        try {
+            switch ($OrderStatus) {
+                case Options::STATUS_CANCELLED:
+                    $this->notifyShopOwner($order);
+                    break;
+                case Options::STATUS_PARTLY_SHIPPED:
+                case Options::STATUS_SHIPPED:
+                    $this->shipOrder($order, $data);
+                    break;
+            }
 
-        $this->updateOrderStatus($order, $data);
+            $this->updateOrderStatus($order, $data);
+        } catch (\Exception $exception) {
+            //
+        }
 
         return '<Status>' . self::STATUS_OK . '</Status>';
     }

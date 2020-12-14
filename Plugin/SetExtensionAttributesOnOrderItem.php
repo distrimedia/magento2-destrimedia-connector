@@ -13,7 +13,7 @@ use Magento\Catalog\Model\Product;
 class SetExtensionAttributesOnOrderItem
 {
     const DISTRI_MEDIA_EAN_CODE = 'distri_media_ean_code';
-    const DISTRI_MEDIA_EXTERNAL_REF = 'distri_media_extrenal_ref';
+    const DISTRI_MEDIA_EXTERNAL_REF = 'distri_media_external_ref';
 
     /**
      * @var OrderItemExtensionFactory

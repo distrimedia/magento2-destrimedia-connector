@@ -39,6 +39,7 @@ class OrderBuilder
     const BPOST_POINT_STREET = 'bpost_point_street';
     const BPOST_POINT_NR = 'bpost_point_nr';
     const BPOST_POINT_CITY = 'bpost_point_city';
+    const BPOST_POINT_ID = 'bpost_point_id';
     const BPOST_POINT_ZIP = 'bpost_point_zip';
 
     const BPOST_SHIPPING_METHODS = [
@@ -157,7 +158,7 @@ class OrderBuilder
             $distriMediaCustomer->setPostcode1($order->getData(self::BPOST_POINT_ZIP));
             $distriMediaCustomer->setCity($order->getData(self::BPOST_POINT_CITY));
             $distriMediaCustomer->setCountry("BE");
-            $servicePoint = $this->getShippingCarrierFromShippingMethod($shippingMethod) . " " . $order->getData('bpost_point_id');
+            $servicePoint = $order->getData(self::BPOST_POINT_ID);
             $distriMediaCustomer->setServicePoint($servicePoint);
         } else {
             $distriMediaCustomer->setAddress1(implode(" ", $streetArray));
@@ -274,7 +275,6 @@ class OrderBuilder
             //ean code
             $eanCode = $orderItemExtAttrs->getDistriMediaEanCode() ?: '';
             $product->setEan($eanCode);
-
             //external ref
             $externalRef = $orderItemExtAttrs->getDistriMediaExternalRef() ?: '';
             $product->setExternalRef($externalRef);

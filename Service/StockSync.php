@@ -110,7 +110,7 @@ class StockSync extends AbstractSync implements StockSyncInterface
                         throw new \Exception("Stock sync problem: Could not find product with {$eanAttr} = {$ean}");
                     }
                 }
-                $qty = (int) $stockItem->getPieces();
+                $qty = (int) $stockItem->getClaimable();
 
                 if ($useMsi) {
                     $sourceItem = $this->stockItemBuilder->createSourceItemInterface($qty, $sku);

@@ -92,7 +92,7 @@ class OrderSync extends AbstractSync implements OrderSyncInterface
             $extensionAttrs = $order->getExtensionAttributes();
             $referenceId = $extensionAttrs->getDistriMediaIncrementId();
 
-            $this->distriMediaOrderService->changeOrderStatusByReferenceId(
+            $this->distriMediaOrderService->changeOrderStatusByOrderId(
                 $referenceId,
                 DistriMediaOrderService::ORDER_STATUS_CANCEL
             );

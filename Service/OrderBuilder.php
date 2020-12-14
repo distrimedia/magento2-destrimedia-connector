@@ -217,6 +217,14 @@ class OrderBuilder
             }
         }
 
+        if ($this->config->useCancellationDays()) {
+            $distriMediaOrderItem->setDaysOfCancellation($this->config->getCancellationDays());
+        }
+
+        if ($this->config->useRetentionDays()) {
+            $distriMediaOrderItem->setDaysOfCancellation($this->config->getRetentionDays());
+        }
+
         return $distriMediaOrderItem;
     }
 
@@ -249,8 +257,10 @@ class OrderBuilder
         switch ($shippingMethod) {
             case self::BPOST_SHIPPING_METHOD_PICKUP_POINT:
                 $result = Carrier::CARRIER_BPPUGO;
+                break;
             case self::BPOST_SHIPPING_METHOD_PARCEL_LOCKER:
                 $result = Carrier::CARRIER_BP247;
+                break;
         }
 
         return $result;

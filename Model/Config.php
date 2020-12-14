@@ -33,6 +33,8 @@ class Config implements ConfigInterface
     const XML_PATH_ERROR_RECIPIENT = 'distrimedia/settings/error_email';
     const XML_PATH_EU_COUNTRIES = 'general/country/eu_countries';
 
+    const BREXIT = 'GB';
+
     private $scopeConfig;
     private $encryptor;
 
@@ -253,6 +255,10 @@ class Config implements ConfigInterface
 
         if (is_string($value)) {
             $result = explode(",", $value);
+        }
+
+        if (array_key_exists(self::BREXIT, $result)) {
+            unset($result[self::BREXIT]);
         }
 
         return $result;

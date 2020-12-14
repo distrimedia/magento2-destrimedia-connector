@@ -14,7 +14,7 @@ use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Sales\Model\Order;
 
 /**
- * When a shopowner creates a credit memo in the shop, we should try to cancel the order in DistriMedia. 
+ * When a shopowner creates a credit memo in the shop, we should try to cancel the order in DistriMedia.
  * Only if it's succesful in DistriMedia, the credit memo is allowed.
  * Class CancelOrderAfterCreditMemoCreation
  * @package DistriMedia\Connector\Plugin

@@ -61,8 +61,9 @@ class SyncUpdatedShippingAddress
                     $uri = $this->config->getApiUri();
                     $password = $this->config->getApiPassword();
                     $webshopCode = $this->config->getWebshopCode();
+                    $maxTimeout = $this->config->getTimeoutAterInSeconds();
 
-                    $customerService = new CustomerService($uri, $password, $webshopCode, $this->logger);
+                    $customerService = new CustomerService($uri, $password, $webshopCode, $maxTimeout, $this->logger);
                     $customerService->changeCustomer($distriMediaCustomer, $distriMediaIncrementId);
 
                     return $proceed($orderAddress);

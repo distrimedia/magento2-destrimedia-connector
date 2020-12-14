@@ -191,7 +191,7 @@ class OrderStatusChangeManagement implements OrderStatusChangeManagementInterfac
     private function notifyShopOwner(Order $order): void
     {
 
-        $subject = __('Manual Action required. Order %1 has been canceled by DistriMedia ERP', $order->getIncrementId())->render();
+        $subject = __('Order %1 has been canceled by DistriMedia ERP. Please take action in Magento (create Credit Memo).', $order->getIncrementId())->render();
         $message = __('Order %1 has been canceled by DistriMedia ERP', $order->getIncrementId())->render();
         $this->notifierPool->addMajor($message, $message);
         $this->errorHandlingHelper->sendErrorEmail([$message], $subject, $subject);

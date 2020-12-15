@@ -308,22 +308,22 @@ class OrderBuilder
      */
     private function getDistriMediaDocumentsfromInvoice(MagentoInvoice $invoice): array
     {
-        $documents = [];
+        for ($i = 0; $i < self::NUMBER_OF_INVOICES; $i++) {
+            $invoices[] = $invoice;
+        }
 
         /**
          * @var PdfInvoice $pdfBuilder
          */
         $pdfBuilder = $this->pdfInvoiceFactory->create();
-        $pdf = $pdfBuilder->getPdf([$invoice]);
+        $pdf = $pdfBuilder->getPdf($invoices);
         $data = base64_encode($pdf->render());
 
-        for ($i = 0; $i < self::NUMBER_OF_INVOICES; $i++) {
-            $document = new DistriMediaDocument();
-            $document->setBinData($data);
-            $document->setFileTag(self::INVOICE_PDF_TITLE);
+        $document = new DistriMediaDocument();
+        $document->setBinData($data);
+        $document->setFileTag(self::INVOICE_PDF_TITLE);
 
-            $documents[] = $document;
-        }
+        $documents = [$document];
 
         return $documents;
     }

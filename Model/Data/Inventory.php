@@ -193,7 +193,14 @@ class Inventory extends AbstractModel implements InventoryInterface
         return [
             self::EAN => $this->getEAN(),
             self::EXT_REF => $this->getExtRef(),
-            self::PIECES => $this->getPieces()
+            self::PIECES => $this->getPieces(),
+            self::CLAIMED => $this->getClaimed(),
+            self::CLAIMABLE => $this->getClaimable(),
+            self::PROBLEM => $this->getProblem(),
+            self::BLOCKED => $this->getBlocked(),
+            self::OVERDUE => $this->getOverdue(),
+            self::EXTERNAL_REF => $this->getExternalRef(),
+            self::PRODUCT => $this->getProduct(),
         ];
     }
 }

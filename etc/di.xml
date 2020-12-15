@@ -127,4 +127,7 @@
         </arguments>
     </type>
     <!-- /sensitive data -->
+
+    <preference for="Magento\Sales\Model\Order\Pdf\Invoice" type="DistriMedia\Connector\Model\Order\Pdf\Invoice" />
+
 </config>

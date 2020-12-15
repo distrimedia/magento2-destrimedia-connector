@@ -310,14 +310,14 @@ class OrderBuilder
     {
         $documents = [];
 
-        for ($i = 0; $i < self::NUMBER_OF_INVOICES; $i++) {
-            /**
-             * @var PdfInvoice $pdfBuilder
-             */
-            $pdfBuilder = $this->pdfInvoiceFactory->create();
-            $pdf = $pdfBuilder->getPdf([$invoice]);
-            $data = base64_encode($pdf->render());
+        /**
+         * @var PdfInvoice $pdfBuilder
+         */
+        $pdfBuilder = $this->pdfInvoiceFactory->create();
+        $pdf = $pdfBuilder->getPdf([$invoice]);
+        $data = base64_encode($pdf->render());
 
+        for ($i = 0; $i < self::NUMBER_OF_INVOICES; $i++) {
             $document = new DistriMediaDocument();
             $document->setBinData($data);
             $document->setFileTag(self::INVOICE_PDF_TITLE);

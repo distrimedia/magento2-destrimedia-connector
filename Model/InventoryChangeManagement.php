@@ -12,6 +12,8 @@ use Magento\Framework\Webapi\Rest\Request\Deserializer\Xml;
 
 class InventoryChangeManagement implements InventoryChangeManagementInterface
 {
+    const STATUS_OK = 'OK';
+
     private $deserializer;
     private $stockSync;
     private $config;
@@ -36,5 +38,7 @@ class InventoryChangeManagement implements InventoryChangeManagementInterface
         $data = $inventory->toDataArray();
         $inventoryItem = new StockItem($data);
         $this->stockSync->processStock([$inventoryItem]);
+
+        return '<Status>' . self::STATUS_OK . '</Status>';
     }
 }

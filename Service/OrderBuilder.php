@@ -104,7 +104,9 @@ class OrderBuilder
                 if ($address instanceof \Magento\Sales\Model\Order\Address) {
                     $shippingCountry = $address->getCountryId();
                     $euCountries = $this->config->getEuCountries();
-                    if (in_array($shippingCountry, $euCountries)) {
+
+                    //if the country is not in the list of EU countries.
+                    if (in_array($shippingCountry, $euCountries) === false) {
                         $sendInvoices = true;
                     }
                 }
@@ -161,7 +163,17 @@ class OrderBuilder
             $servicePoint = $order->getData(self::BPOST_POINT_ID);
             $distriMediaCustomer->setServicePoint($servicePoint);
         } else {
-            $distriMediaCustomer->setAddress1(implode(" ", $streetArray));
+            $address = implode(" ", $streetArray);
+
+            $addressArray = str_split($address, 40);
+
+            $distriMediaCustomer->setAddress1($addressArray[0]);
+
+            //overflow of the address
+            if (count($addressArray) > 1) {
+                $distriMediaCustomer->setAddress2($addressArray[1]);
+            }
+
             $distriMediaCustomer->setName($order->getCustomerFirstname() . " " . $order->getCustomerLastname());
             $distriMediaCustomer->setPostcode1($shippingAddress->getPostcode());
             $distriMediaCustomer->setCity($shippingAddress->getCity());
@@ -222,7 +234,7 @@ class OrderBuilder
         }
 
         if ($this->config->useRetentionDays()) {
-            $distriMediaOrderItem->setDaysOfCancellation($this->config->getRetentionDays());
+            $distriMediaOrderItem->setDaysOfRetention($this->config->getRetentionDays());
         }
 
         return $distriMediaOrderItem;

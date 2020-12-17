@@ -21,8 +21,8 @@ class SetExtensionAttributesOnOrderItem
      * @var OrderItemExtensionFactory
      */
     private $extensionFactory;
-
     private $config;
+    private $productCollectionFactory;
 
     /**
      * OrderRepository constructor.

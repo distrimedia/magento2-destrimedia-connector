@@ -25,8 +25,7 @@ interface TrackIdInterface
     public function getNumberColli();
 
     /**
-     * @param $numberColli
-     * @return DistriMedia\Connector\Api\Data\TrackIdInterface
+     * @return \DistriMedia\Connector\Api\Data\TrackIdInterface
      */
     public function setNumberColli($numberColli);
 
@@ -36,8 +35,7 @@ interface TrackIdInterface
     public function getCarrier();
 
     /**
-     * @param $carrier
-     * @return DistriMedia\Connector\Api\Data\TrackIdInterface
+     * @return \DistriMedia\Connector\Api\Data\TrackIdInterface
      */
     public function setCarrier($carrier);
 
@@ -47,8 +45,7 @@ interface TrackIdInterface
     public function getExecutingCarrier();
 
     /**
-     * @param $executingCarrier
-     * @return DistriMedia\Connector\Api\Data\TrackIdInterface
+     * @return \DistriMedia\Connector\Api\Data\TrackIdInterface
      */
     public function setExecutingCarrier($executingCarrier);
 
@@ -58,8 +55,7 @@ interface TrackIdInterface
     public function getWeight();
 
     /**
-     * @param $weight
-     * @return DistriMedia\Connector\Api\Data\TrackIdInterface
+     * @return \DistriMedia\Connector\Api\Data\TrackIdInterface
      */
     public function setWeight($weight);
 
@@ -69,8 +65,7 @@ interface TrackIdInterface
     public function getAWB();
 
     /**
-     * @param $awb
-     * @return DistriMedia\Connector\Api\Data\TrackIdInterface
+     * @return \DistriMedia\Connector\Api\Data\TrackIdInterface
      */
     public function setAWB($awb);
 
@@ -80,8 +75,7 @@ interface TrackIdInterface
     public function getTrackID();
 
     /**
-     * @param $trackID
-     * @return DistriMedia\Connector\Api\Data\TrackIdInterface
+     * @return \DistriMedia\Connector\Api\Data\TrackIdInterface
      */
     public function setTrackID($trackID);
 
@@ -91,8 +85,7 @@ interface TrackIdInterface
     public function getBoxType();
 
     /**
-     * @param $boxType
-     * @return DistriMedia\Connector\Api\Data\TrackIdInterface
+     * @return \DistriMedia\Connector\Api\Data\TrackIdInterface
      */
     public function setBoxType($boxType);
 
@@ -102,8 +95,7 @@ interface TrackIdInterface
     public function getReference();
 
     /**
-     * @param $reference
-     * @return DistriMedia\Connector\Api\Data\TrackIdInterface
+     * @return \DistriMedia\Connector\Api\Data\TrackIdInterface
      */
     public function setReference($reference);
 
@@ -113,8 +105,7 @@ interface TrackIdInterface
     public function getShippedDate();
 
     /**
-     * @param $shippedDate
-     * @return DistriMedia\Connector\Api\Data\TrackIdInterface
+     * @return \DistriMedia\Connector\Api\Data\TrackIdInterface
      */
     public function setShippedDate($shippedDate);
 
@@ -124,30 +115,28 @@ interface TrackIdInterface
     public function getTrackAndTraceURL();
 
     /**
-     * @param $trackAndTrace
-     * @return DistriMedia\Connector\Api\Data\TrackIdInterface
+     * @return \DistriMedia\Connector\Api\Data\TrackIdInterface
      */
     public function setTrackAndTraceURL($trackAndTrace);
 
     /**
-     * @return DistriMedia\Connector\Api\Data\OrderlineInterface[]
+     * @return \DistriMedia\Connector\Api\Data\OrderlineInterface[]
      */
     public function getOrderline();
 
     /**
-     * @param DistriMedia\Connector\Api\Data\OrderlineInterface[] $orderline
-     * @return DistriMedia\Connector\Api\Data\TrackIdInterface
+     * @param \DistriMedia\Connector\Api\Data\OrderlineInterface[] $orderline
+     * @return \DistriMedia\Connector\Api\Data\TrackIdInterface
      */
     public function setOrderline($orderline);
 
     /**
-     * @return DistriMedia\Connector\Api\Data\PackageInterface
+     * @return \DistriMedia\Connector\Api\Data\PackageInterface
      */
     public function getPackage();
 
     /**
-     * @param $package
-     * @return DistriMedia\Connector\Api\Data\TrackIdInterface
+     * @return \DistriMedia\Connector\Api\Data\TrackIdInterface
      */
     public function setPackage($package);
 }

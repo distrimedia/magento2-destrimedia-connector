@@ -26,8 +26,6 @@ class ErrorHandlingHelper
 
     /**
      * Send email to administrator if error
-     *
-     * @return $this
      */
     public function sendErrorEmail(array $errors, string $subject = '', string $title = '')
     {

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "823dbe16eaa836ff92eddb57a32ae1b1",
+    "content-hash": "99126a0d2c0ee7840b241fc858d6166b",
     "packages": [
         {
             "name": "colinmollenhour/credis",
@@ -4407,6 +4407,41 @@
                 ],
                 "psr-4": {
                     "Magento\\Variable\\": ""
+                }
+            },
+            "license": [
+                "OSL-3.0",
+                "AFL-3.0"
+            ],
+            "description": "N/A"
+        },
+        {
+            "name": "magento/module-webapi",
+            "version": "100.3.5",
+            "dist": {
+                "type": "zip",
+                "url": "https://repo.magento.com/archives/magento/module-webapi/magento-module-webapi-100.3.5.0.zip",
+                "shasum": "a44c5801c04c7749966b7f92b4cf9b01ba3a348f"
+            },
+            "require": {
+                "magento/framework": "102.0.*",
+                "magento/module-authorization": "100.3.*",
+                "magento/module-backend": "101.0.*",
+                "magento/module-integration": "100.3.*",
+                "magento/module-store": "101.0.*",
+                "php": "~7.1.3||~7.2.0||~7.3.0"
+            },
+            "suggest": {
+                "magento/module-customer": "102.0.*",
+                "magento/module-user": "101.1.*"
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "registration.php"
+                ],
+                "psr-4": {
+                    "Magento\\Webapi\\": ""
                 }
             },
             "license": [

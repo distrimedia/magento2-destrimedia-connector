@@ -10,7 +10,6 @@ interface InventoryChangeManagementInterface
 {
     /**
      * I expect an xml string in format of InventoryChange and will update the stock of the provided EAN code
-     * @param $Inventory
      * @return mixed
      */
     public function execute(InventoryInterface $Inventory);

@@ -60,6 +60,8 @@ class AddEanCodeAttribute implements DataPatchInterface
                 'is_filterable_in_grid' => true,
             ]
         );
+
+        return $this;
     }
 
     public static function getDependencies()

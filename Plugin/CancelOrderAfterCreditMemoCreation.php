@@ -38,7 +38,7 @@ class CancelOrderAfterCreditMemoCreation
     }
 
     /**
-     * @return CreditmemoInterface
+     * @return null
      * @throws \Exception
      */
     public function beforeRefund(CreditmemoManagementInterface $subject, CreditmemoInterface $result)
@@ -51,12 +51,12 @@ class CancelOrderAfterCreditMemoCreation
                 if ($order->getStatus() !== Order::STATE_COMPLETE) {
                     $this->orderSync->cancelOrder($order);
                 }
-
-                return $result;
             } catch (InvalidOrderException $invalidOrderException) {
                 $this->messageManager->addErrorMessage($invalidOrderException->getMessage());
                 throw new \Exception($invalidOrderException->getMessage());
             }
         }
+
+        return null;
     }
 }

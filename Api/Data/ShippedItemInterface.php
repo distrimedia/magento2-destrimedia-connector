@@ -15,7 +15,6 @@ interface ShippedItemInterface
     public function getDateShipped();
 
     /**
-     * @param $dateShipped
      * @return \DistriMedia\Connector\Api\Data\InventoryInterface
      */
     public function setDateShipped($dateShipped);

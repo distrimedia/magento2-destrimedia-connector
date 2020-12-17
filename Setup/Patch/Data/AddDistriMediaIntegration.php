@@ -33,5 +33,7 @@ class AddDistriMediaIntegration implements DataPatchInterface
     public function apply()
     {
         $this->tokenBuilder->createToken();
+
+        return $this;
     }
 }

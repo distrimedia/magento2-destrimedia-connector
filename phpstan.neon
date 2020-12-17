@@ -1,5 +1,5 @@
 parameters:
-    level: 8
+    level: 2
     inferPrivatePropertyTypeFromConstructor: true
     paths:
         - .
@@ -9,3 +9,4 @@ parameters:
         - %currentWorkingDirectory%/vendor/*
     ignoreErrors:
         - '/ has no return typehint specified./'
+    reportUnmatchedIgnoredErrors: false

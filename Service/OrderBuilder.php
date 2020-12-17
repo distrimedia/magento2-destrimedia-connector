@@ -15,7 +15,8 @@ use DistriMedia\SoapClient\Struct\OrderItem as DistriMediaOrderItem;
 use DistriMedia\SoapClient\Struct\OrderLine as DistriMediaOrderLine;
 use DistriMedia\SoapClient\Struct\Product as DistriMediaProduct;
 use Magento\Sales\Api\Data\InvoiceInterface as MagentoInvoice;
-use Magento\Sales\Api\Data\OrderInterface as MagentoOrder;
+use Magento\Sales\Api\Data\OrderInterface as MagentoOrderInterface;
+use Magento\Sales\Model\Order as MagentoOrder;
 use Magento\Sales\Model\Order\Pdf\Invoice as PdfInvoice;
 use Magento\Sales\Model\Order\Pdf\InvoiceFactory as PdfInvoiceFactory;
 
@@ -60,7 +61,7 @@ class OrderBuilder
     /**
      * I am responsible for converting a complete magento order into a DistriMedia Order
      */
-    public function convert(MagentoOrder $order): DistriMediaOrder
+    public function convert(MagentoOrderInterface $order): DistriMediaOrder
     {
         $distriMediaOrder = new DistriMediaOrder();
 
@@ -78,7 +79,7 @@ class OrderBuilder
         return $distriMediaOrder;
     }
 
-    private function addInvoices(DistriMediaOrder $distriMediaOrder, MagentoOrder $order)
+    private function addInvoices(DistriMediaOrder $distriMediaOrder, MagentoOrderInterface $order)
     {
         $sendInvoicesConfig = $this->config->sendInvoices();
         $sendInvoices = false;
@@ -190,7 +191,7 @@ class OrderBuilder
         return false;
     }
 
-    private function getDistriMediaOrderItemFromMagentoOrder(MagentoOrder $order): DistriMediaOrderItem
+    private function getDistriMediaOrderItemFromMagentoOrder(MagentoOrderInterface $order): DistriMediaOrderItem
     {
         $distriMediaOrderItem = new DistriMediaOrderItem();
 
@@ -229,7 +230,7 @@ class OrderBuilder
      * I am responsible for getting the shipping method from the order.
      * This is public since it might change for other clients.
      */
-    public function getShippingMethodFromOrder(MagentoOrder $order): string
+    public function getShippingMethodFromOrder(MagentoOrderInterface $order): string
     {
         $shippingMethod = '';
 
@@ -265,7 +266,7 @@ class OrderBuilder
      * I am responsible for getting DistriMedia orderlines from a Magento order
      * @return DistriMediaOrderLine[]
      */
-    private function getDistriMediaOrderLinesFromOrder(MagentoOrder $order): array
+    private function getDistriMediaOrderLinesFromOrder(MagentoOrderInterface $order): array
     {
         $orderLines = [];
 
@@ -297,11 +298,13 @@ class OrderBuilder
      * I am responsible for converting a magento pdf invoice to a DistriMediaDocument.
      * The content is base 64 encoded
      * DistriMedia needs 5 identical documents (invoices) per order.
-     * @param MagentoOrder $order
+     * @param MagentoOrderInterface $order
      * @return DistriMediaDocument[]
      */
     private function getDistriMediaDocumentsfromInvoice(MagentoInvoice $invoice): array
     {
+        $invoices = [];
+
         for ($i = 0; $i < self::NUMBER_OF_INVOICES; ++$i) {
             $invoices[] = $invoice;
         }

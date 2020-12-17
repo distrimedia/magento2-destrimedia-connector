@@ -23,6 +23,7 @@ class SyncStock
     private $statusFlag;
     private $dateTime;
     private $statusFlagData;
+    private $errorHandlingHelper;
 
     /**
      * SyncStock constructor.

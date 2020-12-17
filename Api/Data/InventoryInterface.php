@@ -24,7 +24,6 @@ interface InventoryInterface
     public function getProduct();
 
     /**
-     * @param $product
      * @return \DistriMedia\Connector\Api\Data\InventoryInterface
      */
     public function setProduct($product);
@@ -35,7 +34,6 @@ interface InventoryInterface
     public function getEAN();
 
     /**
-     * @param $ean
      * @return \DistriMedia\Connector\Api\Data\InventoryInterface
      */
     public function setEAN($ean);
@@ -46,7 +44,6 @@ interface InventoryInterface
     public function getPieces();
 
     /**
-     * @param $pieces
      * @return \DistriMedia\Connector\Api\Data\InventoryInterface
      */
     public function setPieces($pieces);
@@ -57,7 +54,6 @@ interface InventoryInterface
     public function getExtRef();
 
     /**
-     * @param $extRef
      * @return \DistriMedia\Connector\Api\Data\InventoryInterface
      */
     public function setExtRef($extRef);
@@ -68,7 +64,6 @@ interface InventoryInterface
     public function getExternalRef();
 
     /**
-     * @param $extRef
      * @return \DistriMedia\Connector\Api\Data\InventoryInterface
      */
     public function setExternalRef($extRef);
@@ -79,7 +74,6 @@ interface InventoryInterface
     public function getClaimable();
 
     /**
-     * @param $claimable
      * @return \DistriMedia\Connector\Api\Data\InventoryInterface
      */
     public function setClaimable($claimable);
@@ -90,7 +84,6 @@ interface InventoryInterface
     public function getClaimed();
 
     /**
-     * @param $claimed
      * @return \DistriMedia\Connector\Api\Data\InventoryInterface
      */
     public function setClaimed($claimed);
@@ -101,7 +94,6 @@ interface InventoryInterface
     public function getProblem();
 
     /**
-     * @param $problem
      * @return \DistriMedia\Connector\Api\Data\InventoryInterface
      */
     public function setProblem($problem);
@@ -112,7 +104,6 @@ interface InventoryInterface
     public function getOverdue();
 
     /**
-     * @param $overdue
      * @return \DistriMedia\Connector\Api\Data\InventoryInterface
      */
     public function setOverdue($overdue);
@@ -123,7 +114,6 @@ interface InventoryInterface
     public function getBlocked();
 
     /**
-     * @param $blocked
      * @return \DistriMedia\Connector\Api\Data\InventoryInterface
      */
     public function setBlocked($blocked);
@@ -134,7 +124,6 @@ interface InventoryInterface
     public function getDLB();
 
     /**
-     * @param $dlb
      * @return \DistriMedia\Connector\Api\Data\InventoryInterface
      */
     public function setDLB($dlb);

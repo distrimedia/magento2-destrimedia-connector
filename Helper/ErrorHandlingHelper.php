@@ -49,10 +49,10 @@ class ErrorHandlingHelper
             $transport = $this->transportBuilder
                 ->setTemplateIdentifier($template)
                 ->setTemplateOptions(
-                [
-                    'area' => \Magento\Backend\App\Area\FrontNameResolver::AREA_CODE,
-                    'store' => \Magento\Store\Model\Store::DEFAULT_STORE_ID,
-                ]
+                    [
+                        'area' => \Magento\Backend\App\Area\FrontNameResolver::AREA_CODE,
+                        'store' => \Magento\Store\Model\Store::DEFAULT_STORE_ID,
+                    ]
                 )->setTemplateVars(
                     [
                         'warnings' => implode('<br />', $errors),

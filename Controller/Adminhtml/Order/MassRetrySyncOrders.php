@@ -14,6 +14,7 @@ use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Sales\Controller\Adminhtml\Order\AbstractMassAction;
 use Magento\Sales\Model\ResourceModel\Order\CollectionFactory;
 use Magento\Ui\Component\MassAction\Filter;
+use Psr\Log\LoggerInterface;
 
 class MassRetrySyncOrders extends AbstractMassAction implements HttpPostActionInterface
 {
@@ -27,6 +28,8 @@ class MassRetrySyncOrders extends AbstractMassAction implements HttpPostActionIn
      */
     private $orderRepository;
 
+    private $logger;
+
     /**
      * MassRetrySyncOrders constructor.
      */
@@ -34,11 +37,13 @@ class MassRetrySyncOrders extends AbstractMassAction implements HttpPostActionIn
         Context $context,
         Filter $filter,
         CollectionFactory $collectionFactory,
-        OrderRepositoryInterface $orderRepository
+        OrderRepositoryInterface $orderRepository,
+        LoggerInterface $logger
     ) {
         parent::__construct($context, $filter);
         $this->collectionFactory = $collectionFactory;
         $this->orderRepository = $orderRepository;
+        $this->logger = $logger;
     }
 
     /**
@@ -66,6 +71,7 @@ class MassRetrySyncOrders extends AbstractMassAction implements HttpPostActionIn
                 $this->orderRepository->save($order);
                 $isQueued = true;
             } catch (\Exception $exception) {
+                $this->logger->critical($exception);
             }
 
             if ($isQueued === false) {
@@ -78,13 +84,17 @@ class MassRetrySyncOrders extends AbstractMassAction implements HttpPostActionIn
         $countNonCancelOrder = $collection->count() - $countCancelOrder;
 
         if ($countNonCancelOrder && $countCancelOrder) {
-            $this->messageManager->addErrorMessage(__('Cannot reschedule Distrimedia sync for %1 order(s) ', $countNonCancelOrder));
+            $this->messageManager->addErrorMessage(
+                __('Cannot reschedule Distrimedia sync for %1 order(s) ', $countNonCancelOrder)
+            );
         } elseif ($countNonCancelOrder) {
             $this->messageManager->addErrorMessage(__('Cannot reschedule Distrimedia sync for the order(s).'));
         }
 
         if ($countCancelOrder) {
-            $this->messageManager->addSuccessMessage(__('We rescheduled Distrimedia sync for %1 order(s).', $countCancelOrder));
+            $this->messageManager->addSuccessMessage(
+                __('We rescheduled Distrimedia sync for %1 order(s).', $countCancelOrder)
+            );
         }
         $resultRedirect = $this->resultRedirectFactory->create();
         $resultRedirect->setPath($this->getComponentRefererUrl());

@@ -58,7 +58,7 @@ class StockCron extends ConfigValue
                 self::CRON_STRING_PATH
             )->save();
         } catch (\Exception $e) {
-            throw new \Exception(__('We can\'t save the cron expression: ' . $e->getMessage()));
+            throw new \InvalidArgumentException(__('We can\'t save the cron expression: ' . $e->getMessage()));
         }
 
         return parent::afterSave();

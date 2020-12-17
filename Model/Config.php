@@ -154,7 +154,8 @@ class Config implements ConfigInterface
      */
     public function getCancellationDays(): int
     {
-        $value = (int) $this->scopeConfig->getValue(self::XML_PATH_DISTRIMEDIA_SETTINGS_EXTERNAL_CANCELLATION_DAYS) ?: 0;
+        $value = (int) $this->scopeConfig->getValue(
+            self::XML_PATH_DISTRIMEDIA_SETTINGS_EXTERNAL_CANCELLATION_DAYS) ?: 0;
 
         return $value;
     }

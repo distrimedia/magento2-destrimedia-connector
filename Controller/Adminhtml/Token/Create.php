@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace DistriMedia\Connector\Controller\Adminhtml\Token;
 
 use DistriMedia\Connector\Helper\TokenBuilder;
+use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
 use Magento\Framework\App\Action\HttpGetActionInterface as HttpGetActionInterface;
-use Magento\Backend\App\Action;
 
 class Create extends Action implements HttpGetActionInterface
 {
@@ -30,6 +30,7 @@ class Create extends Action implements HttpGetActionInterface
         /** @var \Magento\Framework\Controller\Result\Redirect $resultRedirect */
         $resultRedirect = $this->resultRedirectFactory->create();
         $resultRedirect->setPath('adminhtml/system_config/edit/section/distrimedia');
+
         return $resultRedirect;
     }
 }

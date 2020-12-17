@@ -1,17 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace DistriMedia\Connector\Controller\Adminhtml\Order;
 
 use DistriMedia\Connector\Ui\Component\Listing\Column\SyncStatus\Options;
+use Magento\Backend\App\Action\Context;
 use Magento\Framework\App\Action\HttpPostActionInterface as HttpPostActionInterface;
 use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection;
-use Magento\Backend\App\Action\Context;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Sales\Controller\Adminhtml\Order\AbstractMassAction;
-use Magento\Ui\Component\MassAction\Filter;
 use Magento\Sales\Model\ResourceModel\Order\CollectionFactory;
+use Magento\Ui\Component\MassAction\Filter;
 
 class MassRetrySyncOrders extends AbstractMassAction implements HttpPostActionInterface
 {
@@ -27,25 +29,19 @@ class MassRetrySyncOrders extends AbstractMassAction implements HttpPostActionIn
 
     /**
      * MassRetrySyncOrders constructor.
-     * @param Context $context
-     * @param Filter $filter
-     * @param CollectionFactory $collectionFactory
-     * @param OrderRepositoryInterface $orderRepository
      */
     public function __construct(
         Context $context,
         Filter $filter,
         CollectionFactory $collectionFactory,
         OrderRepositoryInterface $orderRepository
-    )
-    {
+    ) {
         parent::__construct($context, $filter);
         $this->collectionFactory = $collectionFactory;
         $this->orderRepository = $orderRepository;
     }
 
     /**
-     * @param AbstractCollection $collection
      * @return ResponseInterface|\Magento\Framework\Controller\Result\Redirect|ResultInterface
      */
     protected function massAction(AbstractCollection $collection)
@@ -70,14 +66,13 @@ class MassRetrySyncOrders extends AbstractMassAction implements HttpPostActionIn
                 $this->orderRepository->save($order);
                 $isQueued = true;
             } catch (\Exception $exception) {
-
             }
 
             if ($isQueued === false) {
                 continue;
             }
 
-            $countCancelOrder++;
+            ++$countCancelOrder;
         }
 
         $countNonCancelOrder = $collection->count() - $countCancelOrder;

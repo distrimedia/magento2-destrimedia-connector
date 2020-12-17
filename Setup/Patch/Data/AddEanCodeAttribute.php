@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace DistriMedia\Connector\Setup\Patch\Data;
 
 use Magento\Eav\Model\Entity\Attribute\ScopedAttributeInterface;
@@ -10,7 +12,6 @@ use Magento\Framework\Setup\Patch\DataPatchInterface;
 
 /**
  * Class AddEanCodeAttribute
- * @package DistriMedia\Connector\Setup\Patch\Data
  */
 class AddEanCodeAttribute implements DataPatchInterface
 {
@@ -26,14 +27,11 @@ class AddEanCodeAttribute implements DataPatchInterface
 
     /**
      * PatchInitial constructor.
-     * @param ModuleDataSetupInterface $moduleDataSetup
-     * @param EavSetupFactory $eavSetupFactory
      */
     public function __construct(
         ModuleDataSetupInterface $moduleDataSetup,
         EavSetupFactory $eavSetupFactory
-    )
-    {
+    ) {
         $this->moduleDataSetup = $moduleDataSetup;
         $this->eavSetupFactory = $eavSetupFactory;
     }
@@ -59,7 +57,7 @@ class AddEanCodeAttribute implements DataPatchInterface
                 'group' => 'General',
                 'is_used_in_grid' => true,
                 'is_visible_in_grid' => true,
-                'is_filterable_in_grid' => true
+                'is_filterable_in_grid' => true,
             ]
         );
     }

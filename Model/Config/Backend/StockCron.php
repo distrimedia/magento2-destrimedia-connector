@@ -39,8 +39,8 @@ class StockCron extends ConfigValue
         $time = $this->getData('groups/stock_subscription_cron/fields/time/value');
 
         $cronExprArray = [
-            (int)$time[1], //Minute
-            (int)$time[0], //Hour
+            (int) $time[1], //Minute
+            (int) $time[0], //Hour
             '*', //Day of the Month
             '*', //Month of the Year
             '*', //Day of the Week

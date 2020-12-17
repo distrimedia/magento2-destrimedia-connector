@@ -5,29 +5,22 @@ declare(strict_types=1);
 namespace DistriMedia\Connector\Service;
 
 use DistriMedia\Connector\Model\Config\Source\SendInvoices;
-use DistriMedia\Connector\Model\OrderFetcherInterface;
 use DistriMedia\Connector\Model\ConfigInterface;
-use DistriMedia\SoapClient\Struct\Carrier;
-use DistriMedia\SoapClient\Struct\Order as DistriMediaOrder;
-use DistriMedia\SoapClient\Struct\Customer as DistriMediaCustomer;
+use DistriMedia\Connector\Model\OrderFetcherInterface;
 use DistriMedia\SoapClient\Struct\AdditionalDocument as DistriMediaDocument;
-use DistriMedia\SoapClient\Struct\OrderItem;
+use DistriMedia\SoapClient\Struct\Carrier;
+use DistriMedia\SoapClient\Struct\Customer as DistriMediaCustomer;
+use DistriMedia\SoapClient\Struct\Order as DistriMediaOrder;
+use DistriMedia\SoapClient\Struct\OrderItem as DistriMediaOrderItem;
 use DistriMedia\SoapClient\Struct\OrderLine as DistriMediaOrderLine;
 use DistriMedia\SoapClient\Struct\Product as DistriMediaProduct;
-use DistriMedia\SoapClient\Struct\OrderItem as DistriMediaOrderItem;
-
-use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory as ProductCollectionFactory;
-use Magento\Catalog\Model\ResourceModel\Product\Collection as ProductCollection;
-
-use Magento\Framework\View\Asset\NotationResolver\Variable;
 use Magento\Sales\Api\Data\InvoiceInterface as MagentoInvoice;
-use Magento\Sales\Model\Order\Pdf\InvoiceFactory as PdfInvoiceFactory;
-use Magento\Sales\Model\Order\Pdf\Invoice as PdfInvoice;
 use Magento\Sales\Api\Data\OrderInterface as MagentoOrder;
+use Magento\Sales\Model\Order\Pdf\Invoice as PdfInvoice;
+use Magento\Sales\Model\Order\Pdf\InvoiceFactory as PdfInvoiceFactory;
 
 /**
  * I am responsible for converting Magento orders to DistriMedia orders
- * @package DistriMedia\Connector\Service
  */
 class OrderBuilder
 {
@@ -44,7 +37,7 @@ class OrderBuilder
 
     const BPOST_SHIPPING_METHODS = [
         self::BPOST_SHIPPING_METHOD_PARCEL_LOCKER,
-        self::BPOST_SHIPPING_METHOD_PICKUP_POINT
+        self::BPOST_SHIPPING_METHOD_PICKUP_POINT,
     ];
 
     const CODE_PARCELLOCKER = 'bpostParcellocker';
@@ -58,8 +51,7 @@ class OrderBuilder
         PdfInvoiceFactory $pdfInvoiceFactor,
         ConfigInterface $config,
         OrderFetcherInterface $orderFetcher
-    )
-    {
+    ) {
         $this->pdfInvoiceFactory = $pdfInvoiceFactor;
         $this->config = $config;
         $this->orderFetcher = $orderFetcher;
@@ -67,8 +59,6 @@ class OrderBuilder
 
     /**
      * I am responsible for converting a complete magento order into a DistriMedia Order
-     * @param MagentoOrder $order
-     * @return DistriMediaOrder
      */
     public function convert(MagentoOrder $order): DistriMediaOrder
     {
@@ -132,8 +122,6 @@ class OrderBuilder
     /**
      * I am responsible for creating a distriMediaCustomer from a Magento order
      * This function is public so that it can be interceptable by a pluign.
-     * @param MagentoOrder $order
-     * @return DistriMediaCustomer
      */
     public function getDistriMediaCustomerFromMagentoOrder(
         MagentoOrder $order,
@@ -154,16 +142,16 @@ class OrderBuilder
 
         if ($this->config->useBPostLockersAndPickup() && $this->isBpostShippingMethod($shippingMethod)) {
             $distriMediaCustomer->setName($order->getData(self::BPOST_POINT_OFFICE));
-            $distriMediaCustomer->setName2($order->getCustomerFirstname() . " " . $order->getCustomerLastname());
+            $distriMediaCustomer->setName2($order->getCustomerFirstname() . ' ' . $order->getCustomerLastname());
             $bpostAddress = implode([$order->getData(self::BPOST_POINT_STREET), $order->getData(self::BPOST_POINT_NR)]);
             $distriMediaCustomer->setAddress1($bpostAddress);
             $distriMediaCustomer->setPostcode1($order->getData(self::BPOST_POINT_ZIP));
             $distriMediaCustomer->setCity($order->getData(self::BPOST_POINT_CITY));
-            $distriMediaCustomer->setCountry("BE");
+            $distriMediaCustomer->setCountry('BE');
             $servicePoint = $order->getData(self::BPOST_POINT_ID);
             $distriMediaCustomer->setServicePoint($servicePoint);
         } else {
-            $address = implode(" ", $streetArray);
+            $address = implode(' ', $streetArray);
 
             $addressArray = str_split($address, 40);
 
@@ -174,7 +162,7 @@ class OrderBuilder
                 $distriMediaCustomer->setAddress2($addressArray[1]);
             }
 
-            $distriMediaCustomer->setName($order->getCustomerFirstname() . " " . $order->getCustomerLastname());
+            $distriMediaCustomer->setName($order->getCustomerFirstname() . ' ' . $order->getCustomerLastname());
             $distriMediaCustomer->setPostcode1($shippingAddress->getPostcode());
             $distriMediaCustomer->setCity($shippingAddress->getCity());
             $distriMediaCustomer->setCountry($shippingAddress->getCountryId());
@@ -189,8 +177,6 @@ class OrderBuilder
 
     /**
      * I am reponsible for checking wether the used shipping methdo is a bPost method
-     * @param string $shippingMethod
-     * @return bool
      */
     private function isBpostShippingMethod(string $shippingMethod): bool
     {
@@ -209,7 +195,7 @@ class OrderBuilder
         $distriMediaOrderItem = new DistriMediaOrderItem();
 
         //we only want the first two letters.
-        $locale = $this->config->getLocaleOfStoreId((int)$order->getStoreId());
+        $locale = $this->config->getLocaleOfStoreId((int) $order->getStoreId());
         $language = substr($locale, 0, 2);
         $distriMediaOrderItem->setLanguage($language);
 
@@ -218,7 +204,6 @@ class OrderBuilder
 
         $shippingMethod = $order->getShippingMethod();
         if ($this->config->useBPostLockersAndPickup() && $this->isBpostShippingMethod($shippingMethod)) {
-
             $carrier = $this->getShippingCarrierFromShippingMethod($shippingMethod);
 
             //we currently set the carrier in the shipping method as well.. Magento uses a shipping method that is too long.
@@ -243,14 +228,12 @@ class OrderBuilder
     /**
      * I am responsible for getting the shipping method from the order.
      * This is public since it might change for other clients.
-     * @param MagentoOrder $order
-     * @return string
      */
     public function getShippingMethodFromOrder(MagentoOrder $order): string
     {
         $shippingMethod = '';
 
-        $shippingMethodData = explode("_", $order->getShippingMethod());
+        $shippingMethodData = explode('_', $order->getShippingMethod());
         if (!empty($shippingMethodData)) {
             $shippingMethod = reset($shippingMethodData);
         }
@@ -261,7 +244,7 @@ class OrderBuilder
     public function getShippingCarrierFromShippingMethod(string $shippingMethod): ? string
     {
         $shippingMethod = strtolower($shippingMethod);
-        $shippingMethod = explode("_", $shippingMethod);
+        $shippingMethod = explode('_', $shippingMethod);
         $shippingMethod = reset($shippingMethod);
 
         $result = '';
@@ -280,7 +263,6 @@ class OrderBuilder
 
     /**
      * I am responsible for getting DistriMedia orderlines from a Magento order
-     * @param MagentoOrder $order
      * @return DistriMediaOrderLine[]
      */
     private function getDistriMediaOrderLinesFromOrder(MagentoOrder $order): array
@@ -302,7 +284,7 @@ class OrderBuilder
             $product->setExternalRef($externalRef);
 
             $product->setDescription1($item->getName() ?: '');
-            $orderLine->setPieces((int)$item->getQtyInvoiced());
+            $orderLine->setPieces((int) $item->getQtyInvoiced());
             $orderLine->setProduct($product);
             $orderLine->setProductId($eanCode);
             $orderLines[] = $orderLine;
@@ -320,7 +302,7 @@ class OrderBuilder
      */
     private function getDistriMediaDocumentsfromInvoice(MagentoInvoice $invoice): array
     {
-        for ($i = 0; $i < self::NUMBER_OF_INVOICES; $i++) {
+        for ($i = 0; $i < self::NUMBER_OF_INVOICES; ++$i) {
             $invoices[] = $invoice;
         }
 

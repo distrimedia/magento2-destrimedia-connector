@@ -31,7 +31,7 @@ class TokenBuilder
         IntegrationServiceInterface $integrationService,
         IntegrationCollectionFactory $integrationCollectionFactory,
         AuthorizationServiceInterface $authorizationService,
-        OauthServiceInterface  $oauthService,
+        OauthServiceInterface $oauthService,
         WriterInterface $configWriter,
         TypeListInterface $cacheTypeList,
         \Magento\Framework\App\Cache\Frontend\Pool $cacheFrontendPool
@@ -53,12 +53,12 @@ class TokenBuilder
     public function createToken()
     {
         $integrationData = [
-            Integration::NAME => self::INTEGRATION_NAME
+            Integration::NAME => self::INTEGRATION_NAME,
         ];
 
         $resources = [
             'DistriMedia_Connector::stock',
-            'DistriMedia_Connector::orders'
+            'DistriMedia_Connector::orders',
         ];
 
         try {
@@ -67,7 +67,7 @@ class TokenBuilder
             //this means that an integration already exists.
             /** @var IntegrationCollection $collection */
             $collection = $this->integrationCollectionFactory->create();
-            $collection->addFieldToSelect("*");
+            $collection->addFieldToSelect('*');
             $integration = $collection
                 ->addFieldToFilter(Integration::NAME, self::INTEGRATION_NAME)
                 ->getFirstItem();

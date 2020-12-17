@@ -10,15 +10,15 @@ use Magento\Framework\Model\AbstractModel;
 class ShippedItem extends AbstractModel implements ShippedItemInterface
 {
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function getDateShipped()
     {
-       return $this->getData(self::DATE_SHIPPED);
+        return $this->getData(self::DATE_SHIPPED);
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function setDateShipped($dateShipped)
     {
@@ -26,7 +26,7 @@ class ShippedItem extends AbstractModel implements ShippedItemInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function getProduct()
     {
@@ -34,7 +34,7 @@ class ShippedItem extends AbstractModel implements ShippedItemInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function setProduct($product)
     {

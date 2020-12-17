@@ -6,25 +6,22 @@ namespace DistriMedia\Connector\Plugin;
 
 use DistriMedia\Connector\Model\ConfigInterface;
 use DistriMedia\Connector\Service\OrderBuilder;
-use Magento\Config\Model\Config\Backend\Admin\Custom;
+use DistriMedia\SoapClient\Service\Customer as CustomerService;
 use Magento\Framework\Message\ManagerInterface;
 use Magento\Sales\Api\Data\OrderAddressInterface;
 use Magento\Sales\Api\OrderAddressRepositoryInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
-use DistriMedia\SoapClient\Service\Customer as CustomerService;
 use Psr\Log\LoggerInterface;
 
 /**
  * I am responsible for syncing the updated address to DistriMedia
  * Only if DistriMedia allows the change of the address,the transaction can go through.
  * Class SyncUpdatedShippingAddress
- * @package DistriMedia\Connector\Plugin
  */
 class SyncUpdatedShippingAddress
 {
     private $orderRepository;
     private $orderBuilder;
-    private $customerService;
     private $messageManager;
     private $config;
     private $logger;
@@ -34,9 +31,8 @@ class SyncUpdatedShippingAddress
         OrderBuilder $orderBuilder,
         ManagerInterface $messageManager,
         ConfigInterface $config,
-        LoggerInterface  $logger
-    )
-    {
+        LoggerInterface $logger
+    ) {
         $this->orderRepository = $orderRepository;
         $this->orderBuilder = $orderBuilder;
         $this->messageManager = $messageManager;
@@ -46,7 +42,7 @@ class SyncUpdatedShippingAddress
 
     public function aroundSave(OrderAddressRepositoryInterface $subject, $proceed, OrderAddressInterface $orderAddress)
     {
-        if($this->config->isEnabled()) {
+        if ($this->config->isEnabled()) {
             if ($orderAddress->getAddressType() === 'shipping') {
                 $orderId = $orderAddress->getParentId();
 
@@ -69,7 +65,7 @@ class SyncUpdatedShippingAddress
                     return $proceed($orderAddress);
                 }
             } else {
-                throw new \Exception("Shipping address cannot be changed");
+                throw new \Exception('Shipping address cannot be changed');
             }
         } else {
             return $proceed($orderAddress);

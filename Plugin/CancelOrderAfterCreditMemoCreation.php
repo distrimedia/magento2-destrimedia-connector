@@ -17,7 +17,6 @@ use Magento\Sales\Model\Order;
  * When a shopowner creates a credit memo in the shop, we should try to cancel the order in DistriMedia.
  * Only if it's succesful in DistriMedia, the credit memo is allowed.
  * Class CancelOrderAfterCreditMemoCreation
- * @package DistriMedia\Connector\Plugin
  */
 class CancelOrderAfterCreditMemoCreation
 {
@@ -31,8 +30,7 @@ class CancelOrderAfterCreditMemoCreation
         ManagerInterface $messageManager,
         ConfigInterface $config,
         OrderRepositoryInterface $orderRepository
-    )
-    {
+    ) {
         $this->orderSync = $orderSync;
         $this->messageManager = $messageManager;
         $this->config = $config;
@@ -40,8 +38,6 @@ class CancelOrderAfterCreditMemoCreation
     }
 
     /**
-     * @param CreditmemoManagementInterface $subject
-     * @param CreditmemoInterface $result
      * @return CreditmemoInterface
      * @throws \Exception
      */
@@ -55,6 +51,7 @@ class CancelOrderAfterCreditMemoCreation
                 if ($order->getStatus() !== Order::STATE_COMPLETE) {
                     $this->orderSync->cancelOrder($order);
                 }
+
                 return $result;
             } catch (InvalidOrderException $invalidOrderException) {
                 $this->messageManager->addErrorMessage($invalidOrderException->getMessage());

@@ -150,5 +150,4 @@ interface TrackIdInterface
      * @return DistriMedia\Connector\Api\Data\TrackIdInterface
      */
     public function setPackage($package);
-
 }

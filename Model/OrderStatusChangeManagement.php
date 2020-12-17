@@ -4,23 +4,21 @@ declare(strict_types=1);
 
 namespace DistriMedia\Connector\Model;
 
-use DistriMedia\Connector\Api\Data\TrackIdInterface;
-use DistriMedia\Connector\Api\OrderStatusChangeManagementInterface;
-use DistriMedia\Connector\Api\Data\ShippedItemInterface;
-use DistriMedia\Connector\Api\Data\ShippedItemInterfaceFactory;
 use DistriMedia\Connector\Api\Data\ProductInterface;
 use DistriMedia\Connector\Api\Data\ProductInterfaceFactory;
+use DistriMedia\Connector\Api\Data\ShippedItemInterface;
+use DistriMedia\Connector\Api\Data\ShippedItemInterfaceFactory;
+use DistriMedia\Connector\Api\Data\TrackIdInterface;
+use DistriMedia\Connector\Api\OrderStatusChangeManagementInterface;
 use DistriMedia\Connector\Helper\ErrorHandlingHelper;
 use DistriMedia\Connector\Service\OrderSyncInterface;
 use DistriMedia\Connector\Ui\Component\Listing\Column\SyncStatus\Options;
-use DistriMedia\SoapClient\Struct\OrderItem;
-use DistriMedia\SoapClient\Struct\Response\Inventory\StockItem;
 use Exception;
+use Magento\Catalog\Model\ResourceModel\Product\Collection as ProductCollection;
+use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory as ProductCollectionFactory;
 use Magento\Framework\Notification\NotifierPool;
 use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\Webapi\Rest\Request\Deserializer\Xml;
-use Magento\ProductAlert\Model\Stock;
-use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Api\Data\ShipmentInterface;
 use Magento\Sales\Api\OrderManagementInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
@@ -31,8 +29,6 @@ use Magento\Sales\Model\Order\Shipment;
 use Magento\Sales\Model\Order\Shipment\Track;
 use Magento\Sales\Model\Order\Shipment\TrackFactory;
 use Psr\Log\LoggerInterface;
-use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory as ProductCollectionFactory;
-use Magento\Catalog\Model\ResourceModel\Product\Collection as ProductCollection;
 
 class OrderStatusChangeManagement implements OrderStatusChangeManagementInterface
 {
@@ -70,7 +66,7 @@ class OrderStatusChangeManagement implements OrderStatusChangeManagementInterfac
     private $errorHandlingHelper;
 
     /**
-     * @var ProductCollection $productCollection
+     * @var ProductCollection
      */
     private $productCollection;
 
@@ -99,8 +95,7 @@ class OrderStatusChangeManagement implements OrderStatusChangeManagementInterfac
         NotifierPool $notifierPool,
         ShippedItemInterfaceFactory $shippedItemInterfaceFactory,
         ProductInterfaceFactory $productInterfaceFactory
-    )
-    {
+    ) {
         $this->deserializer = $deserializer;
         $this->orderSync = $orderSync;
         $this->orderManagement = $orderManagement;
@@ -120,7 +115,7 @@ class OrderStatusChangeManagement implements OrderStatusChangeManagementInterfac
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function execute(
         string $OrderStatus,
@@ -131,17 +126,18 @@ class OrderStatusChangeManagement implements OrderStatusChangeManagementInterfac
         string $TrackAndTraceURL = null,
         $TrackIDs = [],
         $ShippedItems = []
-    )
-    {
+    ) {
         if (!$this->config->isEnabled()) {
-            throw new \Exception("DistriMedia Connector is not enabled");
+            throw new \Exception('DistriMedia Connector is not enabled');
         }
 
         /* @var Order $order */
         $order = $this->orderFetcher->getOrderByDistriMediaData($OrderNumber, $OrderID);
 
         if ($order === null) {
-            throw new \Exception("Could not find order with DistriMedia Inc ID {$OrderID} or Magento Inc ID {$OrderNumber}");
+            throw new \Exception(
+                "Could not find order with DistriMedia Inc ID {$OrderID} or Magento Inc ID {$OrderNumber}"
+            );
         }
 
         //this means that there's only 1 track ID
@@ -154,7 +150,6 @@ class OrderStatusChangeManagement implements OrderStatusChangeManagementInterfac
             $ShippedItems = [$ShippedItems];
         }
 
-
         $data = [
             self::ORDER_ID => $OrderID,
             self::ORDER_STATUS => $OrderStatus,
@@ -163,7 +158,7 @@ class OrderStatusChangeManagement implements OrderStatusChangeManagementInterfac
             self::CARRIER => $Carrier,
             self::TRACK_AND_TRACE_URL => $TrackAndTraceURL,
             self::TRACK_IDS => $TrackIDs,
-            self::SHIPPED_ITEMS => $ShippedItems
+            self::SHIPPED_ITEMS => $ShippedItems,
         ];
 
         try {
@@ -179,19 +174,17 @@ class OrderStatusChangeManagement implements OrderStatusChangeManagementInterfac
 
             $this->updateOrderStatus($order, $data);
         } catch (\Exception $exception) {
-            //
         }
 
         return '<Status>' . self::STATUS_OK . '</Status>';
     }
 
-    /**
-     * @param Order $order
-     */
     private function notifyShopOwner(Order $order): void
     {
-
-        $subject = __('Order %1 has been canceled by DistriMedia ERP. Please take action in Magento (create Credit Memo).', $order->getIncrementId())->render();
+        $subject = __(
+            'Order %1 has been canceled by DistriMedia ERP. Please take action in Magento (create Credit Memo).',
+            $order->getIncrementId()
+        )->render();
         $message = __('Order %1 has been canceled by DistriMedia ERP', $order->getIncrementId())->render();
         $this->notifierPool->addMajor($message, $message);
         $this->errorHandlingHelper->sendErrorEmail([$message], $subject, $subject);
@@ -244,7 +237,7 @@ class OrderStatusChangeManagement implements OrderStatusChangeManagementInterfac
             $trackNumber = $data[self::TRACK_AND_TRACE_URL];
 
             $track->setDescription('BPost');
-            $track->setTitle("BPost");
+            $track->setTitle('BPost');
             $track->setCarrierCode($data[self::CARRIER]);
             $track->setNumber($trackNumber);
 
@@ -256,7 +249,7 @@ class OrderStatusChangeManagement implements OrderStatusChangeManagementInterfac
             }
 
             if (empty($m2OrderItems)) {
-                throw new \Exception(("No order items found"));
+                throw new \Exception('No order items found');
             }
 
             foreach ($m2OrderItems as $item) {
@@ -301,8 +294,6 @@ class OrderStatusChangeManagement implements OrderStatusChangeManagementInterfac
 
     /**
      * Save shipment and order in one transaction
-     *
-     * @param Shipment $shipment
      * @return $this
      */
     protected function _saveShipment(Shipment $shipment)
@@ -324,7 +315,6 @@ class OrderStatusChangeManagement implements OrderStatusChangeManagementInterfac
     /**
      * I try to match the order items with the data sent to this endpoint based on the EAN CODE saved on the order item
      * @param array $orderItems
-     * @param Order $order
      * @return array
      * @throws \Exception
      */
@@ -333,7 +323,7 @@ class OrderStatusChangeManagement implements OrderStatusChangeManagementInterfac
         $result = [];
         $m2OrderItems = $order->getAllItems();
 
-        /** @var ShippedItemInterface $shippedItem */
+        /* @var ShippedItemInterface $shippedItem */
         foreach ($shippedItems as $key => $shippedItemData) {
             $shippedItem = $this->shippedItemInterfaceFactory->create(['data' => $shippedItemData]);
             /* @var ProductInterface $product */
@@ -355,7 +345,7 @@ class OrderStatusChangeManagement implements OrderStatusChangeManagementInterfac
                             $result[] = [
                                 'orderItem' => $m2OrderItem,
                                 'shippedItem' => $shippedItem,
-                                'product' => $product
+                                'product' => $product,
                             ];
                             $match = true;
                             break;
@@ -367,7 +357,6 @@ class OrderStatusChangeManagement implements OrderStatusChangeManagementInterfac
                     throw new \Exception("No order item found for ean code = {$eanCode}");
                 }
             }
-
         }
 
         return $result;

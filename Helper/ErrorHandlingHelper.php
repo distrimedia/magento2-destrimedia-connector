@@ -18,8 +18,7 @@ class ErrorHandlingHelper
         ConfigInterface $config,
         TransportBuilder $transportBuilder,
         StateInterface $inlineTranslation
-    )
-    {
+    ) {
         $this->transportBuilder = $transportBuilder;
         $this->inlineTranslation = $inlineTranslation;
         $this->config = $config;
@@ -37,7 +36,7 @@ class ErrorHandlingHelper
         $recipient = $this->config->getErrorEmailRecipient();
 
         if (!$recipient) {
-            throw new \Exception("No Error email recipient defined");
+            throw new \Exception('No Error email recipient defined');
         }
 
         if (count($errors)) {
@@ -56,9 +55,9 @@ class ErrorHandlingHelper
                 ]
                 )->setTemplateVars(
                     [
-                        'warnings' => implode("<br />", $errors),
+                        'warnings' => implode('<br />', $errors),
                         'subject' => $subject,
-                        'title' => $title
+                        'title' => $title,
                     ]
                 )->setFrom($identity)
                 ->addTo($recipient)

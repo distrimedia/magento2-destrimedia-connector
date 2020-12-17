@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace DistriMedia\Connector\Model\Flag;
 
 class LastExecutionFlag extends \Magento\Framework\Flag

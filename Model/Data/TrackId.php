@@ -4,19 +4,16 @@ declare(strict_types=1);
 
 namespace DistriMedia\Connector\Model\Data;
 
-use DistriMedia\Connector\Api\Data\DistriMedia;
 use DistriMedia\Connector\Api\Data\TrackIdInterface;
 use Magento\Framework\Model\AbstractModel;
 
 /**
  * Class TrackId
- * @package DistriMedia\Connector\Model\Data
  */
 class TrackId extends AbstractModel implements TrackIdInterface
 {
-
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function getNumberColli()
     {
@@ -24,7 +21,7 @@ class TrackId extends AbstractModel implements TrackIdInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function setNumberColli($numberColli)
     {
@@ -32,7 +29,7 @@ class TrackId extends AbstractModel implements TrackIdInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function getCarrier()
     {
@@ -40,7 +37,7 @@ class TrackId extends AbstractModel implements TrackIdInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function setCarrier($carrier)
     {
@@ -48,7 +45,7 @@ class TrackId extends AbstractModel implements TrackIdInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function getExecutingCarrier()
     {
@@ -56,7 +53,7 @@ class TrackId extends AbstractModel implements TrackIdInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function setExecutingCarrier($executingCarrier)
     {
@@ -64,7 +61,7 @@ class TrackId extends AbstractModel implements TrackIdInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function getWeight()
     {
@@ -72,7 +69,7 @@ class TrackId extends AbstractModel implements TrackIdInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function setWeight($weight)
     {
@@ -80,7 +77,7 @@ class TrackId extends AbstractModel implements TrackIdInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function getAWB()
     {
@@ -88,7 +85,7 @@ class TrackId extends AbstractModel implements TrackIdInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function setAWB($awb)
     {
@@ -96,7 +93,7 @@ class TrackId extends AbstractModel implements TrackIdInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function getTrackID()
     {
@@ -104,7 +101,7 @@ class TrackId extends AbstractModel implements TrackIdInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function setTrackID($trackID)
     {
@@ -112,7 +109,7 @@ class TrackId extends AbstractModel implements TrackIdInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function getBoxType()
     {
@@ -120,7 +117,7 @@ class TrackId extends AbstractModel implements TrackIdInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function setBoxType($boxType)
     {
@@ -128,7 +125,7 @@ class TrackId extends AbstractModel implements TrackIdInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function getReference()
     {
@@ -136,7 +133,7 @@ class TrackId extends AbstractModel implements TrackIdInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function setReference($reference)
     {
@@ -144,7 +141,7 @@ class TrackId extends AbstractModel implements TrackIdInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function getShippedDate()
     {
@@ -152,7 +149,7 @@ class TrackId extends AbstractModel implements TrackIdInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function setShippedDate($shippedDate)
     {
@@ -160,7 +157,7 @@ class TrackId extends AbstractModel implements TrackIdInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function getTrackAndTraceURL()
     {
@@ -168,16 +165,15 @@ class TrackId extends AbstractModel implements TrackIdInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function setTrackAndTraceURL($trackAndTrace)
     {
         return $this->setData(self::TRACK_AND_TRACE_URL, $trackAndTrace);
     }
 
-
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function getOrderline()
     {
@@ -185,7 +181,7 @@ class TrackId extends AbstractModel implements TrackIdInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function setOrderline($orderline)
     {
@@ -193,7 +189,7 @@ class TrackId extends AbstractModel implements TrackIdInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function getPackage()
     {
@@ -201,7 +197,7 @@ class TrackId extends AbstractModel implements TrackIdInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function setPackage($package)
     {

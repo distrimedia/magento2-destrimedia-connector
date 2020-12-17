@@ -14,7 +14,6 @@ use Magento\Framework\Stdlib\DateTime\DateTime;
 /**
  * I am responsible for syncing the complete inventory once a day.
  * Class SyncStock
- * @package DistriMedia\Connector\Cron
  */
 class SyncStock
 {
@@ -27,12 +26,6 @@ class SyncStock
 
     /**
      * SyncStock constructor.
-     * @param StockSyncInterface $stockSync
-     * @param ErrorHandlingHelper $errorHandlingHelper
-     * @param LastExecutionFlag $lastExecutionFlag
-     * @param Status $statusFlag
-     * @param DateTime $dateTime
-     * @param ConfigInterface $config
      */
     public function __construct(
         StockSyncInterface $stockSync,
@@ -41,8 +34,7 @@ class SyncStock
         Status $statusFlag,
         DateTime $dateTime,
         ConfigInterface $config
-    )
-    {
+    ) {
         $this->stockSync = $stockSync;
         $this->errorHandlingHelper = $errorHandlingHelper;
         $this->lastExecutionFlag = $lastExecutionFlag;
@@ -52,7 +44,6 @@ class SyncStock
     }
 
     /**
-     * @return $this
      * @throws \Exception
      */
     public function execute()
@@ -100,7 +91,6 @@ class SyncStock
 
     /**
      * This updates the flagdata
-     * @param string $status
      * @throws \Magento\Framework\Exception\LocalizedException
      */
     private function updateStatus(string $status)

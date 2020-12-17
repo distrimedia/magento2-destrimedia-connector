@@ -10,7 +10,6 @@ use Magento\Framework\Encryption\EncryptorInterface;
 
 /**
  * I return config values, specific for the DistriMedia module
- * @package DistriMedia\Connector\Model
  */
 class Config implements ConfigInterface
 {
@@ -38,22 +37,16 @@ class Config implements ConfigInterface
     private $scopeConfig;
     private $encryptor;
 
-    /**
-     * Config constructor.
-     * @param ScopeConfigInterface $scopeConfig
-     * @param EncryptorInterface $encryptor
-     */
     public function __construct(
         ScopeConfigInterface $scopeConfig,
         EncryptorInterface $encryptor
-    )
-    {
+    ) {
         $this->encryptor = $encryptor;
         $this->scopeConfig = $scopeConfig;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function getApiUri(): string
     {
@@ -63,7 +56,7 @@ class Config implements ConfigInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function getApiPassword(): string
     {
@@ -77,7 +70,7 @@ class Config implements ConfigInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function getTimeoutAterInSeconds(): int
     {
@@ -87,7 +80,7 @@ class Config implements ConfigInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function getWebshopCode(): string
     {
@@ -101,17 +94,17 @@ class Config implements ConfigInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function isEnabled(): bool
     {
-        $value = (bool)$this->scopeConfig->getValue(self::XML_PATH_DISTRIMEDIA_SETTINGS_ENABLED) ?: false;
+        $value = (bool) $this->scopeConfig->getValue(self::XML_PATH_DISTRIMEDIA_SETTINGS_ENABLED) ?: false;
 
         return $value;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function getLocaleOfStoreId(int $storeId): string
     {
@@ -125,7 +118,7 @@ class Config implements ConfigInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function getEanCodeAttributeCode(): string
     {
@@ -135,7 +128,7 @@ class Config implements ConfigInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function getExternalRefAttributeCode(): string
     {
@@ -145,107 +138,113 @@ class Config implements ConfigInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function useCancellationDays(): bool
     {
-        $value = (bool)$this->scopeConfig->getValue(self::XML_PATH_DISTRIMEDIA_SETTINGS_EXTERNAL_USE_CANCELLATION_DAYS) ?: false;
+        $value = (bool) $this->scopeConfig->getValue(
+            self::XML_PATH_DISTRIMEDIA_SETTINGS_EXTERNAL_USE_CANCELLATION_DAYS
+        ) ?: false;
 
         return $value;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function getCancellationDays(): int
     {
-        $value = (int)$this->scopeConfig->getValue(self::XML_PATH_DISTRIMEDIA_SETTINGS_EXTERNAL_CANCELLATION_DAYS) ?: 0;
+        $value = (int) $this->scopeConfig->getValue(self::XML_PATH_DISTRIMEDIA_SETTINGS_EXTERNAL_CANCELLATION_DAYS) ?: 0;
 
         return $value;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function useRetentionDays(): bool
     {
-        $value = (bool)$this->scopeConfig->getValue(self::XML_PATH_DISTRIMEDIA_SETTINGS_EXTERNAL_USE_RETENTION_DAYS) ?: false;
+        $value = (bool) $this->scopeConfig->getValue(
+            self::XML_PATH_DISTRIMEDIA_SETTINGS_EXTERNAL_USE_RETENTION_DAYS
+        ) ?: false;
 
         return $value;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function getRetentionDays(): int
     {
-        $value = (int)$this->scopeConfig->getValue(self::XML_PATH_DISTRIMEDIA_SETTINGS_EXTERNAL_RETENTION_DAYS) ?: 0;
+        $value = (int) $this->scopeConfig->getValue(self::XML_PATH_DISTRIMEDIA_SETTINGS_EXTERNAL_RETENTION_DAYS) ?: 0;
 
         return $value;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function useBPostLockersAndPickup(): bool
     {
-        $value = (bool)$this->scopeConfig->getValue(self::XML_PATH_DISTRIMEDIA_BPOST_USE_BPOST_LOCKERS_AND_PICKUP) ?: false;
+        $value = (bool) $this->scopeConfig->getValue(
+            self::XML_PATH_DISTRIMEDIA_BPOST_USE_BPOST_LOCKERS_AND_PICKUP
+        ) ?: false;
 
         return $value;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function sendInvoices(): bool
     {
-        $value = (bool)$this->scopeConfig->getValue(self::XML_PATH_DISTRIMEDIA_SETTINGS_SEND_INVOICES) ?: false;
+        $value = (bool) $this->scopeConfig->getValue(self::XML_PATH_DISTRIMEDIA_SETTINGS_SEND_INVOICES) ?: false;
 
         return $value;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function getConsumerId(): ?int
     {
-        $value = (int)$this->scopeConfig->getValue(self::XML_PATH_DISTRIMEDIA_CONSUMER_ID) ?: null;
+        $value = (int) $this->scopeConfig->getValue(self::XML_PATH_DISTRIMEDIA_CONSUMER_ID) ?: null;
 
         return $value;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function getErrorEmailTemplate(): ?string
     {
-        $value = (string)$this->scopeConfig->getValue(self::XML_PATH_ERROR_TEMPLATE) ?: null;
+        $value = (string) $this->scopeConfig->getValue(self::XML_PATH_ERROR_TEMPLATE) ?: null;
 
         return $value;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function getErrorEmailRecipient(): ?string
     {
-        $value = (string)$this->scopeConfig->getValue(self::XML_PATH_ERROR_RECIPIENT) ?: null;
+        $value = (string) $this->scopeConfig->getValue(self::XML_PATH_ERROR_RECIPIENT) ?: null;
 
         return $value;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function getErrorEmailIdentity(): ?string
     {
-        $value = (string)$this->scopeConfig->getValue(self::XML_PATH_ERROR_IDENTITY) ?: null;
+        $value = (string) $this->scopeConfig->getValue(self::XML_PATH_ERROR_IDENTITY) ?: null;
 
         return $value;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function getEuCountries(): array
     {
@@ -254,7 +253,7 @@ class Config implements ConfigInterface
         $value = $this->scopeConfig->getValue(self::XML_PATH_EU_COUNTRIES) ?: null;
 
         if (is_string($value)) {
-            $result = explode(",", $value);
+            $result = explode(',', $value);
         }
 
         if (array_key_exists(self::BREXIT, $result)) {

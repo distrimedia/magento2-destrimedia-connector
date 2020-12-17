@@ -5,10 +5,9 @@ declare(strict_types=1);
 namespace DistriMedia\Connector\Helper;
 
 use Magento\AsynchronousOperations\Model\MassSchedule;
+use Magento\AsynchronousOperations\Model\MassScheduleFactory;
 use Magento\CatalogInventory\Api\Data\StockItemInterface;
 use Magento\CatalogInventory\Api\Data\StockItemInterfaceFactory;
-use Magento\AsynchronousOperations\Model\MassScheduleFactory;
-use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\ObjectManager;
 
 class StockItemBuilder
@@ -28,8 +27,7 @@ class StockItemBuilder
     public function __construct(
         StockItemInterfaceFactory $stockItemInterfaceFactory,
         MassScheduleFactory $massScheduleFactory
-    )
-    {
+    ) {
         $this->massScheduleFactory       = $massScheduleFactory;
         $this->stockItemInterfaceFactory = $stockItemInterfaceFactory;
     }
@@ -37,7 +35,6 @@ class StockItemBuilder
     /**
      * @param string $sku
      * @param string $qty
-     * @return StockItemInterface
      */
     public function createStockItemInterface(int $qty): StockItemInterface
     {
@@ -63,12 +60,11 @@ class StockItemBuilder
     /**
      * There is no way to inject the msi module if we want to support use of both with our without msi
      * so we need to use the object manager
-     * @param int $qty
-     * @param string $sku
      * @param string|null $sourceCode
      * @return mixed
      */
-    public function createSourceItemInterface(int $qty, string $sku, string $sourceCode = 'default') {
+    public function createSourceItemInterface(int $qty, string $sku, string $sourceCode = 'default')
+    {
         $sourceItemInterfaceFactory = ObjectManager::getInstance()->create('Magento\InventoryApi\Api\Data\SourceItemInterfaceFactory');
         $sourceItemInterface = $sourceItemInterfaceFactory->create();
         $sourceItemInterface->setStatus((int) ($qty > 0));

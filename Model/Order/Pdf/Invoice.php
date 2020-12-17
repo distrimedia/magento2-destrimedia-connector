@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace DistriMedia\Connector\Model\Order\Pdf;
 
 /**
  * Use built-in fonts in PDFs so that invoices are smaller.
- *
  */
 class Invoice extends \Magento\Sales\Model\Order\Pdf\Invoice
 {
@@ -12,6 +13,7 @@ class Invoice extends \Magento\Sales\Model\Order\Pdf\Invoice
     {
         $font = \Zend_Pdf_Font::fontWithName(\Zend_Pdf_Font::FONT_HELVETICA);
         $object->setFont($font, $size);
+
         return $font;
     }
 
@@ -19,6 +21,7 @@ class Invoice extends \Magento\Sales\Model\Order\Pdf\Invoice
     {
         $font = \Zend_Pdf_Font::fontWithName(\Zend_Pdf_Font::FONT_HELVETICA_BOLD);
         $object->setFont($font, $size);
+
         return $font;
     }
 
@@ -26,6 +29,7 @@ class Invoice extends \Magento\Sales\Model\Order\Pdf\Invoice
     {
         $font = \Zend_Pdf_Font::fontWithName(\Zend_Pdf_Font::FONT_HELVETICA_ITALIC);
         $object->setFont($font, $size);
+
         return $font;
     }
 }

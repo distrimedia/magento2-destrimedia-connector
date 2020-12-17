@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace DistriMedia\Connector\Model\Config\Frontend;
 
+use Magento\Backend\Block\Template\Context;
 use Magento\Config\Block\System\Config\Form\Field;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\Data\Form\Element\AbstractElement;
-use Magento\Backend\Block\Template\Context;
 use Magento\Store\Model\Store;
 
 class BaseUrl extends Field
@@ -19,8 +19,7 @@ class BaseUrl extends Field
         Context $context,
         ScopeConfigInterface $config,
         array $data = []
-    )
-    {
+    ) {
         parent::__construct($context, $data);
         $this->config = $config;
     }

@@ -14,7 +14,6 @@ use Magento\Framework\Serialize\Serializer\Json;
 
 /**
  * I am responsible for getting the installed version of the module
- * @package DistriMedia\Connector\Model
  */
 class Version extends Field
 {
@@ -26,14 +25,7 @@ class Version extends Field
     private $readFactory;
     private $directoryList;
     private $serializer;
-    /**
-     * Version constructor.
-     * @param Context $context
-     * @param ComponentRegistrarInterface $componentRegistrar
-     * @param ReadFactory $readFactory
-     * @param DirectoryList $directoryList
-     * @param array $data
-     */
+
     public function __construct(
         Context $context,
         ComponentRegistrarInterface $componentRegistrar,
@@ -41,8 +33,7 @@ class Version extends Field
         DirectoryList $directoryList,
         Json $serializer,
         array $data = []
-    )
-    {
+    ) {
         $this->componentRegistrar = $componentRegistrar;
         $this->readFactory = $readFactory;
         $this->directoryList = $directoryList;
@@ -51,7 +42,6 @@ class Version extends Field
     }
 
     /**
-     * @param AbstractElement $element
      * @return string
      */
     protected function _getElementHtml(AbstractElement $element)
@@ -61,9 +51,6 @@ class Version extends Field
         return $element->getElementHtml();
     }
 
-    /**
-     * @return string
-     */
     protected function getModuleVersion(): string
     {
         $result = '';
@@ -84,7 +71,7 @@ class Version extends Field
                 }
             }
         } catch (\Exception $exception) {
-            $this->_logger->warning("Could not read module version of " . self::MODULE_NAME);
+            $this->_logger->warning('Could not read module version of ' . self::MODULE_NAME);
         }
 
         return $result;

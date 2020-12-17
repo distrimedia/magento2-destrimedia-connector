@@ -150,5 +150,4 @@ interface PackageInterface
      * @return DistriMedia\Connector\Api\Data\TrackIdInterface
      */
     public function setTrackAndTraceURL($trackAndTraceURL);
-
 }

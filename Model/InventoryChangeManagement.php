@@ -6,6 +6,7 @@ namespace DistriMedia\Connector\Model;
 
 use DistriMedia\Connector\Api\Data\InventoryInterface;
 use DistriMedia\Connector\Api\InventoryChangeManagementInterface;
+use DistriMedia\Connector\DistriMediaException;
 use DistriMedia\Connector\Service\StockSyncInterface;
 use DistriMedia\SoapClient\Struct\Response\Inventory\StockItem;
 use Magento\Framework\Webapi\Rest\Request\Deserializer\Xml;
@@ -31,7 +32,7 @@ class InventoryChangeManagement implements InventoryChangeManagementInterface
     public function execute(InventoryInterface $inventory)
     {
         if (!$this->config->isEnabled()) {
-            throw new \Exception('DistriMedia Connector is not enabled');
+            throw new DistriMediaException('DistriMedia Connector is not enabled');
         }
 
         $data = $inventory->toDataArray();

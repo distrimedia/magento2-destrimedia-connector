@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace DistriMedia\Connector\Model\Config\Backend;
 
+use DistriMedia\Connector\DistriMediaException;
 use Magento\Framework\App\Cache\TypeListInterface;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\Config\Value as ConfigValue;
@@ -58,7 +59,7 @@ class StockCron extends ConfigValue
                 self::CRON_STRING_PATH
             )->save();
         } catch (\Exception $e) {
-            throw new \InvalidArgumentException(__('We can\'t save the cron expression: ' . $e->getMessage()));
+            throw new DistriMediaException(__('We can\'t save the cron expression: ' . $e->getMessage()));
         }
 
         return parent::afterSave();

@@ -15,6 +15,7 @@ use DistriMedia\SoapClient\Struct\OrderItem as DistriMediaOrderItem;
 use DistriMedia\SoapClient\Struct\OrderLine as DistriMediaOrderLine;
 use DistriMedia\SoapClient\Struct\Product as DistriMediaProduct;
 use Magento\Sales\Api\Data\InvoiceInterface as MagentoInvoice;
+use Magento\Sales\Api\Data\OrderAddressInterface;
 use Magento\Sales\Api\Data\OrderInterface as MagentoOrderInterface;
 use Magento\Sales\Model\Order as MagentoOrder;
 use Magento\Sales\Model\Order\Pdf\Invoice as PdfInvoice;
@@ -85,8 +86,6 @@ class OrderBuilder
         $sendInvoices = false;
 
         switch ($sendInvoicesConfig) {
-            case SendInvoices::SEND_INVOICES_NEVER:
-                break;
             case SendInvoices::SEND_INVOICES_ALWAYS:
                 $sendInvoices = true;
                 break;
@@ -123,11 +122,14 @@ class OrderBuilder
     /**
      * I am responsible for creating a distriMediaCustomer from a Magento order
      * This function is public so that it can be interceptable by a pluign.
+     * @param MagentoOrder $order
+     * @param OrderAddressInterface|null $shippingAddress
+     * @return DistriMediaCustomer
      */
     public function getDistriMediaCustomerFromMagentoOrder(
         MagentoOrder $order,
-        \Magento\Sales\Api\Data\OrderAddressInterface $shippingAddress = null): DistriMediaCustomer
-    {
+        OrderAddressInterface $shippingAddress = null
+    ): DistriMediaCustomer {
         $distriMediaCustomer = new DistriMediaCustomer();
         $distriMediaCustomer->setEmail($order->getCustomerEmail());
 
@@ -212,8 +214,9 @@ class OrderBuilder
         if ($this->config->useBPostLockersAndPickup() && $this->isBpostShippingMethod($shippingMethod)) {
             $carrier = $this->getShippingCarrierFromShippingMethod($shippingMethod);
 
-            //we currently set the carrier in the shipping method as well.. Magento uses a shipping method that is too long.
-            $distriMediaOrderItem->setShipmentMethod($carrier); //$this->getShippingMethodFromOrder($order));
+            //we currently set the carrier in the shipping method as well..
+            //Magento uses a shipping method that is too long.
+            $distriMediaOrderItem->setShipmentMethod($carrier);
 
             if ($carrier) {
                 $distriMediaOrderItem->setCarrier($carrier);

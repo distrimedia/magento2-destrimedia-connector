@@ -10,10 +10,10 @@ use DistriMedia\Connector\Api\Data\ShippedItemInterface;
 use DistriMedia\Connector\Api\Data\ShippedItemInterfaceFactory;
 use DistriMedia\Connector\Api\Data\TrackIdInterface;
 use DistriMedia\Connector\Api\OrderStatusChangeManagementInterface;
+use DistriMedia\Connector\DistriMediaException;
 use DistriMedia\Connector\Helper\ErrorHandlingHelper;
 use DistriMedia\Connector\Service\OrderSyncInterface;
 use DistriMedia\Connector\Ui\Component\Listing\Column\SyncStatus\Options;
-use Exception;
 use Magento\Catalog\Model\ResourceModel\Product\Collection as ProductCollection;
 use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory as ProductCollectionFactory;
 use Magento\Framework\Notification\NotifierPool;
@@ -62,7 +62,6 @@ class OrderStatusChangeManagement implements OrderStatusChangeManagementInterfac
     private $logger;
     private $config;
     private $productCollectionFactory;
-    private $eanAttribute;
     private $errorHandlingHelper;
 
     /**
@@ -128,14 +127,14 @@ class OrderStatusChangeManagement implements OrderStatusChangeManagementInterfac
         $ShippedItems = []
     ) {
         if (!$this->config->isEnabled()) {
-            throw new \Exception('DistriMedia Connector is not enabled');
+            throw new DistriMediaException('DistriMedia Connector is not enabled');
         }
 
         /* @var Order $order */
         $order = $this->orderFetcher->getOrderByDistriMediaData($OrderNumber, $OrderID);
 
         if ($order === null) {
-            throw new \Exception(
+            throw new DistriMediaException(
                 "Could not find order with DistriMedia Inc ID {$OrderID} or Magento Inc ID {$OrderNumber}"
             );
         }
@@ -174,6 +173,7 @@ class OrderStatusChangeManagement implements OrderStatusChangeManagementInterfac
 
             $this->updateOrderStatus($order, $data);
         } catch (\Exception $exception) {
+            $this->logger->critical($exception);
         }
 
         return '<Status>' . self::STATUS_OK . '</Status>';
@@ -201,7 +201,7 @@ class OrderStatusChangeManagement implements OrderStatusChangeManagementInterfac
             $internalStatus = isset($possibleOptions[$status]) ? $possibleOptions[$status] : null;
 
             if (!$internalStatus) {
-                throw new Exception("Cannot find status {$status}");
+                throw new DistriMediaException("Cannot find status {$status}");
             }
 
             $extAttrs->setDistriMediaSyncStatus($internalStatus);
@@ -249,7 +249,7 @@ class OrderStatusChangeManagement implements OrderStatusChangeManagementInterfac
             }
 
             if (empty($m2OrderItems)) {
-                throw new \Exception('No order items found');
+                throw new DistriMediaException('No order items found');
             }
 
             foreach ($m2OrderItems as $item) {
@@ -277,7 +277,7 @@ class OrderStatusChangeManagement implements OrderStatusChangeManagementInterfac
             }
 
             if ($shipment->getItems() === null) {
-                throw new \Exception(("Order {$order->getIncrementId()} is already shipped"));
+                throw new DistriMediaException(("Order {$order->getIncrementId()} is already shipped"));
             }
 
             $shipment->addTrack($track);
@@ -286,7 +286,7 @@ class OrderStatusChangeManagement implements OrderStatusChangeManagementInterfac
         } catch (\Exception $exception) {
             $message = $exception->getMessage();
             $this->logger->warning($message);
-            throw $exception;
+            throw new DistriMediaException($exception->getMessage());
         }
 
         return $shipment;
@@ -314,9 +314,9 @@ class OrderStatusChangeManagement implements OrderStatusChangeManagementInterfac
 
     /**
      * I try to match the order items with the data sent to this endpoint based on the EAN CODE saved on the order item
-     * @param array $orderItems
+     * @param array $shippedItems
      * @return array
-     * @throws \Exception
+     * @throws DistriMediaException
      */
     private function getOrderItems(array $shippedItems, Order $order)
     {
@@ -354,7 +354,7 @@ class OrderStatusChangeManagement implements OrderStatusChangeManagementInterfac
                 }
 
                 if (!$match) {
-                    throw new \Exception("No order item found for ean code = {$eanCode}");
+                    throw new DistriMediaException(("No order item found for ean code = {$eanCode}"));
                 }
             }
         }

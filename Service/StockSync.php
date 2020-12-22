@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace DistriMedia\Connector\Service;
 
+use DistriMedia\Connector\DistriMediaException;
 use DistriMedia\Connector\Helper\StockItemBuilder;
 use DistriMedia\Connector\Model\ConfigInterface;
 use DistriMedia\SoapClient\Service\Inventory as DistriMediaInventoryService;
@@ -16,7 +17,8 @@ use Psr\Log\LoggerInterface;
 class StockSync extends AbstractSync implements StockSyncInterface
 {
     const SKU_ATTRIBUTE = 'sku';
-    const PRODUCT_MASS_SCHEDULE_PUT = 'async.magento.cataloginventory.api.stockregistryinterface.updatestockitembysku.put';
+    const PRODUCT_MASS_SCHEDULE_PUT =
+        'async.magento.cataloginventory.api.stockregistryinterface.updatestockitembysku.put';
     const PRODUCT_MSI_MASS_SCHEDULE_POST = 'async.magento.inventoryapi.api.sourceitemssaveinterface.execute.post';
     const MSI_MODULE = 'Magento_Inventory';
 
@@ -56,6 +58,7 @@ class StockSync extends AbstractSync implements StockSyncInterface
 
     /**
      * I create a new Inventory service
+     * @throws DistriMediaException
      */
     private function init(): void
     {
@@ -66,7 +69,7 @@ class StockSync extends AbstractSync implements StockSyncInterface
             if (!empty($uri) && !empty($password) && !empty($webshopCode)) {
                 $this->inventoryService = new DistriMediaInventoryService($uri, $webshopCode, $password);
             } else {
-                throw new \Exception(
+                throw new DistriMediaException(
                     'Invalid DistriMedia Configuration. Some fields are missing (uri, webshopcode or password)'
                 );
             }
@@ -99,7 +102,9 @@ class StockSync extends AbstractSync implements StockSyncInterface
                     if ($product !== null) {
                         $sku = $product->getData('sku');
                     } else {
-                        throw new \Exception("Stock sync problem: Could not find product with {$eanAttr} = {$ean}");
+                        throw new DistriMediaException(
+                            "Stock sync problem: Could not find product with {$eanAttr} = {$ean}"
+                        );
                     }
                 }
                 $qty = (int) $stockItem->getClaimable();
@@ -118,8 +123,8 @@ class StockSync extends AbstractSync implements StockSyncInterface
                     $bulkMessage[] = $productArray;
                 }
             } catch (\Exception $exception) {
-                $this->logger->critical($exception->getMessage());
                 $errors[] = $exception->getMessage();
+                $this->logger->critical($exception->getMessage());
             }
         }
 

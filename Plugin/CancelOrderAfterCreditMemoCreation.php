@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace DistriMedia\Connector\Plugin;
 
+use DistriMedia\Connector\DistriMediaException;
 use DistriMedia\Connector\Model\ConfigInterface;
 use DistriMedia\Connector\Service\OrderSyncInterface;
 use DistriMedia\SoapClient\InvalidOrderException;
@@ -39,7 +40,7 @@ class CancelOrderAfterCreditMemoCreation
 
     /**
      * @return null
-     * @throws \Exception
+     * @throws DistriMediaException
      */
     public function beforeRefund(CreditmemoManagementInterface $subject, CreditmemoInterface $result)
     {
@@ -53,7 +54,7 @@ class CancelOrderAfterCreditMemoCreation
                 }
             } catch (InvalidOrderException $invalidOrderException) {
                 $this->messageManager->addErrorMessage($invalidOrderException->getMessage());
-                throw new \Exception($invalidOrderException->getMessage());
+                throw new DistriMediaException($invalidOrderException->getMessage());
             }
         }
 

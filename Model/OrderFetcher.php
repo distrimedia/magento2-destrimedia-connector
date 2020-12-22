@@ -100,8 +100,10 @@ class OrderFetcher implements OrderFetcherInterface
     /**
      * @inheridoc
      */
-    public function getOrderByDistriMediaData(string $magentoIncrementID, string $distriMediaIncrementID): ?OrderInterface
-    {
+    public function getOrderByDistriMediaData(
+        string $magentoIncrementID,
+        string $distriMediaIncrementID
+    ): ?OrderInterface {
         $order = $this->orderCollectionFactory->create()
             ->addFieldToSelect('*')
             ->addFieldToFilter(

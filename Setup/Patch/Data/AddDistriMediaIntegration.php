@@ -5,19 +5,21 @@ declare(strict_types=1);
 namespace DistriMedia\Connector\Setup\Patch\Data;
 
 use DistriMedia\Connector\Helper\TokenBuilder;
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Setup\Patch\DataPatchInterface;
+use Psr\Log\LoggerInterface;
 
-/**
- * Class AddEanCodeAttribute
- */
 class AddDistriMediaIntegration implements DataPatchInterface
 {
     private $tokenBuilder;
+    private $logger;
 
     public function __construct(
-        TokenBuilder $tokenBuilder
+        TokenBuilder $tokenBuilder,
+        LoggerInterface $logger
     ) {
         $this->tokenBuilder = $tokenBuilder;
+        $this->logger = $logger;
     }
 
     public static function getDependencies()
@@ -32,7 +34,11 @@ class AddDistriMediaIntegration implements DataPatchInterface
 
     public function apply()
     {
-        $this->tokenBuilder->createToken();
+        try {
+            $this->tokenBuilder->createToken();
+        } catch (LocalizedException $e) {
+            $this->logger->critical($e);
+        }
 
         return $this;
     }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace DistriMedia\Connector\Helper;
 
+use DistriMedia\Connector\DistriMediaException;
 use DistriMedia\Connector\Model\ConfigInterface;
 use Magento\Framework\Mail\Template\TransportBuilder;
 use Magento\Framework\Translate\Inline\StateInterface;
@@ -34,7 +35,7 @@ class ErrorHandlingHelper
         $recipient = $this->config->getErrorEmailRecipient();
 
         if (!$recipient) {
-            throw new \Exception('No Error email recipient defined');
+            throw new DistriMediaException('No Error email recipient defined');
         }
 
         if (count($errors)) {

@@ -7,6 +7,7 @@ namespace DistriMedia\Connector\Helper;
 use DistriMedia\Connector\Model\Config;
 use Magento\Framework\App\Cache\TypeListInterface;
 use Magento\Framework\App\Config\Storage\WriterInterface;
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Integration\Api\AuthorizationServiceInterface;
 use Magento\Integration\Api\IntegrationServiceInterface;
 use Magento\Integration\Api\OauthServiceInterface;
@@ -47,8 +48,7 @@ class TokenBuilder
 
     /**
      * @return string
-     * @throws \Magento\Framework\Exception\IntegrationException
-     * @throws \Magento\Framework\Exception\LocalizedException
+     * @throws LocalizedException
      */
     public function createToken()
     {

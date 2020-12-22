@@ -3,7 +3,7 @@
     <p class="greylighting_content"><?= $block->escapeHtml($block->getAccessToken()); ?></p>
     <p><small>Provide the Access Token to DistriMedia.</small></p>
     <?php else: ?>
-        <a href="<?= $block->createAccessTokenUrl() ?>"
+        <a href="<?= $block->escapeUrl($block->createAccessTokenUrl()) ?>"
            class="distrimedia-btn -blue"
            title="<?= $block->escapeHtml(__('Create Token?')) ?>">
             <?= $block->escapeHtml(__('Create Token')) ?>

@@ -11,6 +11,8 @@ use Magento\Sales\Api\Data\OrderItemExtension;
 use Magento\Sales\Api\Data\OrderItemExtensionFactory;
 use Magento\Sales\Api\Data\OrderItemInterface;
 use Magento\Sales\Model\Order\ItemRepository as MagentoOrderItemRepository;
+use Magento\Sales\Model\ResourceModel\Order\Item;
+use Magento\Sales\Model\ResourceModel\Order\Item\Collection;
 
 class SetExtensionAttributesOnOrderItem
 {
@@ -61,8 +63,8 @@ class SetExtensionAttributesOnOrderItem
     ) {
         $extensionAttributes = $orderItem->getExtensionAttributes() ?: $this->extensionFactory->create();
         if ($extensionAttributes !== null) {
-            if ($extensionAttributes->getDistriMediaEanCode(
-                ) !== null && $extensionAttributes->getDistriMediaExternalRef() !== null) {
+            if ($extensionAttributes->getDistriMediaEanCode() !== null &&
+                $extensionAttributes->getDistriMediaExternalRef() !== null) {
                 $orderItem->setDistriMediaEanCode($extensionAttributes->getDistriMediaEanCode());
                 $orderItem->setDistriMediaExternalRef($extensionAttributes->getDistriMediaExternalRef());
             } else {
@@ -92,10 +94,10 @@ class SetExtensionAttributesOnOrderItem
 
     public function afterGetList(
         MagentoOrderItemRepository $subject,
-        \Magento\Sales\Model\ResourceModel\Order\Item\Collection $orderItems
-    ): \Magento\Sales\Model\ResourceModel\Order\Item\Collection {
+        Collection $orderItems
+    ): Collection {
         $products = [];
-        /* @var \Magento\Sales\Model\ResourceModel\Order\Item $entity */
+        /* @var Item $entity */
         foreach ($orderItems as $entity) {
             $extensionAttributes = $entity->getExtensionAttributes();
             $extensionAttributes->setDistriMediaEanCode($entity->getData(self::DISTRI_MEDIA_EAN_CODE));

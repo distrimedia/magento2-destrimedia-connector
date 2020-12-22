@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace DistriMedia\Connector\Plugin;
 
+use DistriMedia\Connector\DistriMediaException;
 use DistriMedia\Connector\Model\ConfigInterface;
 use DistriMedia\Connector\Service\OrderBuilder;
 use DistriMedia\SoapClient\Service\Customer as CustomerService;
@@ -52,7 +53,10 @@ class SyncUpdatedShippingAddress
                     $extensionAttrs = $order->getExtensionAttributes();
                     $distriMediaIncrementId = $extensionAttrs->getDistriMediaIncrementId();
 
-                    $distriMediaCustomer = $this->orderBuilder->getDistriMediaCustomerFromMagentoOrder($order, $orderAddress);
+                    $distriMediaCustomer = $this->orderBuilder->getDistriMediaCustomerFromMagentoOrder(
+                        $order,
+                        $orderAddress
+                    );
 
                     $uri = $this->config->getApiUri();
                     $password = $this->config->getApiPassword();
@@ -65,7 +69,7 @@ class SyncUpdatedShippingAddress
                     return $proceed($orderAddress);
                 }
             } else {
-                throw new \Exception('Shipping address cannot be changed');
+                throw new DistriMediaException('Shipping address cannot be changed');
             }
         } else {
             return $proceed($orderAddress);

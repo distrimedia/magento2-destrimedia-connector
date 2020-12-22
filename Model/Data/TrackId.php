@@ -7,9 +7,6 @@ namespace DistriMedia\Connector\Model\Data;
 use DistriMedia\Connector\Api\Data\TrackIdInterface;
 use Magento\Framework\Model\AbstractModel;
 
-/**
- * Class TrackId
- */
 class TrackId extends AbstractModel implements TrackIdInterface
 {
     /**

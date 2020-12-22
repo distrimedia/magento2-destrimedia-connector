@@ -30,7 +30,7 @@ class SetExtensionAttributesOnOrder
     }
 
     /**
-     * @param OrderRepositoryInterface $subject
+     * @param MagentoOrderRepository $subject
      * @return OrderInterface
      */
     public function afterGet(

@@ -8,9 +8,9 @@
         function StartStockSync() {
             var validationMessage = $('validation_result');
 
-            new Ajax.Request('<?= /* @escapeNotVerified */ $block->getAjaxUrl() ?>', {
+            new Ajax.Request('<?= $block->escapeUrl($block->getAjaxUrl()) ?>', {
                 onSuccess: function(response) {
-                    var result = '<?php /* @escapeNotVerified */ echo __('Error while scheduling a new Full Import.') ?>';
+                    var result = '<?= $block->escapeHtml(__('Error while scheduling a new Full Import.')); ?>';
                     try {
                         if (response.responseText.isJSON()) {
                             response = response.responseText.evalJSON();
@@ -33,8 +33,9 @@
     });
 </script>
 <div class="actions">
-    <button onclick="javascript:startStockSync(); return false;" type="button" id="<?php echo $block->getHtmlId() ?>">
-        <span><?php echo $block->escapeHtml($block->getButtonLabel()) ?></span>
+    <button onclick="javascript:startStockSync(); return false;"
+            type="button" id="<?= $block->escapeHtmlAttr($block->getHtmlId()) ?>">
+        <span><?= $block->escapeHtml($block->getButtonLabel()) ?></span>
     </button>
     <p><?= $block->escapeHtml(__("Status: ") . " " . $block->getStatus()); ?></p>
     <p><?= $block->escapeHtml(__("Last Executed: ") . " " . $block->getLastExecutionDate()); ?></p>

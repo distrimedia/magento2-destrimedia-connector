@@ -6,9 +6,6 @@ namespace DistriMedia\Connector\Ui\Component\Listing\Column\SyncStatus;
 
 use Magento\Framework\Data\OptionSourceInterface;
 
-/**
- * Class Options
- */
 class Options implements OptionSourceInterface
 {
     const SYNC_STATUS_NOT_SYNCED = 0;

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace DistriMedia\Connector\Service;
 
 use DistriMedia\Connector\Cron\SyncOrders;
+use DistriMedia\Connector\DistriMediaException;
 use DistriMedia\Connector\Model\ConfigInterface;
 use DistriMedia\Connector\Ui\Component\Listing\Column\SyncStatus\Options;
 use DistriMedia\SoapClient\InvalidOrderException;
@@ -19,8 +20,6 @@ use Psr\Log\LoggerInterface;
 
 class OrderSync extends AbstractSync implements OrderSyncInterface
 {
-    const ORDER_EXISTS_MESSAGE = 'Ordernumber %1 already exists';
-
     /**
      * @var DistriMediaOrderService
      */
@@ -48,6 +47,7 @@ class OrderSync extends AbstractSync implements OrderSyncInterface
 
     /**
      * I create a new Inventory service
+     * @throws DistriMediaException
      */
     private function init(): void
     {
@@ -65,7 +65,7 @@ class OrderSync extends AbstractSync implements OrderSyncInterface
                     $this->logger
                 );
             } else {
-                throw new \Exception(
+                throw new DistriMediaException(
                     'Invalid DistriMedia Configuration. Some fields are missing (uri, webshopcode or password)'
                 );
             }
@@ -138,20 +138,19 @@ class OrderSync extends AbstractSync implements OrderSyncInterface
                     $extensionAttributes->setDistriMediaIncrementId($incrementId);
                     $status = Options::SYNC_STATUS_SYNCED;
                 } else {
-                    throw new \Exception($result->getReason());
+                    throw new DistriMediaException($result->getReason());
                 }
             }
         } catch (\Exception $e) {
             //if the order already exists, we set the status to synced.
-            if (strpos(
-                    $e->getMessage(),
-                    __(self::ORDER_EXISTS_MESSAGE, $order->getIncrementId())->render()
-                ) !== false) {
+            if (strpos($e->getMessage(), __('Ordernumber %1 already exists', $order->getIncrementId())->render())
+                !== false
+            ) {
                 $status = Options::SYNC_STATUS_SYNCED;
             } else {
                 $this->logger->critical(
-                    "DistriMedia SyncOrders Cron: failed to sync message for order {$order->getIncrementId()}: " . $e->getMessage(
-                    )
+                    "DistriMedia SyncOrders Cron: failed to sync message for order 
+                    {$order->getIncrementId()}: " . $e->getMessage()
                 );
             }
         }

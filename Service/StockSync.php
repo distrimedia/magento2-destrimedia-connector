@@ -6,14 +6,12 @@ namespace DistriMedia\Connector\Service;
 
 use DistriMedia\Connector\Helper\StockItemBuilder;
 use DistriMedia\Connector\Model\ConfigInterface;
-use DistriMedia\SoapClient\Service\AbstractSoapClient;
 use DistriMedia\SoapClient\Service\Inventory as DistriMediaInventoryService;
 use Magento\AsynchronousOperations\Model\MassSchedule;
-use Psr\Log\LoggerInterface;
 use Magento\AsynchronousOperations\Model\MassScheduleFactory;
-use Magento\Framework\Module\Manager as ModuleManager;
-use Magento\Catalog\Model\ResourceModel\Product\Collection as ProductCollection;
 use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory as ProductCollectionFactory;
+use Magento\Framework\Module\Manager as ModuleManager;
+use Psr\Log\LoggerInterface;
 
 class StockSync extends AbstractSync implements StockSyncInterface
 {
@@ -22,19 +20,11 @@ class StockSync extends AbstractSync implements StockSyncInterface
     const PRODUCT_MSI_MASS_SCHEDULE_POST = 'async.magento.inventoryapi.api.sourceitemssaveinterface.execute.post';
     const MSI_MODULE = 'Magento_Inventory';
 
-    /**
-     * @var DistriMediaInventoryService $inventoryService
-     */
     private $inventoryService;
-
     private $stockItemBuilder;
     private $massScheduleFactory;
     private $moduleManager;
     private $productCollectionFactory;
-
-    /**
-     * @var ProductCollection $_productCollection
-     */
     private $_productCollection;
 
     public function __construct(
@@ -44,8 +34,7 @@ class StockSync extends AbstractSync implements StockSyncInterface
         MassScheduleFactory $massScheduleFactory,
         ModuleManager $moduleManager,
         ProductCollectionFactory $productCollectionFactory
-    )
-    {
+    ) {
         $this->config = $config;
         $this->stockItemBuilder = $stockItemBuilder;
         $this->massScheduleFactory = $massScheduleFactory;
@@ -55,7 +44,7 @@ class StockSync extends AbstractSync implements StockSyncInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function fetchAllStock(): array
     {
@@ -77,12 +66,15 @@ class StockSync extends AbstractSync implements StockSyncInterface
             if (!empty($uri) && !empty($password) && !empty($webshopCode)) {
                 $this->inventoryService = new DistriMediaInventoryService($uri, $webshopCode, $password);
             } else {
-                throw new \Exception("Invalid DistriMedia Configuration. Some fields are missing (uri, webshopcode or password)");
+                throw new \Exception(
+                    'Invalid DistriMedia Configuration. Some fields are missing (uri, webshopcode or password)'
+                );
             }
         }
     }
+
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function processStock(array $stockItems): array
     {
@@ -120,7 +112,7 @@ class StockSync extends AbstractSync implements StockSyncInterface
 
                     $productArray = [
                         'productSku' => $sku,
-                        'stockItem' => $stockItemInterface
+                        'stockItem' => $stockItemInterface,
                     ];
 
                     $bulkMessage[] = $productArray;
@@ -130,7 +122,6 @@ class StockSync extends AbstractSync implements StockSyncInterface
                 $errors[] = $exception->getMessage();
             }
         }
-
 
         if (!empty($bulkMessage)) {
             /** @var MassSchedule $massSchedule */
@@ -149,7 +140,7 @@ class StockSync extends AbstractSync implements StockSyncInterface
             );
         }
 
-        $errors[] = __(count($bulkMessage) . " Products are updated");
+        $errors[] = __(count($bulkMessage) . ' Products are updated');
 
         return $errors;
     }

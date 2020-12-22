@@ -25,8 +25,7 @@ interface PackageInterface
     public function getAWB();
 
     /**
-     * @param $awb
-     * @return DistriMedia\Connector\Api\Data\TrackIdInterface
+     * @return \DistriMedia\Connector\Api\Data\TrackIdInterface
      */
     public function setAWB($awb);
 
@@ -36,8 +35,7 @@ interface PackageInterface
     public function getTrackID();
 
     /**
-     * @param $trackID
-     * @return DistriMedia\Connector\Api\Data\TrackIdInterface
+     * @return \DistriMedia\Connector\Api\Data\TrackIdInterface
      */
     public function setTrackID($trackID);
 
@@ -47,8 +45,7 @@ interface PackageInterface
     public function getBoxType();
 
     /**
-     * @param $boxType
-     * @return DistriMedia\Connector\Api\Data\TrackIdInterface
+     * @return \DistriMedia\Connector\Api\Data\TrackIdInterface
      */
     public function setBoxType($boxType);
 
@@ -58,8 +55,7 @@ interface PackageInterface
     public function getReference();
 
     /**
-     * @param $reference
-     * @return DistriMedia\Connector\Api\Data\TrackIdInterface
+     * @return \DistriMedia\Connector\Api\Data\TrackIdInterface
      */
     public function setReference($reference);
 
@@ -69,8 +65,7 @@ interface PackageInterface
     public function getWeight();
 
     /**
-     * @param $weight
-     * @return DistriMedia\Connector\Api\Data\TrackIdInterface
+     * @return \DistriMedia\Connector\Api\Data\TrackIdInterface
      */
     public function setWeight($weight);
 
@@ -80,8 +75,7 @@ interface PackageInterface
     public function getBoxNumber();
 
     /**
-     * @param $boxNumber
-     * @return DistriMedia\Connector\Api\Data\TrackIdInterface
+     * @return \DistriMedia\Connector\Api\Data\TrackIdInterface
      */
     public function setBoxNumber($boxNumber);
 
@@ -91,8 +85,7 @@ interface PackageInterface
     public function getVolume();
 
     /**
-     * @param $volume
-     * @return DistriMedia\Connector\Api\Data\TrackIdInterface
+     * @return \DistriMedia\Connector\Api\Data\TrackIdInterface
      */
     public function setVolume($volume);
 
@@ -102,8 +95,7 @@ interface PackageInterface
     public function getHeight();
 
     /**
-     * @param $height
-     * @return DistriMedia\Connector\Api\Data\TrackIdInterface
+     * @return \DistriMedia\Connector\Api\Data\TrackIdInterface
      */
     public function setHeight($height);
 
@@ -113,8 +105,7 @@ interface PackageInterface
     public function getWidth();
 
     /**
-     * @param $width
-     * @return DistriMedia\Connector\Api\Data\TrackIdInterface
+     * @return \DistriMedia\Connector\Api\Data\TrackIdInterface
      */
     public function setWidth($width);
 
@@ -124,8 +115,7 @@ interface PackageInterface
     public function getLength();
 
     /**
-     * @param $length
-     * @return DistriMedia\Connector\Api\Data\TrackIdInterface
+     * @return \DistriMedia\Connector\Api\Data\TrackIdInterface
      */
     public function setLength($length);
 
@@ -135,8 +125,7 @@ interface PackageInterface
     public function getDescription();
 
     /**
-     * @param $description
-     * @return DistriMedia\Connector\Api\Data\TrackIdInterface
+     * @return \DistriMedia\Connector\Api\Data\TrackIdInterface
      */
     public function setDescription($description);
 
@@ -146,9 +135,7 @@ interface PackageInterface
     public function getTrackAndTraceURL();
 
     /**
-     * @param $trackAndTraceURL
-     * @return DistriMedia\Connector\Api\Data\TrackIdInterface
+     * @return \DistriMedia\Connector\Api\Data\TrackIdInterface
      */
     public function setTrackAndTraceURL($trackAndTraceURL);
-
 }

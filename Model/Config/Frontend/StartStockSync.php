@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace DistriMedia\Connector\Model\Config\Frontend;
 
-
 use DistriMedia\Connector\Model\Flag\LastExecutionFlag;
 use DistriMedia\Connector\Model\Flag\Status;
 use Magento\Backend\Block\Template\Context;
-use \Magento\Config\Block\System\Config\Form\Field;
-use \Magento\Framework\Data\Form\Element\AbstractElement;
+use Magento\Config\Block\System\Config\Form\Field;
+use Magento\Framework\Data\Form\Element\AbstractElement;
 use Magento\Framework\Stdlib\DateTime\TimezoneInterface;
 
 class StartStockSync extends Field
 {
     protected $_template = 'DistriMedia_Connector::stock_sync.phtml';
+
     /**
      * @var LastExecutionFlag
      */
@@ -34,14 +34,12 @@ class StartStockSync extends Field
         Status $statusFlag,
         TimezoneInterface $timezone,
         array $data = []
-    )
-    {
+    ) {
         parent::__construct($context, $data);
         $this->lastExecutionFlag = $lastExecutionFlag;
         $this->statusFlag = $statusFlag;
         $this->timezone = $timezone;
     }
-
 
     protected function _getElementHtml(AbstractElement $element)
     {

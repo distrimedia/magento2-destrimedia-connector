@@ -1,17 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace DistriMedia\Connector\Controller\Adminhtml\Order;
 
 use DistriMedia\Connector\Ui\Component\Listing\Column\SyncStatus\Options;
+use Magento\Backend\App\Action\Context;
 use Magento\Framework\App\Action\HttpPostActionInterface as HttpPostActionInterface;
 use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection;
-use Magento\Backend\App\Action\Context;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Sales\Controller\Adminhtml\Order\AbstractMassAction;
-use Magento\Ui\Component\MassAction\Filter;
 use Magento\Sales\Model\ResourceModel\Order\CollectionFactory;
+use Magento\Ui\Component\MassAction\Filter;
+use Psr\Log\LoggerInterface;
 
 class MassRetrySyncOrders extends AbstractMassAction implements HttpPostActionInterface
 {
@@ -25,27 +28,25 @@ class MassRetrySyncOrders extends AbstractMassAction implements HttpPostActionIn
      */
     private $orderRepository;
 
+    private $logger;
+
     /**
      * MassRetrySyncOrders constructor.
-     * @param Context $context
-     * @param Filter $filter
-     * @param CollectionFactory $collectionFactory
-     * @param OrderRepositoryInterface $orderRepository
      */
     public function __construct(
         Context $context,
         Filter $filter,
         CollectionFactory $collectionFactory,
-        OrderRepositoryInterface $orderRepository
-    )
-    {
+        OrderRepositoryInterface $orderRepository,
+        LoggerInterface $logger
+    ) {
         parent::__construct($context, $filter);
         $this->collectionFactory = $collectionFactory;
         $this->orderRepository = $orderRepository;
+        $this->logger = $logger;
     }
 
     /**
-     * @param AbstractCollection $collection
      * @return ResponseInterface|\Magento\Framework\Controller\Result\Redirect|ResultInterface
      */
     protected function massAction(AbstractCollection $collection)
@@ -70,26 +71,30 @@ class MassRetrySyncOrders extends AbstractMassAction implements HttpPostActionIn
                 $this->orderRepository->save($order);
                 $isQueued = true;
             } catch (\Exception $exception) {
-
+                $this->logger->critical($exception);
             }
 
             if ($isQueued === false) {
                 continue;
             }
 
-            $countCancelOrder++;
+            ++$countCancelOrder;
         }
 
         $countNonCancelOrder = $collection->count() - $countCancelOrder;
 
         if ($countNonCancelOrder && $countCancelOrder) {
-            $this->messageManager->addErrorMessage(__('Cannot reschedule Distrimedia sync for %1 order(s) ', $countNonCancelOrder));
+            $this->messageManager->addErrorMessage(
+                __('Cannot reschedule Distrimedia sync for %1 order(s) ', $countNonCancelOrder)
+            );
         } elseif ($countNonCancelOrder) {
             $this->messageManager->addErrorMessage(__('Cannot reschedule Distrimedia sync for the order(s).'));
         }
 
         if ($countCancelOrder) {
-            $this->messageManager->addSuccessMessage(__('We rescheduled Distrimedia sync for %1 order(s).', $countCancelOrder));
+            $this->messageManager->addSuccessMessage(
+                __('We rescheduled Distrimedia sync for %1 order(s).', $countCancelOrder)
+            );
         }
         $resultRedirect = $this->resultRedirectFactory->create();
         $resultRedirect->setPath($this->getComponentRefererUrl());

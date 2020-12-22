@@ -4,19 +4,14 @@ declare(strict_types=1);
 
 namespace DistriMedia\Connector\Model;
 
-use DistriMedia\Connector\Ui\Component\Listing\Column\SyncStatus\Options;
-use Magento\Framework\Api\SearchCriteria;
 use Magento\Framework\Api\Filter;
 use Magento\Framework\Api\FilterFactory;
-use Magento\Framework\Api\Search\FilterGroup;
 use Magento\Framework\Api\Search\FilterGroupFactory;
 use Magento\Framework\Api\SearchCriteriaFactory;
 use Magento\Sales\Api\Data\InvoiceSearchResultInterface;
 use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Api\Data\OrderInterface as MagentoOrder;
-use Magento\Sales\Api\Data\OrderSearchResultInterface;
 use Magento\Sales\Api\InvoiceRepositoryInterface;
-use Magento\Sales\Model\Order;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Sales\Model\ResourceModel\Order\Collection;
 use Magento\Sales\Model\ResourceModel\Order\CollectionFactory as OrderCollectionFactory;
@@ -24,7 +19,6 @@ use Magento\Sales\Model\ResourceModel\Order\CollectionFactory as OrderCollection
 /**
  * I am responsible for getting orders and invoices from Magento
  * Class OrderFetcher
- * @package DistriMedia\Connector\Helper
  */
 class OrderFetcher implements OrderFetcherInterface
 {
@@ -42,8 +36,7 @@ class OrderFetcher implements OrderFetcherInterface
         FilterGroupFactory $filterGroupFactory,
         SearchCriteriaFactory $searchCriteriaFactory,
         OrderCollectionFactory $orderCollectionFactory
-    )
-    {
+    ) {
         $this->orderRepository = $orderRepository;
         $this->filterFactory = $filterFactory;
         $this->filterGroupFactory = $filterGroupFactory;
@@ -58,9 +51,9 @@ class OrderFetcher implements OrderFetcherInterface
     public function getUnsyncedOrdersInProgress(): Collection
     {
         $orderCollection = $this->orderCollectionFactory->create()
-            ->addFieldToSelect("*")
-            ->addFieldToFilter("distri_media_increment_id", ['null' => true])
-            ->addFieldToFilter("state", ['eq' => 'processing']);
+            ->addFieldToSelect('*')
+            ->addFieldToFilter('distri_media_increment_id', ['null' => true])
+            ->addFieldToFilter('state', ['eq' => 'processing']);
 
         return $orderCollection;
     }
@@ -75,7 +68,6 @@ class OrderFetcher implements OrderFetcherInterface
      */
     public function getPaidInvoicesByOrder(MagentoOrder $order): InvoiceSearchResultInterface
     {
-
         /* @var Filter $paidInvoicesFilter */
         $paidInvoicesFilter = $this->filterFactory->create();
         $paidInvoicesFilter
@@ -93,11 +85,12 @@ class OrderFetcher implements OrderFetcherInterface
             ->setValue($order->getEntityId())
             ->setConditionType('eq');
 
-
         $filterOrderGroup = $this->filterGroupFactory->create()
             ->setFilters([$orderFilter]);
 
-        $searchCriteria = $this->searchCriteriaFactory->create()->setFilterGroups([$filterInvoiceGroup, $filterOrderGroup]);
+        $searchCriteria = $this->searchCriteriaFactory->create()->setFilterGroups(
+            [$filterInvoiceGroup, $filterOrderGroup]
+        );
 
         $invoices = $this->invoiceRepository->getList($searchCriteria);
 
@@ -110,12 +103,12 @@ class OrderFetcher implements OrderFetcherInterface
     public function getOrderByDistriMediaData(string $magentoIncrementID, string $distriMediaIncrementID): ?OrderInterface
     {
         $order = $this->orderCollectionFactory->create()
-            ->addFieldToSelect("*")
+            ->addFieldToSelect('*')
             ->addFieldToFilter(
                 ['increment_id', 'distri_media_increment_id'],
                 [
                     ['eq' => $magentoIncrementID],
-                    ['eq' => $distriMediaIncrementID]
+                    ['eq' => $distriMediaIncrementID],
                 ]
             )->getFirstItem();
 

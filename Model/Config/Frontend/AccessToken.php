@@ -25,8 +25,7 @@ class AccessToken extends Field
         \Magento\Integration\Api\OauthServiceInterface $oauthService,
         UrlFactory $urlFactory,
         array $data = []
-    )
-    {
+    ) {
         $this->config = $config;
         $this->oauthService = $oauthService;
         $this->urlFactory = $urlFactory;
@@ -60,6 +59,7 @@ class AccessToken extends Field
     public function createAccessTokenUrl()
     {
         $url = $this->urlFactory->create();
+
         return $url->getUrl(self::CREATE_TOKEN_URL);
     }
 }

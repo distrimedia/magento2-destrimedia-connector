@@ -11,10 +11,10 @@ use DistriMedia\SoapClient\InvalidOrderException;
 use DistriMedia\SoapClient\Service\Order as DistriMediaOrderService;
 use DistriMedia\SoapClient\Struct\Order as DistriMediaOrderStruct;
 use DistriMedia\SoapClient\Struct\Response\Order as DistriMediaOrderResponse;
+use Magento\Sales\Api\Data\OrderExtensionFactory;
 use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Sales\Model\ResourceModel\Order\CollectionFactory as OrderCollectionFactory;
-use Magento\Sales\Api\Data\OrderExtensionFactory;
 use Psr\Log\LoggerInterface;
 
 class OrderSync extends AbstractSync implements OrderSyncInterface
@@ -37,8 +37,7 @@ class OrderSync extends AbstractSync implements OrderSyncInterface
         OrderExtensionFactory $orderExtensionFactory,
         OrderBuilderFactory $orderBuilderFactory,
         OrderCollectionFactory $orderCollectionFactory
-    )
-    {
+    ) {
         $this->logger = $logger;
         $this->orderRepository = $orderRepository;
         $this->extensionFactory = $orderExtensionFactory;
@@ -67,23 +66,24 @@ class OrderSync extends AbstractSync implements OrderSyncInterface
                 );
             } else {
                 throw new \Exception(
-                    "Invalid DistriMedia Configuration. Some fields are missing (uri, webshopcode or password)"
+                    'Invalid DistriMedia Configuration. Some fields are missing (uri, webshopcode or password)'
                 );
             }
         }
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function syncDistriMediaOrder(DistriMediaOrderStruct $distriMediaOrder)
     {
         $this->init();
+
         return $this->distriMediaOrderService->createOrder($distriMediaOrder);
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function cancelOrder(OrderInterface $order): ?bool
     {
@@ -111,7 +111,7 @@ class OrderSync extends AbstractSync implements OrderSyncInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function preprareOrderForSync(OrderInterface $order)
     {
@@ -121,7 +121,7 @@ class OrderSync extends AbstractSync implements OrderSyncInterface
 
         $status = Options::SYNC_STATUS_FAILED;
 
-        $attempts = (int)$extensionAttributes->getDistriMediaSyncAttempts();
+        $attempts = (int) $extensionAttributes->getDistriMediaSyncAttempts();
 
         try {
             /* @var OrderBuilder $orderBuilder */
@@ -143,16 +143,20 @@ class OrderSync extends AbstractSync implements OrderSyncInterface
             }
         } catch (\Exception $e) {
             //if the order already exists, we set the status to synced.
-            if (strpos($e->getMessage(), __(self::ORDER_EXISTS_MESSAGE, $order->getIncrementId())->render()) !== false) {
+            if (strpos(
+                    $e->getMessage(),
+                    __(self::ORDER_EXISTS_MESSAGE, $order->getIncrementId())->render()
+                ) !== false) {
                 $status = Options::SYNC_STATUS_SYNCED;
             } else {
                 $this->logger->critical(
-                    "DistriMedia SyncOrders Cron: failed to sync message for order {$order->getIncrementId()}: " . $e->getMessage()
+                    "DistriMedia SyncOrders Cron: failed to sync message for order {$order->getIncrementId()}: " . $e->getMessage(
+                    )
                 );
             }
         }
 
-        $attempts++;
+        ++$attempts;
 
         $extensionAttributes->setDistriMediaSyncAttempts($attempts);
 
@@ -162,7 +166,7 @@ class OrderSync extends AbstractSync implements OrderSyncInterface
             } else {
                 $this->logger->critical(
                     "DistriMedia SyncOrders Cron: failed to sync order {$order->getIncrementId()}. Max attempts "
-                    . SyncOrders::MAX_SYNC_ATTEMPTS . " reached"
+                    . SyncOrders::MAX_SYNC_ATTEMPTS . ' reached'
                 );
             }
         }

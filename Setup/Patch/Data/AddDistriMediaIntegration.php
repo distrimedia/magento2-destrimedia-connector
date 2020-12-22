@@ -1,14 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace DistriMedia\Connector\Setup\Patch\Data;
 
 use DistriMedia\Connector\Helper\TokenBuilder;
-use Magento\Eav\Setup\EavSetupFactory;
 use Magento\Framework\Setup\Patch\DataPatchInterface;
 
 /**
  * Class AddEanCodeAttribute
- * @package DistriMedia\Connector\Setup\Patch\Data
  */
 class AddDistriMediaIntegration implements DataPatchInterface
 {
@@ -16,8 +16,7 @@ class AddDistriMediaIntegration implements DataPatchInterface
 
     public function __construct(
         TokenBuilder $tokenBuilder
-    )
-    {
+    ) {
         $this->tokenBuilder = $tokenBuilder;
     }
 
@@ -34,5 +33,7 @@ class AddDistriMediaIntegration implements DataPatchInterface
     public function apply()
     {
         $this->tokenBuilder->createToken();
+
+        return $this;
     }
 }

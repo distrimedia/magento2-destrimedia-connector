@@ -9,20 +9,19 @@ use Magento\Framework\Model\AbstractModel;
 
 /**
  * Class TrackId
- * @package DistriMedia\Connector\Model\Data
  */
 class Product extends AbstractModel implements ProductInterface
 {
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function getEAN()
     {
-       return $this->getData(self::EAN);
+        return $this->getData(self::EAN);
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function setEAN($ean)
     {
@@ -30,7 +29,7 @@ class Product extends AbstractModel implements ProductInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function getPieces()
     {
@@ -38,7 +37,7 @@ class Product extends AbstractModel implements ProductInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function setPieces($pieces)
     {
@@ -46,7 +45,7 @@ class Product extends AbstractModel implements ProductInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function getExternalRef()
     {
@@ -54,7 +53,7 @@ class Product extends AbstractModel implements ProductInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function setExternalRef($externalRef)
     {
@@ -62,7 +61,7 @@ class Product extends AbstractModel implements ProductInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function getExtRef()
     {
@@ -70,7 +69,7 @@ class Product extends AbstractModel implements ProductInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function setExtRef($externalRef)
     {
@@ -78,7 +77,7 @@ class Product extends AbstractModel implements ProductInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function getDescription1()
     {
@@ -86,7 +85,7 @@ class Product extends AbstractModel implements ProductInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function setDescription1($description)
     {
@@ -94,7 +93,7 @@ class Product extends AbstractModel implements ProductInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function getDescription2()
     {
@@ -102,7 +101,7 @@ class Product extends AbstractModel implements ProductInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function setDescription2($description)
     {
@@ -110,7 +109,7 @@ class Product extends AbstractModel implements ProductInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function getDescription3()
     {
@@ -118,7 +117,7 @@ class Product extends AbstractModel implements ProductInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function setDescription3($description)
     {

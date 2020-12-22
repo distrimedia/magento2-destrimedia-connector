@@ -20,7 +20,6 @@ interface ProductInterface
     public function getEAN();
 
     /**
-     * @param $ean
      * @return \DistriMedia\Connector\Api\Data\ProductInterface
      */
     public function setEAN($ean);
@@ -31,7 +30,6 @@ interface ProductInterface
     public function getPieces();
 
     /**
-     * @param $pieces
      * @return \DistriMedia\Connector\Api\Data\ProductInterface
      */
     public function setPieces($pieces);
@@ -42,7 +40,6 @@ interface ProductInterface
     public function getExternalRef();
 
     /**
-     * @param $externalRef
      * @return \DistriMedia\Connector\Api\Data\ProductInterface
      */
     public function setExternalRef($externalRef);
@@ -53,7 +50,6 @@ interface ProductInterface
     public function getExtRef();
 
     /**
-     * @param $externalRef
      * @return \DistriMedia\Connector\Api\Data\ProductInterface
      */
     public function setExtRef($externalRef);
@@ -64,7 +60,6 @@ interface ProductInterface
     public function getDescription1();
 
     /**
-     * @param $description
      * @return \DistriMedia\Connector\Api\Data\ProductInterface
      */
     public function setDescription1($description);
@@ -75,7 +70,6 @@ interface ProductInterface
     public function getDescription2();
 
     /**
-     * @param $description
      * @return \DistriMedia\Connector\Api\Data\ProductInterface
      */
     public function setDescription2($description);
@@ -86,7 +80,6 @@ interface ProductInterface
     public function getDescription3();
 
     /**
-     * @param $description
      * @return \DistriMedia\Connector\Api\Data\ProductInterface
      */
     public function setDescription3($description);

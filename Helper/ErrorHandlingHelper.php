@@ -18,8 +18,7 @@ class ErrorHandlingHelper
         ConfigInterface $config,
         TransportBuilder $transportBuilder,
         StateInterface $inlineTranslation
-    )
-    {
+    ) {
         $this->transportBuilder = $transportBuilder;
         $this->inlineTranslation = $inlineTranslation;
         $this->config = $config;
@@ -27,8 +26,6 @@ class ErrorHandlingHelper
 
     /**
      * Send email to administrator if error
-     *
-     * @return $this
      */
     public function sendErrorEmail(array $errors, string $subject = '', string $title = '')
     {
@@ -37,7 +34,7 @@ class ErrorHandlingHelper
         $recipient = $this->config->getErrorEmailRecipient();
 
         if (!$recipient) {
-            throw new \Exception("No Error email recipient defined");
+            throw new \Exception('No Error email recipient defined');
         }
 
         if (count($errors)) {
@@ -50,15 +47,15 @@ class ErrorHandlingHelper
             $transport = $this->transportBuilder
                 ->setTemplateIdentifier($template)
                 ->setTemplateOptions(
-                [
-                    'area' => \Magento\Backend\App\Area\FrontNameResolver::AREA_CODE,
-                    'store' => \Magento\Store\Model\Store::DEFAULT_STORE_ID,
-                ]
+                    [
+                        'area' => \Magento\Backend\App\Area\FrontNameResolver::AREA_CODE,
+                        'store' => \Magento\Store\Model\Store::DEFAULT_STORE_ID,
+                    ]
                 )->setTemplateVars(
                     [
-                        'warnings' => implode("<br />", $errors),
+                        'warnings' => implode('<br />', $errors),
                         'subject' => $subject,
-                        'title' => $title
+                        'title' => $title,
                     ]
                 )->setFrom($identity)
                 ->addTo($recipient)

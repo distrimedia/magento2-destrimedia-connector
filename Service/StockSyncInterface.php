@@ -5,11 +5,9 @@ declare(strict_types=1);
 namespace DistriMedia\Connector\Service;
 
 use DistriMedia\SoapClient\Struct\Response\Inventory\StockItem;
-use Magento\Sales\Api\Data\OrderInterface;
 
 /**
  * Interface StockSyncInterface
- * @package DistriMedia\Connector\Service
  */
 interface StockSyncInterface
 {
@@ -24,7 +22,6 @@ interface StockSyncInterface
      * if Magento's MSI system is not used, a slightly different approach will be executed.
      * Returns array of errors
      * @param StockItem[] $stockItems
-     * @return array
      */
     public function processStock(array $stockItems): array;
 }

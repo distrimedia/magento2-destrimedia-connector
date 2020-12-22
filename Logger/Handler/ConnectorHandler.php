@@ -8,7 +8,6 @@ use Magento\Framework\Logger\Handler\Base as BaseHandler;
 
 class ConnectorHandler extends BaseHandler
 {
-
     /**
      * File name
      *

@@ -8,100 +8,51 @@ interface ConfigInterface
 {
     /**
      * Is the connector enabled
-     * @return bool
      */
     public function isEnabled(): bool;
 
-    /**
-     * @return string
-     */
     public function getApiUri(): string;
 
     /**
      * Api password, this is an encrypted value
-     * @return string
      */
     public function getApiPassword(): string;
 
     /**
      * Returns after how many seconds the connection to DistriMedia will time out.
-     * @return int
      */
     public function getTimeoutAterInSeconds(): int;
 
     /**
      * Webshop code, this is an encrypted value
-     * @return string
      */
     public function getWebshopCode(): string;
 
-    /**
-     * @return string
-     */
     public function getEanCodeAttributeCode(): string;
 
-    /**
-     * @return string
-     */
     public function getExternalRefAttributeCode(): string;
 
-    /**
-     * @return bool
-     */
     public function useCancellationDays(): bool;
 
-    /**
-     * @return int
-     */
     public function getCancellationDays(): int;
 
-    /**
-     * @return bool
-     */
     public function useRetentionDays(): bool;
 
-    /**
-     * @return int
-     */
     public function getRetentionDays(): int;
 
-    /**
-     * @return bool
-     */
     public function useBPostLockersAndPickup(): bool;
 
-    /**
-     * @return string
-     */
     public function getLocaleOfStoreId(int $storeId): string;
 
-    /**
-     * @return bool
-     */
     public function sendInvoices(): bool;
 
-    /**
-     * @return int|null
-     */
     public function getConsumerId(): ? int;
 
-    /**
-     * @return string
-     */
     public function getErrorEmailRecipient(): ? string;
 
-    /**
-     * @return string
-     */
     public function getErrorEmailIdentity(): ? string;
 
-    /**
-     * @return string
-     */
     public function getErrorEmailTemplate(): ? string;
 
-    /**
-     * @return array
-     */
     public function getEuCountries(): array;
 }

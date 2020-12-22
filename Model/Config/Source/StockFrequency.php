@@ -24,9 +24,10 @@ class StockFrequency
     {
         if (!self::$_options) {
             self::$_options = [
-                ['label' => __('Daily'), 'value' => self::CRON_DAILY]
+                ['label' => __('Daily'), 'value' => self::CRON_DAILY],
             ];
         }
+
         return self::$_options;
     }
 }

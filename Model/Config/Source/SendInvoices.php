@@ -27,6 +27,7 @@ class SendInvoices
                 ['label' => __('Only for deliveries outside EU'), 'value' => self::SEND_INVOICES_ONLY_OUTSIDE_EU],
             ];
         }
+
         return self::$_options;
     }
 }

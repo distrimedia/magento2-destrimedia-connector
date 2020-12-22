@@ -4,14 +4,13 @@ declare(strict_types=1);
 
 namespace DistriMedia\Connector\Model\Data;
 
-use DistriMedia\Connector\Api\Data\DistriMedia;
 use DistriMedia\Connector\Api\Data\OrderlineInterface;
 use Magento\Framework\Model\AbstractModel;
 
 class Orderline extends AbstractModel implements OrderlineInterface
 {
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function getEAN()
     {
@@ -19,7 +18,7 @@ class Orderline extends AbstractModel implements OrderlineInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function setEAN($ean)
     {
@@ -27,7 +26,7 @@ class Orderline extends AbstractModel implements OrderlineInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function getPieces()
     {
@@ -35,7 +34,7 @@ class Orderline extends AbstractModel implements OrderlineInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function setPieces($pieces)
     {
@@ -43,7 +42,7 @@ class Orderline extends AbstractModel implements OrderlineInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function getExternalRef()
     {
@@ -51,7 +50,7 @@ class Orderline extends AbstractModel implements OrderlineInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function setExternalRef($externalRef)
     {
@@ -59,7 +58,7 @@ class Orderline extends AbstractModel implements OrderlineInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function getDescription1()
     {
@@ -67,7 +66,7 @@ class Orderline extends AbstractModel implements OrderlineInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function setDescription1($description1)
     {
@@ -75,7 +74,7 @@ class Orderline extends AbstractModel implements OrderlineInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function getDueDate()
     {
@@ -83,7 +82,7 @@ class Orderline extends AbstractModel implements OrderlineInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function setDueDate($dueDate)
     {

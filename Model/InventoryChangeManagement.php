@@ -22,8 +22,7 @@ class InventoryChangeManagement implements InventoryChangeManagementInterface
         Xml $deserializer,
         StockSyncInterface $stockSync,
         ConfigInterface $config
-    )
-    {
+    ) {
         $this->deserializer = $deserializer;
         $this->stockSync = $stockSync;
         $this->config = $config;
@@ -32,7 +31,7 @@ class InventoryChangeManagement implements InventoryChangeManagementInterface
     public function execute(InventoryInterface $inventory)
     {
         if (!$this->config->isEnabled()) {
-            throw new \Exception("DistriMedia Connector is not enabled");
+            throw new \Exception('DistriMedia Connector is not enabled');
         }
 
         $data = $inventory->toDataArray();

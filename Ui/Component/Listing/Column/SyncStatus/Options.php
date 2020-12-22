@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace DistriMedia\Connector\Ui\Component\Listing\Column\SyncStatus;
 
 use Magento\Framework\Data\OptionSourceInterface;

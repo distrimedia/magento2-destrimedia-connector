@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace DistriMedia\Connector\Plugin;
 
 use Magento\Sales\Api\Data\OrderExtension;
+use Magento\Sales\Api\Data\OrderExtensionFactory;
 use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Model\OrderRepository as MagentoOrderRepository;
-use Magento\Sales\Api\Data\OrderExtensionFactory;
 
 class SetExtensionAttributesOnOrder
 {
@@ -20,7 +22,6 @@ class SetExtensionAttributesOnOrder
 
     /**
      * OrderRepository constructor.
-     * @param OrderExtensionFactory $orderExtensionFactory
      */
     public function __construct(
         OrderExtensionFactory $orderExtensionFactory
@@ -30,14 +31,12 @@ class SetExtensionAttributesOnOrder
 
     /**
      * @param OrderRepositoryInterface $subject
-     * @param OrderInterface $order
      * @return OrderInterface
      */
     public function afterGet(
         MagentoOrderRepository $subject,
         OrderInterface $order
     ) {
-
         /** @var OrderExtension $extensionAttributes */
         $extensionAttributes = $order->getExtensionAttributes() ?: $this->extensionFactory->create();
 
@@ -66,6 +65,7 @@ class SetExtensionAttributesOnOrder
                 $order->setDistriMediaIncrementId($extensionAttributes->getDistriMediaIncrementId());
             }
         }
+
         return [$order];
     }
 }

@@ -1,8 +1,13 @@
 {
     "name": "distrimedia/magento2-distrimedia-connector",
-    "description": "DistriMedia Connector module",
     "type": "magento2-module",
-    "keywords": ["magento", "magento2", "distrimedia"],
+    "description": "DistriMedia Connector module",
+    "keywords": [
+        "magento",
+        "magento2",
+        "distrimedia"
+    ],
+    "license": "MIT",
     "authors": [
         {
             "name": "Tristan Hofman",
@@ -10,18 +15,47 @@
         }
     ],
     "require": {
-        "magento/framework": "^102.0.0",
+        "php": "~7.1.0 || ~7.2.0 || ~7.3.0 || ~7.4.0",
         "distrimedia/soap-client": "dev-master",
-        "magento/module-sales": "^102.0.5",
+        "magento/framework": "^102.0.0",
+        "magento/module-asynchronous-operations": "^100.3.5",
         "magento/module-catalog-inventory": "^100.3.5",
-        "magento/module-asynchronous-operations": "^100.3.5"
+        "magento/module-sales": "^102.0.5",
+        "magento/module-webapi": "^100.3.4"
+    },
+    "require-dev": {
+        "bitexpert/phpstan-magento": "^0.3.0",
+        "ergebnis/composer-normalize": "^2.9",
+        "friendsofphp/php-cs-fixer": "^2.16",
+        "magento/magento-coding-standard": "^6.0",
+        "phpcompatibility/php-compatibility": "^9.2",
+        "phpstan/extension-installer": "^1.0",
+        "phpstan/phpstan": "^0.12.26",
+        "phpunit/phpunit": "^9.0"
+    },
+    "config": {
+        "sort-packages": true
     },
     "autoload": {
-        "files": [
-            "registration.php"
-        ],
         "psr-4": {
             "DistriMedia\\Connector\\": ""
+        },
+        "files": [
+            "registration.php"
+        ]
+    },
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://repo.magento.com/"
         }
+    ],
+    "scripts": {
+        "post-install-cmd": [
+            "([ $COMPOSER_DEV_MODE -eq 0 ] || vendor/bin/phpcs --config-set installed_paths ../../magento/magento-coding-standard/)"
+        ],
+        "post-update-cmd": [
+            "([ $COMPOSER_DEV_MODE -eq 0 ] || vendor/bin/phpcs --config-set installed_paths ../../magento/magento-coding-standard/)"
+        ]
     }
 }

@@ -18,8 +18,7 @@ interface OrderlineInterface
     public function getEAN();
 
     /**
-     * @param $ean
-     * @return DistriMedia\Connector\Api\Data\OrderlineInterface
+     * @return \DistriMedia\Connector\Api\Data\OrderlineInterface
      */
     public function setEAN($ean);
 
@@ -29,8 +28,7 @@ interface OrderlineInterface
     public function getPieces();
 
     /**
-     * @param $pieces
-     * @return DistriMedia\Connector\Api\Data\OrderlineInterface
+     * @return \DistriMedia\Connector\Api\Data\OrderlineInterface
      */
     public function setPieces($pieces);
 
@@ -40,10 +38,9 @@ interface OrderlineInterface
     public function getExternalRef();
 
     /**
-     * @param $xternalRef
-     * @return DistriMedia\Connector\Api\Data\OrderlineInterface
+     * @return \DistriMedia\Connector\Api\Data\OrderlineInterface
      */
-    public function setExternalRef($xternalRef);
+    public function setExternalRef($externalRef);
 
     /**
      * @return string
@@ -51,8 +48,7 @@ interface OrderlineInterface
     public function getDescription1();
 
     /**
-     * @param $description1
-     * @return DistriMedia\Connector\Api\Data\OrderlineInterface
+     * @return \DistriMedia\Connector\Api\Data\OrderlineInterface
      */
     public function setDescription1($description1);
 
@@ -62,8 +58,7 @@ interface OrderlineInterface
     public function getDueDate();
 
     /**
-     * @param $dueDate
-     * @return DistriMedia\Connector\Api\Data\OrderlineInterface
+     * @return \DistriMedia\Connector\Api\Data\OrderlineInterface
      */
     public function setDueDate($dueDate);
 }

@@ -1,14 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace DistriMedia\Connector\Plugin;
 
 use DistriMedia\Connector\Model\ConfigInterface;
+use Magento\Catalog\Model\Product;
+use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory as ProductCollectionFactory;
 use Magento\Sales\Api\Data\OrderItemExtension;
+use Magento\Sales\Api\Data\OrderItemExtensionFactory;
 use Magento\Sales\Api\Data\OrderItemInterface;
 use Magento\Sales\Model\Order\ItemRepository as MagentoOrderItemRepository;
-use Magento\Sales\Api\Data\OrderItemExtensionFactory;
-use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory as ProductCollectionFactory;
-use Magento\Catalog\Model\Product;
 
 class SetExtensionAttributesOnOrderItem
 {
@@ -19,12 +21,11 @@ class SetExtensionAttributesOnOrderItem
      * @var OrderItemExtensionFactory
      */
     private $extensionFactory;
-
     private $config;
+    private $productCollectionFactory;
 
     /**
      * OrderRepository constructor.
-     * @param OrderItemExtensionFactory $orderExtensionFactory
      */
     public function __construct(
         OrderItemExtensionFactory $orderExtensionFactory,
@@ -37,15 +38,12 @@ class SetExtensionAttributesOnOrderItem
     }
 
     /**
-     * @param MagentoOrderItemRepository $subject
-     * @param OrderItemInterface $orderItem
      * @return OrderItemInterface
      */
     public function afterGet(
         MagentoOrderItemRepository $subject,
         OrderItemInterface $orderItem
     ) {
-
         /** @var OrderItemExtension $extensionAttributes */
         $extensionAttributes = $orderItem->getExtensionAttributes() ?: $this->extensionFactory->create();
 
@@ -63,10 +61,10 @@ class SetExtensionAttributesOnOrderItem
     ) {
         $extensionAttributes = $orderItem->getExtensionAttributes() ?: $this->extensionFactory->create();
         if ($extensionAttributes !== null) {
-            if ($extensionAttributes->getDistriMediaEanCode() !== null && $extensionAttributes->getDistriMediaExternalRef() !== null) {
+            if ($extensionAttributes->getDistriMediaEanCode(
+                ) !== null && $extensionAttributes->getDistriMediaExternalRef() !== null) {
                 $orderItem->setDistriMediaEanCode($extensionAttributes->getDistriMediaEanCode());
                 $orderItem->setDistriMediaExternalRef($extensionAttributes->getDistriMediaExternalRef());
-
             } else {
                 $eanCode = $this->config->getEanCodeAttributeCode();
                 $externalRef = $this->config->getExternalRefAttributeCode();
@@ -82,20 +80,20 @@ class SetExtensionAttributesOnOrderItem
 
                 $product = $collection->getFirstItem();
 
-                if ($product !== NULL) {
+                if ($product !== null) {
                     $orderItem->setDistriMediaEanCode($product->getData($eanCode));
                     $orderItem->setDistriMediaExternalRef($product->getData($externalRef));
                 }
             }
         }
+
         return [$orderItem];
     }
 
     public function afterGetList(
         MagentoOrderItemRepository $subject,
         \Magento\Sales\Model\ResourceModel\Order\Item\Collection $orderItems
-    ) : \Magento\Sales\Model\ResourceModel\Order\Item\Collection
-    {
+    ): \Magento\Sales\Model\ResourceModel\Order\Item\Collection {
         $products = [];
         /* @var \Magento\Sales\Model\ResourceModel\Order\Item $entity */
         foreach ($orderItems as $entity) {
@@ -106,6 +104,7 @@ class SetExtensionAttributesOnOrderItem
 
             $products[] = $entity;
         }
+
         return $orderItems;
     }
 }

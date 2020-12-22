@@ -4,15 +4,13 @@ declare(strict_types=1);
 
 namespace DistriMedia\Connector\Model\Data;
 
-use DistriMedia\Connector\Api\Data\DistriMedia;
 use DistriMedia\Connector\Api\Data\PackageInterface;
 use Magento\Framework\Model\AbstractModel;
 
 class Package extends AbstractModel implements PackageInterface
 {
-
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function getAWB()
     {
@@ -20,7 +18,7 @@ class Package extends AbstractModel implements PackageInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function setAWB($awb)
     {
@@ -28,7 +26,7 @@ class Package extends AbstractModel implements PackageInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function getTrackID()
     {
@@ -36,7 +34,7 @@ class Package extends AbstractModel implements PackageInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function setTrackID($trackID)
     {
@@ -44,7 +42,7 @@ class Package extends AbstractModel implements PackageInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function getBoxType()
     {
@@ -52,7 +50,7 @@ class Package extends AbstractModel implements PackageInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function setBoxType($boxType)
     {
@@ -60,7 +58,7 @@ class Package extends AbstractModel implements PackageInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function getReference()
     {
@@ -68,7 +66,7 @@ class Package extends AbstractModel implements PackageInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function setReference($reference)
     {
@@ -76,7 +74,7 @@ class Package extends AbstractModel implements PackageInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function getWeight()
     {
@@ -84,7 +82,7 @@ class Package extends AbstractModel implements PackageInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function setWeight($weight)
     {
@@ -92,7 +90,7 @@ class Package extends AbstractModel implements PackageInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function getBoxNumber()
     {
@@ -100,7 +98,7 @@ class Package extends AbstractModel implements PackageInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function setBoxNumber($boxNumber)
     {
@@ -108,7 +106,7 @@ class Package extends AbstractModel implements PackageInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function getVolume()
     {
@@ -116,7 +114,7 @@ class Package extends AbstractModel implements PackageInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function setVolume($volume)
     {
@@ -124,7 +122,7 @@ class Package extends AbstractModel implements PackageInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function getHeight()
     {
@@ -132,7 +130,7 @@ class Package extends AbstractModel implements PackageInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function setHeight($height)
     {
@@ -140,7 +138,7 @@ class Package extends AbstractModel implements PackageInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function getWidth()
     {
@@ -148,7 +146,7 @@ class Package extends AbstractModel implements PackageInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function setWidth($width)
     {
@@ -156,7 +154,7 @@ class Package extends AbstractModel implements PackageInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function getLength()
     {
@@ -164,7 +162,7 @@ class Package extends AbstractModel implements PackageInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function setLength($length)
     {
@@ -172,7 +170,7 @@ class Package extends AbstractModel implements PackageInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function getDescription()
     {
@@ -180,7 +178,7 @@ class Package extends AbstractModel implements PackageInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function setDescription($description)
     {
@@ -188,7 +186,7 @@ class Package extends AbstractModel implements PackageInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function getTrackAndTraceURL()
     {
@@ -196,7 +194,7 @@ class Package extends AbstractModel implements PackageInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function setTrackAndTraceURL($trackAndTraceURL)
     {

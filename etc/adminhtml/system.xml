@@ -63,6 +63,13 @@
                         <field id="enabled">1</field>
                     </depends>
                 </field>
+                <field id="site_indication" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="0"
+                       showInStore="0" canRestore="1">
+                    <label>Site Indication</label>
+                    <depends>
+                        <field id="enabled">1</field>
+                    </depends>
+                </field>
                 <field id="timout_after_seconds" translate="label" type="text" sortOrder="1" showInDefault="0" showInWebsite="0"
                        showInStore="0" canRestore="1">
                     <label>Timout After x seconds</label>

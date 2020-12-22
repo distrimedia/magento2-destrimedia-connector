@@ -202,6 +202,11 @@ class OrderBuilder
 
         $distriMediaOrderItem->setCurrency($order->getOrderCurrencyCode());
         $distriMediaOrderItem->setOrderNumber($order->getIncrementId());
+        $distriMediaOrderItem->setReferenceNumber($order->getIncrementId());
+
+        $siteIndiation = $this->config->getSiteIndication() ?: '';
+
+        $distriMediaOrderItem->setSiteIndication($siteIndiation);
 
         $shippingMethod = $order->getShippingMethod();
         if ($this->config->useBPostLockersAndPickup() && $this->isBpostShippingMethod($shippingMethod)) {

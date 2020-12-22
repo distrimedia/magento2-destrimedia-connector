@@ -31,6 +31,7 @@ class Config implements ConfigInterface
     const XML_PATH_ERROR_IDENTITY = 'distrimedia/settings/error_email_identity';
     const XML_PATH_ERROR_RECIPIENT = 'distrimedia/settings/error_email';
     const XML_PATH_EU_COUNTRIES = 'general/country/eu_countries';
+    const XML_PATH_SITE_INDICATION = 'distrimedia/settings/site_indication';
 
     const BREXIT = 'GB';
 
@@ -197,9 +198,9 @@ class Config implements ConfigInterface
     /**
      * {@inheritDoc}
      */
-    public function sendInvoices(): bool
+    public function sendInvoices(): int
     {
-        $value = (bool) $this->scopeConfig->getValue(self::XML_PATH_DISTRIMEDIA_SETTINGS_SEND_INVOICES) ?: false;
+        $value = (int) $this->scopeConfig->getValue(self::XML_PATH_DISTRIMEDIA_SETTINGS_SEND_INVOICES) ?: false;
 
         return $value;
     }
@@ -240,6 +241,16 @@ class Config implements ConfigInterface
     public function getErrorEmailIdentity(): ?string
     {
         $value = (string) $this->scopeConfig->getValue(self::XML_PATH_ERROR_IDENTITY) ?: null;
+
+        return $value;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getSiteIndication(): string
+    {
+        $value = $this->scopeConfig->getValue(self::XML_PATH_SITE_INDICATION) ?: '';
 
         return $value;
     }

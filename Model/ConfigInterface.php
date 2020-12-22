@@ -44,13 +44,15 @@ interface ConfigInterface
 
     public function getLocaleOfStoreId(int $storeId): string;
 
-    public function sendInvoices(): bool;
+    public function sendInvoices(): int;
 
     public function getConsumerId(): ? int;
 
     public function getErrorEmailRecipient(): ? string;
 
     public function getErrorEmailIdentity(): ? string;
+
+    public function getSiteIndication(): string;
 
     public function getErrorEmailTemplate(): ? string;
 

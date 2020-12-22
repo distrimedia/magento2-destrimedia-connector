@@ -7,9 +7,15 @@ namespace DistriMedia\Connector\Api;
 interface OrderStatusChangeManagementInterface
 {
     /**
-     * @param array $TrackIDs
-     * @param array $ShippedItems
-     * @return mixed
+     * @param string $OrderStatus
+     * @param string $OrderID
+     * @param string $OrderNumber
+     * @param string|null $NumberColli
+     * @param string|null $Carrier
+     * @param string|null $TrackAndTraceURL
+     * @param mixed $TrackIDs
+     * @param mixed $ShippedItems
+     * @return string
      */
     public function execute(
         string $OrderStatus,

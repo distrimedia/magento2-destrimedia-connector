@@ -24,7 +24,7 @@ For this module to work following requirements are defined:
 
 ## Configuration 
 Provide your DistriMedia webshopcode, uri and password in the configuration form.
-Please [contact](mailto:info@distrimedia.be) DistriMedia to receive these credentials
+Please [contact](mailto:orlando.vanhove@distrimedia.be) DistriMedia to receive these credentials
                                                       
 You can find these settings in `Stores - Configuration - Services - DistriMedia Connector`
 
@@ -63,7 +63,3 @@ When saving the configuration, always make sure to flush the Magento Config Cach
 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
-  
-## Authors
- - Tristan Hofman, [Baldwin bv](https://www.baldwin.agency)
- 

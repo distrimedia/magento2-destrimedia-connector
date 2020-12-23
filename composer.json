@@ -16,12 +16,12 @@
     ],
     "require": {
         "php": "~7.1.0 || ~7.2.0 || ~7.3.0 || ~7.4.0",
-        "distrimedia/soap-client": "dev-master",
-        "magento/framework": "^102.0.0",
-        "magento/module-asynchronous-operations": "^100.3.5",
-        "magento/module-catalog-inventory": "^100.3.5",
-        "magento/module-sales": "^102.0.5",
-        "magento/module-webapi": "^100.3.4"
+        "distrimedia/soap-client": "^1.0.0",
+        "magento/framework": "^102.0.0 || ^103.0.0",
+        "magento/module-asynchronous-operations": "^100.3.5 || ^100.4.0",
+        "magento/module-catalog-inventory": "^100.3.5 || ^100.4.0",
+        "magento/module-sales": "^102.0.5 || ^103.0.0",
+        "magento/module-webapi": "^100.3.4 || ^100.4.0"
     },
     "require-dev": {
         "bitexpert/phpstan-magento": "^0.3.0",

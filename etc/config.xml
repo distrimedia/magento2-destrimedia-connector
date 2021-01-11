@@ -6,6 +6,8 @@
                 <enabled>0</enabled>
                 <base_uri>http://devewms.distrimedia.be:8080/</base_uri>
                 <external_ref_attribute>sku</external_ref_attribute>
+                <hscode_attribute>dm_hscode</hscode_attribute>
+                <country_origin_attribute>dm_country_of_origin</country_origin_attribute>
                 <ean_code_attribute>dm_ean_code</ean_code_attribute>
                 <use_cancellation_days>1</use_cancellation_days>
                 <cancellation_days>999</cancellation_days>

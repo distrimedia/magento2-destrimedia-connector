@@ -98,7 +98,7 @@ class DefaultInvoice extends \Magento\Sales\Model\Order\Pdf\Items\Invoice\Defaul
         ];
 
         $netto = floatval($netto);
-        $bruto = $netto + ($netto . 0.0523);
+        $bruto = $netto + ($netto * 0.0523);
 
         // draw Weight bruto = netto  + 5,23%
         $lines[0][] = [

@@ -87,18 +87,23 @@ class DefaultInvoice extends \Magento\Sales\Model\Order\Pdf\Items\Invoice\Defaul
             'align' => 'right',
         ];
 
+        $netto = $this->getWeight($item);
+
         // draw Weight
         $lines[0][] = [
             // phpcs:ignore Magento2.Functions.DiscouragedFunction
-            'text' => $this->string->split(html_entity_decode($this->getWeight($item)), 17),
-            'feed' => 390,
+            'text' => $this->string->split(html_entity_decode($netto), 17),
+            'feed' => 380,
             'align' => 'right',
         ];
 
-        // draw Incoterms
+        $netto = floatval($netto);
+        $bruto = $netto + ($netto . 0.0523);
+
+        // draw Weight bruto = netto  + 5,23%
         $lines[0][] = [
-            'text' => 'DAP',
-            'feed' => 445,
+            'text' =>  $this->string->split(html_entity_decode((string) $bruto), 17),
+            'feed' => 440,
             'align' => 'right',
         ];
 
@@ -217,9 +222,9 @@ class DefaultInvoice extends \Magento\Sales\Model\Order\Pdf\Items\Invoice\Defaul
         return $result;
     }
 
-    private function getWeight($item)
+    private function getWeight($item): string
     {
-        $result = '';
+        $result = 0;
 
         /** @var OrderItemInterface $orderItem */
         $orderItem = $item->getOrderItem();

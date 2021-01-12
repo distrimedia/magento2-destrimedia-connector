@@ -39,6 +39,15 @@
                     <label>Enable</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
+                <field id="signature" translate="label comment" type="image" sortOrder="100" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Signature for PDF Print-outs (200x50)</label>
+                    <backend_model>Magento\Config\Model\Config\Backend\Image\Pdf</backend_model>
+                    <upload_dir config="system/filesystem/media" scope_info="1">distrimedia/settings/signature</upload_dir>
+                    <base_url type="media" scope_info="1">distrimedia/settings/signature</base_url>
+                    <comment>
+                        <![CDATA[Your signature will be used in PDF documents.<br />(jpeg, tiff, png) If your pdf image is distorted, try to use larger file-size image.]]>
+                    </comment>
+                </field>
                 <field id="webshop_code" translate="label" type="obscure" sortOrder="1" showInDefault="1"
                        showInWebsite="0" showInStore="0" canRestore="1">
                     <label>Webshop code</label>
@@ -95,6 +104,24 @@
                         <field id="enabled">1</field>
                     </depends>
                     <comment>Specify which product attribute will act as External Ref</comment>
+                </field>
+                <field id="country_origin_attribute" translate="label" type="select" sortOrder="1" showInDefault="1"
+                       showInWebsite="0" showInStore="0" canRestore="1">
+                    <label>Country of Origin attribute</label>
+                    <source_model>DistriMedia\Connector\Model\Config\Source\MagentoAttributes</source_model>
+                    <depends>
+                        <field id="enabled">1</field>
+                    </depends>
+                    <comment>Specify which product attribute will act as Country of Origin</comment>
+                </field>
+                <field id="hscode_attribute" translate="label" type="select" sortOrder="1" showInDefault="1"
+                       showInWebsite="0" showInStore="0" canRestore="1">
+                    <label>HSCode attribute</label>
+                    <source_model>DistriMedia\Connector\Model\Config\Source\MagentoAttributes</source_model>
+                    <depends>
+                        <field id="enabled">1</field>
+                    </depends>
+                    <comment>Specify which product attribute will act as HSCode</comment>
                 </field>
                 <field id="use_retention_days" translate="label" type="select" sortOrder="1" showInDefault="1"
                        showInWebsite="0" showInStore="0" canRestore="1">

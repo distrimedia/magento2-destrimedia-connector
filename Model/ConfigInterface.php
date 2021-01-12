@@ -32,6 +32,10 @@ interface ConfigInterface
 
     public function getExternalRefAttributeCode(): string;
 
+    public function getCountryOriginAttribute(): string;
+
+    public function getHSCodeAttribute(): string;
+
     public function useCancellationDays(): bool;
 
     public function getCancellationDays(): int;

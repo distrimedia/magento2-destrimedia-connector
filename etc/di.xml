@@ -128,6 +128,7 @@
     </type>
     <!-- /sensitive data -->
 
+    <!-- We have to overwrite some core logic to change the structure of the invoice PDF -->
     <preference for="Magento\Sales\Model\Order\Pdf\Invoice" type="DistriMedia\Connector\Model\Order\Pdf\Invoice" />
-
+    <preference for="Magento\Sales\Model\Order\Pdf\Items\Invoice\DefaultInvoice" type="DistriMedia\Connector\Model\Order\Pdf\Items\Invoice\DefaultInvoice" />
 </config>

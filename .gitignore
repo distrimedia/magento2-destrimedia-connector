@@ -2,3 +2,5 @@
 .php-auto-version
 auth.json
 /vendor/
+/node_modules/
+.node-version

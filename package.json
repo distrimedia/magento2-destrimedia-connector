@@ -1,0 +1,25 @@
+{
+  "name": "magento2-distrimedia-connector",
+  "version": "1.0.1",
+  "description": "## DistriMedia connector",
+  "directories": {
+    "doc": "docs"
+  },
+  "dependencies": {
+    "standard-version": "^9.1.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "release": "standard-version"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/distrimedia/magento2-distrimedia-connector.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/distrimedia/magento2-distrimedia-connector/issues"
+  },
+  "homepage": "https://github.com/distrimedia/magento2-distrimedia-connector#readme"
+}

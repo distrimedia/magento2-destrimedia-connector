@@ -14,5 +14,7 @@
     <table name="sales_order_item">
         <column xsi:type="varchar" name="distri_media_ean_code" length="255" nullable="true"  comment="DistriMedia Ean Code"/>
         <column xsi:type="varchar" name="distri_media_external_ref" length="255" nullable="true"  comment="DistriMedia External Ref"/>
+        <column xsi:type="varchar" name="distri_media_hs_code" length="255" nullable="true"  comment="DistriMedia HS code"/>
+        <column xsi:type="varchar" name="distri_media_country_origin" length="255" nullable="true"  comment="DistriMedia Country of Origin"/>
     </table>
 </schema>

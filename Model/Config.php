@@ -20,6 +20,8 @@ class Config implements ConfigInterface
     const XML_PATH_DISTRIMEDIA_SETTINGS_WEBSHOP_CODE = 'distrimedia/settings/webshop_code';
     const XML_PATH_DISTRIMEDIA_SETTINGS_EAN_CODE_ATTRIBUTE = 'distrimedia/settings/ean_code_attribute';
     const XML_PATH_DISTRIMEDIA_SETTINGS_EXTERNAL_REF_ATTRIBUTE = 'distrimedia/settings/external_ref_attribute';
+    const XML_PATH_DISTRIMEDIA_SETTINGS_COUNTRY_ORIGIN_ATTRIBUTE = 'distrimedia/settings/country_origin_attribute';
+    const XML_PATH_DISTRIMEDIA_SETTINGS_HS_CODE_ATTRIBUTE = 'distrimedia/settings/hscode_attribute';
     const XML_PATH_DISTRIMEDIA_SETTINGS_EXTERNAL_USE_RETENTION_DAYS = 'distrimedia/settings/use_retention_days';
     const XML_PATH_DISTRIMEDIA_SETTINGS_EXTERNAL_RETENTION_DAYS = 'distrimedia/settings/retention_days';
     const XML_PATH_DISTRIMEDIA_SETTINGS_EXTERNAL_USE_CANCELLATION_DAYS = 'distrimedia/settings/use_cancellation_days';
@@ -134,6 +136,26 @@ class Config implements ConfigInterface
     public function getExternalRefAttributeCode(): string
     {
         $value = $this->scopeConfig->getValue(self::XML_PATH_DISTRIMEDIA_SETTINGS_EXTERNAL_REF_ATTRIBUTE) ?: '';
+
+        return $value;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getHSCodeAttribute(): string
+    {
+        $value = $this->scopeConfig->getValue(self::XML_PATH_DISTRIMEDIA_SETTINGS_HS_CODE_ATTRIBUTE) ?: '';
+
+        return $value;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getCountryOriginAttribute(): string
+    {
+        $value = $this->scopeConfig->getValue(self::XML_PATH_DISTRIMEDIA_SETTINGS_COUNTRY_ORIGIN_ATTRIBUTE) ?: '';
 
         return $value;
     }

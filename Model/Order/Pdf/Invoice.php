@@ -272,7 +272,7 @@ class Invoice extends \Magento\Sales\Model\Order\Pdf\Invoice
         $text = '------
 Declaration of origin
 The exporter of the products (authorized exporter, custom authorization number) covered by
-this document declared that except where otherwise clearly indicated, these products are of EU preferential origing
+this document declared that except where otherwise clearly indicated, these products are of EU preferential origin
 ------';
 
         $docHeader = $this->getDocHeaderCoordinates();

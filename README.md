@@ -16,7 +16,7 @@ For this module to work following requirements are defined:
 
 ## Installation 
 1. Use composer package manager to install the module
-`composer require baldwin/magento2-distrimedia-connector`
+`composer require distrimedia/magento2-distrimedia-connector`
 2. Enable the module 
 `bin/magento module:enable DistriMedia_Connector`
 3. Run upgrade scripts, this also generates an Access Token

@@ -18,41 +18,21 @@ class Invoice extends \Magento\Sales\Model\Order\Pdf\Invoice
     /**
      * @var Database
      */
-    protected $fileStorageDatabase;
+    private $fileStorageDatabase;
 
-    public function __construct(
-        \Magento\Payment\Helper\Data $paymentData,
-        \Magento\Framework\Stdlib\StringUtils $string,
-        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
-        \Magento\Framework\Filesystem $filesystem,
-        Config $pdfConfig,
-        \Magento\Sales\Model\Order\Pdf\Total\Factory $pdfTotalFactory,
-        \Magento\Sales\Model\Order\Pdf\ItemsFactory $pdfItemsFactory,
-        \Magento\Framework\Stdlib\DateTime\TimezoneInterface $localeDate,
-        \Magento\Framework\Translate\Inline\StateInterface $inlineTranslation,
-        \Magento\Sales\Model\Order\Address\Renderer $addressRenderer,
-        \Magento\Store\Model\StoreManagerInterface $storeManager,
-        \Magento\Framework\Locale\ResolverInterface $localeResolver,
-        Database $fileStorageDatabase,
-        array $data = []
-    ) {
-        $this->fileStorageDatabase = $fileStorageDatabase;
+    /**
+     * Due to an icompatible change between 2.3.5-p2 and 2.3.6 in Magento, we cannot extend the custructor.
+     * Therefore we make use of the ObjectManager
+     * https://github.com/magento/devdocs/issues/8299
+     * @return Database
+     */
+    private function getFileStorageDatabase()
+    {
+        if ($this->fileStorageDatabase === null) {
+            $this->fileStorageDatabase = ObjectManager::getInstance()->get(Database::class);
+        }
 
-        parent::__construct(
-            $paymentData,
-            $string,
-            $scopeConfig,
-            $filesystem,
-            $pdfConfig,
-            $pdfTotalFactory,
-            $pdfItemsFactory,
-            $localeDate,
-            $inlineTranslation,
-            $addressRenderer,
-            $storeManager,
-            $localeResolver,
-            $data
-        );
+        return $this->fileStorageDatabase;
     }
 
     protected function _setFontRegular($object, $size = 7)
@@ -216,10 +196,10 @@ class Invoice extends \Magento\Sales\Model\Order\Pdf\Invoice
         );
         if ($image) {
             $imagePath = '/distrimedia/settings/signature/' . $image;
-            if ($this->fileStorageDatabase->checkDbUsage() &&
+            if ($this->getFileStorageDatabase()->checkDbUsage() &&
                 !$this->_mediaDirectory->isFile($imagePath)
             ) {
-                $this->fileStorageDatabase->saveFileToFilesystem($imagePath);
+                $this->getFileStorageDatabase()->saveFileToFilesystem($imagePath);
             }
             if ($this->_mediaDirectory->isFile($imagePath)) {
                 $absPath = $this->_mediaDirectory->getAbsolutePath($imagePath);

@@ -1,6 +1,5 @@
 {
   "name": "magento2-distrimedia-connector",
-  "version": "1.0.2",
   "description": "## DistriMedia connector",
   "directories": {
     "doc": "docs"

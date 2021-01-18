@@ -6,6 +6,7 @@
     "doc": "docs"
   },
   "dependencies": {
+    "markdown-pdf": "^10.0.0",
     "standard-version": "^9.1.0"
   },
   "devDependencies": {},

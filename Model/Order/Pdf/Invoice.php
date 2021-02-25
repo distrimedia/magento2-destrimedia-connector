@@ -6,7 +6,6 @@ namespace DistriMedia\Connector\Model\Order\Pdf;
 
 use Magento\Framework\Locale\ResolverInterface;
 use Magento\MediaStorage\Helper\File\Storage\Database;
-use Magento\Sales\Model\Order\Pdf\Config;
 use Magento\Sales\Model\ResourceModel\Order\Invoice\Collection;
 
 /**

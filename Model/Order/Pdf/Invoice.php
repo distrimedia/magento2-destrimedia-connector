@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace DistriMedia\Connector\Model\Order\Pdf;
 
+use Magento\Framework\Locale\ResolverInterface;
 use Magento\MediaStorage\Helper\File\Storage\Database;
 use Magento\Sales\Model\Order\Pdf\Config;
 use Magento\Sales\Model\ResourceModel\Order\Invoice\Collection;
@@ -21,6 +22,11 @@ class Invoice extends \Magento\Sales\Model\Order\Pdf\Invoice
     private $fileStorageDatabase;
 
     /**
+     * @var ResolverInterface
+     */
+    protected $_localeResolver;
+
+    /**
      * Due to an icompatible change between 2.3.5-p2 and 2.3.6 in Magento, we cannot extend the custructor.
      * Therefore we make use of the ObjectManager
      * https://github.com/magento/devdocs/issues/8299
@@ -33,6 +39,21 @@ class Invoice extends \Magento\Sales\Model\Order\Pdf\Invoice
         }
 
         return $this->fileStorageDatabase;
+    }
+
+    /**
+     * Due to an icompatible change between 2.3.5-p2 and 2.3.6 in Magento, we cannot extend the custructor.
+     * Therefore we make use of the ObjectManager
+     * https://github.com/magento/devdocs/issues/8299
+     * @return Database
+     */
+    private function getLocaleResolver()
+    {
+        if ($this->_localeResolver === null) {
+            $this->_localeResolver = ObjectManager::getInstance()->get(ResolverInterface::class);
+        }
+
+        return $this->_localeResolver;
     }
 
     protected function _setFontRegular($object, $size = 7)
@@ -124,7 +145,7 @@ class Invoice extends \Magento\Sales\Model\Order\Pdf\Invoice
 
         foreach ($invoices as $invoice) {
             if ($invoice->getStoreId()) {
-                $this->_localeResolver->emulate($invoice->getStoreId());
+                $this->getLocaleResolver()->emulate($invoice->getStoreId());
                 $this->_storeManager->setCurrentStore($invoice->getStoreId());
             }
             $page = $this->newPage();
@@ -163,7 +184,7 @@ class Invoice extends \Magento\Sales\Model\Order\Pdf\Invoice
             /* Add totals */
             $this->insertTotals($page, $invoice);
             if ($invoice->getStoreId()) {
-                $this->_localeResolver->revert();
+                $this->getLocaleResolver()->revert();
             }
             $this->insertFootnote($page);
 

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace DistriMedia\Connector\Model\Order\Pdf;
 
+use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Locale\ResolverInterface;
 use Magento\MediaStorage\Helper\File\Storage\Database;
 use Magento\Sales\Model\ResourceModel\Order\Invoice\Collection;

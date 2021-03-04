@@ -1,5 +1,9 @@
 
 ## Current
+ * 2021-03-04 11:03:06 | hotix, missing dependency + we only want to send simple product info [Tristan Hofman (baldwinonlightspeed)]
+
+## v1.0.4
+ * 2021-03-04 10:03:47 | updated changelog [Tristan Hofman (baldwinonlightspeed)]
  * 2021-02-25 14:02:23 | SPORT-505 removed unused node package.json [Tristan Hofman (baldwinonlightspeed)]
  * 2021-02-25 14:02:01 | SPORT-505 removed unused class [Tristan Hofman (baldwinonlightspeed)]
  * 2021-02-25 14:02:55 | SPORT-505 fixes another incompatible change done by magento in 2.3.6-p2 [Tristan Hofman (baldwinonlightspeed)]

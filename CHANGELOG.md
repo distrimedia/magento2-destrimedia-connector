@@ -1,5 +1,9 @@
 
 ## Current
+ * 2021-03-04 11:03:49 | only configurable products have childern items.. [Tristan Hofman (baldwinonlightspeed)]
+
+## v1.0.5
+ * 2021-03-04 11:03:32 | updated changelog [Tristan Hofman (baldwinonlightspeed)]
  * 2021-03-04 11:03:06 | hotix, missing dependency + we only want to send simple product info [Tristan Hofman (baldwinonlightspeed)]
 
 ## v1.0.4

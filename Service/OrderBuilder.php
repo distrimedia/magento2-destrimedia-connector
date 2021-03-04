@@ -282,7 +282,7 @@ class OrderBuilder
 
         foreach ($items as $item) {
             //we only want to send simple product info
-            if ($item->getProductType() !== 'simple') {
+            if ($item->getProductType() === 'configurable') {
                 continue;
             }
 

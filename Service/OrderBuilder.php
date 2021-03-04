@@ -281,6 +281,11 @@ class OrderBuilder
         $items = $order->getItems();
 
         foreach ($items as $item) {
+            //we only want to send simple product info
+            if ($item->getProductType() !== 'simple') {
+                continue;
+            }
+
             $orderLine = new DistriMediaOrderLine();
             $product = new DistriMediaProduct();
             $orderItemExtAttrs = $item->getExtensionAttributes();

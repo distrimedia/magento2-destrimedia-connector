@@ -312,6 +312,11 @@ class OrderStatusChangeManagement implements OrderStatusChangeManagementInterfac
         return $this;
     }
 
+    private function stripLeadingZeros(string $str): string
+    {
+        return ltrim($str, '0');
+    }
+
     /**
      * I try to match the order items with the data sent to this endpoint based on the EAN CODE saved on the order item
      * @param array $shippedItems
@@ -334,12 +339,19 @@ class OrderStatusChangeManagement implements OrderStatusChangeManagementInterfac
             foreach ($products as $productData) {
                 $product = $this->productInterfaceFactory->create(['data' => $productData]);
                 $eanCode = $product->getEAN();
+                if (!empty($eanCode)) {
+                    $eanCode = $this->stripLeadingZeros($eanCode);
+                }
+
                 $match = false;
                 foreach ($m2OrderItems as $m2OrderItem) {
                     $orderItemExtensionAttrs = $m2OrderItem->getExtensionAttributes();
 
                     if ($orderItemExtensionAttrs) {
                         $orderItemEanCode = $orderItemExtensionAttrs->getDistriMediaEanCode();
+                        if (!empty($orderItemEanCode)) {
+                            $orderItemEanCode = $this->stripLeadingZeros($orderItemEanCode);
+                        }
                         if ($eanCode === $orderItemEanCode) {
                             $orderItems[$key]['orderItem'] = $m2OrderItem;
                             $result[] = [

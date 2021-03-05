@@ -280,11 +280,27 @@ class OrderBuilder
 
         $items = $order->getItems();
 
+        $groupedItems = [];
         foreach ($items as $item) {
             //we only want to send simple product info
-            if ($item->getProductType() === 'configurable') {
+            if ($item->getProductType() === 'configurable' || $item->getProductType() === 'bundle') {
                 continue;
             }
+
+            //we want to group the simples. Multiple bundles/configurables can have the same simple defined
+            if (!array_key_exists($item->getSku(), $groupedItems)) {
+                $groupedItems[$item->getSku()] = [
+                    'item' => $item,
+                    'qty' => (int) $item->getQtyInvoiced(),
+                ];
+            } else {
+                $groupedItems[$item->getSku()]['qty'] += (int) $item->getQtyInvoiced();
+            }
+        }
+
+        foreach ($groupedItems as $groupedItem) {
+            $item = $groupedItem['item'];
+            $qty = $groupedItem['qty'];
 
             $orderLine = new DistriMediaOrderLine();
             $product = new DistriMediaProduct();
@@ -298,7 +314,7 @@ class OrderBuilder
             $product->setExternalRef($externalRef);
 
             $product->setDescription1($item->getName() ?: '');
-            $orderLine->setPieces((int) $item->getQtyInvoiced());
+            $orderLine->setPieces((int) $qty);
             $orderLine->setProduct($product);
             $orderLine->setProductId($eanCode);
             $orderLines[] = $orderLine;

@@ -172,8 +172,10 @@ class OrderBuilder
         }
 
         //there is no difference between mobile and telephone in magento2
-        $distriMediaCustomer->setTelephone($shippingAddress->getTelephone());
-        $distriMediaCustomer->setMobile($shippingAddress->getTelephone());
+        $telephoneArray = str_split($shippingAddress->getTelephone(), 19);
+
+        $distriMediaCustomer->setTelephone($telephoneArray[0]);
+        $distriMediaCustomer->setMobile($telephoneArray[0]);
 
         return $distriMediaCustomer;
     }
@@ -313,7 +315,16 @@ class OrderBuilder
             $externalRef = $orderItemExtAttrs->getDistriMediaExternalRef() ?: '';
             $product->setExternalRef($externalRef);
 
-            $product->setDescription1($item->getName() ?: '');
+            $descriptionArray  = str_split($item->getName(), 60);
+
+            $product->setDescription1($descriptionArray[0]);
+            if (count($descriptionArray) > 1) {
+                $product->setDescription2($descriptionArray[1]);
+            }
+            if (count($descriptionArray) > 2) {
+                $product->setDescription3($descriptionArray[1]);
+            }
+
             $orderLine->setPieces((int) $qty);
             $orderLine->setProduct($product);
             $orderLine->setProductId($eanCode);

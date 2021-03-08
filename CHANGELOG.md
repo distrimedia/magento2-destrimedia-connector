@@ -1,5 +1,16 @@
 
 ## Current
+ * 2021-03-08 12:03:32 | we use an overflow for the product name [Tristan Hofman (baldwinonlightspeed)]
+ * 2021-03-05 16:03:31 | fixed issue with shipments of bundled products [Tristan Hofman (baldwinonlightspeed)]
+
+## v1.0.8
+ * 2021-03-05 14:03:07 | we strip leading zeros [Tristan Hofman (baldwinonlightspeed)]
+
+## v1.0.7
+ * 2021-03-05 09:03:29 | we want to group the simples. Multiple bundles/configurables can have the same simple defined [Tristan Hofman (baldwinonlightspeed)]
+
+## v1.0.6
+ * 2021-03-04 11:03:22 | updated changelog [Tristan Hofman (baldwinonlightspeed)]
  * 2021-03-04 11:03:49 | only configurable products have childern items.. [Tristan Hofman (baldwinonlightspeed)]
 
 ## v1.0.5

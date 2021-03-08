@@ -28,7 +28,6 @@ use Magento\Sales\Model\Order;
 use Magento\Sales\Model\Order\Shipment;
 use Magento\Sales\Model\Order\Shipment\Track;
 use Magento\Sales\Model\Order\Shipment\TrackFactory;
-use Magento\Sales\Model\Order\ShipmentFactory;
 use Psr\Log\LoggerInterface;
 
 class OrderStatusChangeManagement implements OrderStatusChangeManagementInterface
@@ -78,8 +77,6 @@ class OrderStatusChangeManagement implements OrderStatusChangeManagementInterfac
 
     private $orderRepository;
 
-    private $shipmentFactory;
-
     public function __construct(
         Xml $deserializer,
         OrderSyncInterface $orderSync,
@@ -96,7 +93,6 @@ class OrderStatusChangeManagement implements OrderStatusChangeManagementInterfac
         ErrorHandlingHelper $errorHandlingHelper,
         NotifierPool $notifierPool,
         ShippedItemInterfaceFactory $shippedItemInterfaceFactory,
-        ShipmentFactory $shipmentFactory,
         ProductInterfaceFactory $productInterfaceFactory
     ) {
         $this->deserializer = $deserializer;
@@ -115,7 +111,6 @@ class OrderStatusChangeManagement implements OrderStatusChangeManagementInterfac
         $this->shippedItemInterfaceFactory = $shippedItemInterfaceFactory;
         $this->productInterfaceFactory = $productInterfaceFactory;
         $this->orderRepository = $orderRepository;
-        $this->shipmentFactory = $shipmentFactory;
     }
 
     /**
@@ -257,13 +252,29 @@ class OrderStatusChangeManagement implements OrderStatusChangeManagementInterfac
                 throw new DistriMediaException('No order items found');
             }
 
-            $shipmentItems = $this->getQuantitiesFromShipmentItems($m2OrderItems);
+            foreach ($m2OrderItems as $item) {
+                /* @var \Magento\Sales\Model\Order\Item $orderItem */
+                $orderItem = $item['orderItem'];
 
-            /** @var Shipment $shipment */
-            $shipment = $this->shipmentFactory->create(
-                $order,
-                $shipmentItems
-            );
+                /* @var ShippedItemInterface $shippedItem */
+                $shippedItem = $item['shippedItem'];
+
+                /* @var ProductInterface $product */
+                $product = $item['product'];
+
+                // Check if order item has qty to ship or is virtual
+                if (!$orderItem->getQtyToShip() || $orderItem->getIsVirtual()) {
+                    continue;
+                }
+
+                $qtyShipped = $product->getPieces();
+
+                // Create shipment item with qty
+                $shipmentItem = $converter->itemToShipmentItem($orderItem)->setQty($qtyShipped);
+
+                // Add shipment item to shipment
+                $shipment->addItem($shipmentItem);
+            }
 
             if ($shipment->getItems() === null) {
                 throw new DistriMediaException(("Order {$order->getIncrementId()} is already shipped"));
@@ -279,32 +290,6 @@ class OrderStatusChangeManagement implements OrderStatusChangeManagementInterfac
         }
 
         return $shipment;
-    }
-
-    private function getQuantitiesFromShipmentItems(array $m2OrderItems): array
-    {
-        $shipmentItems = [];
-
-        foreach ($m2OrderItems as $item) {
-            /* @var \Magento\Sales\Model\Order\Item $orderItem */
-            $orderItem = $item['orderItem'];
-
-            /* @var ShippedItemInterface $shippedItem */
-            $shippedItem = $item['shippedItem'];
-
-            /* @var ProductInterface $product */
-            $product = $item['product'];
-
-            $qtyShipped = $product->getPieces();
-
-            if ($orderItem->getParentItem()) {
-                $shipmentItems[$orderItem->getParentItem()->getItemId()] = $orderItem->getParentItem()->getQtyInvoiced();
-            }
-
-            $shipmentItems[$orderItem->getItemId()] = $qtyShipped;
-        }
-
-        return $shipmentItems;
     }
 
     /**
@@ -358,7 +343,7 @@ class OrderStatusChangeManagement implements OrderStatusChangeManagementInterfac
                     $eanCode = $this->stripLeadingZeros($eanCode);
                 }
 
-                //we loop over the ordered items
+                $match = false;
                 foreach ($m2OrderItems as $m2OrderItem) {
                     $orderItemExtensionAttrs = $m2OrderItem->getExtensionAttributes();
 
@@ -367,32 +352,20 @@ class OrderStatusChangeManagement implements OrderStatusChangeManagementInterfac
                         if (!empty($orderItemEanCode)) {
                             $orderItemEanCode = $this->stripLeadingZeros($orderItemEanCode);
                         }
-                        //and try to find a match.
                         if ($eanCode === $orderItemEanCode) {
-                            $orderedQty = (int) $m2OrderItem->getQtyInvoiced();
-                            $shippedQty = (int) $product->getPieces();
-
-                            //but the shipping qty should match
-                            if ($shippedQty >= $orderedQty) {
-                                //TODO
-                                $orderItems[$key]['orderItem'] = $m2OrderItem;
-                                $shippedItemClone = clone $shippedItem;
-                                $productClone = clone $product;
-                                $product->setPieces($orderedQty);
-                                $shippedItemClone->setProduct([$product]);
-                                $product->setPieces($shippedQty - $orderedQty);
-
-                                $result[] = [
-                                    'orderItem' => $m2OrderItem,
-                                    'shippedItem' => $shippedItemClone,
-                                    'product' => $productClone,
-                                ];
-                            }
+                            $orderItems[$key]['orderItem'] = $m2OrderItem;
+                            $result[] = [
+                                'orderItem' => $m2OrderItem,
+                                'shippedItem' => $shippedItem,
+                                'product' => $product,
+                            ];
+                            $match = true;
+                            break;
                         }
                     }
                 }
 
-                if (empty($result)) {
+                if (!$match) {
                     throw new DistriMediaException(("No order item found for ean code = {$eanCode}"));
                 }
             }

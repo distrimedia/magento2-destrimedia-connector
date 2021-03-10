@@ -22,14 +22,17 @@ use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\Webapi\Rest\Request\Deserializer\Xml;
 use Magento\Sales\Api\Data\OrderItemInterface;
 use Magento\Sales\Api\Data\ShipmentInterface;
+use Magento\Sales\Api\OrderItemRepositoryInterface;
 use Magento\Sales\Api\OrderManagementInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Sales\Api\ShipmentManagementInterface;
+use Magento\Sales\Api\ShipmentRepositoryInterface;
 use Magento\Sales\Model\Convert\OrderFactory as OrderConverterFactory;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\Order\Shipment;
 use Magento\Sales\Model\Order\Shipment\Track;
 use Magento\Sales\Model\Order\Shipment\TrackFactory;
+use Magento\Sales\Model\OrderFactory;
 use Psr\Log\LoggerInterface;
 
 class OrderStatusChangeManagement implements OrderStatusChangeManagementInterface
@@ -71,6 +74,9 @@ class OrderStatusChangeManagement implements OrderStatusChangeManagementInterfac
     private $orderRepository;
 
     private $shipmentConverter;
+    private $orderItemRepository;
+    private $shipmentRepository;
+    private $orderFactory;
 
     public function __construct(
         Xml $deserializer,
@@ -88,7 +94,10 @@ class OrderStatusChangeManagement implements OrderStatusChangeManagementInterfac
         ErrorHandlingHelper $errorHandlingHelper,
         NotifierPool $notifierPool,
         ShippedItemInterfaceFactory $shippedItemInterfaceFactory,
-        ProductInterfaceFactory $productInterfaceFactory
+        ProductInterfaceFactory $productInterfaceFactory,
+        OrderItemRepositoryInterface $orderItemRepository,
+        ShipmentRepositoryInterface $shipmentRepository,
+        OrderFactory $orderFactory
     ) {
         $this->deserializer = $deserializer;
         $this->orderSync = $orderSync;
@@ -106,6 +115,9 @@ class OrderStatusChangeManagement implements OrderStatusChangeManagementInterfac
         $this->shippedItemInterfaceFactory = $shippedItemInterfaceFactory;
         $this->productInterfaceFactory = $productInterfaceFactory;
         $this->orderRepository = $orderRepository;
+        $this->orderItemRepository = $orderItemRepository;
+        $this->shipmentRepository = $shipmentRepository;
+        $this->orderFactory = $orderFactory;
     }
 
     /**
@@ -210,17 +222,15 @@ class OrderStatusChangeManagement implements OrderStatusChangeManagementInterfac
 
         if ($shipment instanceof ShipmentInterface) {
             $shipment->register();
-            $shipment = $this->hasCompleteBundles($shipment);
-            $shipment->register();
             $this->saveShipment($shipment);
 
             $this->shipmentManagement->notify($shipment->getId());
         }
     }
 
-    private function hasCompleteBundles(ShipmentInterface $shipment): ShipmentInterface
+    private function hasCompleteBundles(string $orderId): array
     {
-        $order = $this->orderRepository->get($shipment->getOrderId());
+        $order = $this->orderRepository->get($orderId);
         $orderItems = $order->getAllItems();
         $converter = $this->getShipmentConverter();
 
@@ -228,7 +238,9 @@ class OrderStatusChangeManagement implements OrderStatusChangeManagementInterfac
         foreach ($orderItems as $orderItem) {
             $parent = $orderItem->getParentItem();
             if ($parent && $parent->getProductType() === 'bundle') {
-                $isCompleteSimple = (bool) ((int) $orderItem->getQtyInvoiced() - (int) $orderItem->getQtyShipped() === 0);
+                $qtyShipped = (int) $orderItem->getExtensionAttributes()->getDistriMediaShippedQty();
+                $qtyInvoiced = (int) $orderItem->getQtyInvoiced();
+                $isCompleteSimple = (bool) ($qtyInvoiced <= $qtyShipped);
                 if (!array_key_exists($parent->getSku(), $bundles)) {
                     $bundles[$parent->getSku()] = [
                         'item' => $parent,
@@ -242,18 +254,20 @@ class OrderStatusChangeManagement implements OrderStatusChangeManagementInterfac
             }
         }
 
+        $items = [];
         foreach ($bundles as $bundle) {
             $simples = $bundle['simples'];
             /** @var OrderItemInterface $bundleItem */
             $bundleItem = $bundle['item'];
             if (!array_contains($simples, false)) {
-                $shipmentItem = $converter->itemToShipmentItem($bundleItem)->setQty($bundleItem->getQtyInvoiced());
-                $shipmentItem->register();
-                $shipment->addItem($shipmentItem);
+                if ((int)$bundleItem->getQtyShipped() <= 0) {
+                    $shipmentItem = $converter->itemToShipmentItem($bundleItem)->setQty($bundleItem->getQtyInvoiced());
+                    $items[] = $shipmentItem;
+                }
             }
         }
 
-        return $shipment;
+        return $items;
     }
 
     private function getShipmentConverter(): \Magento\Sales\Model\Convert\Order
@@ -293,13 +307,19 @@ class OrderStatusChangeManagement implements OrderStatusChangeManagementInterfac
                 /* @var ProductInterface $product */
                 $product = $item['product'];
 
-                $createdShipmentItems = $this->createShipmentItems($orderItems, $shippedItem, $product, $converter);
+                $createdShipmentItems = $this->createShipmentItems($orderItems, $shippedItem, $product, $order, $converter);
                 $shipmentItems = array_merge($createdShipmentItems, $shipmentItems);
             }
 
             foreach ($shipmentItems as $shipmentItem) {
                 // Add shipment item to shipment
                 $shipment->addItem($shipmentItem);
+            }
+
+            $bundleItems = $this->hasCompleteBundles($order->getId());
+
+            foreach ($bundleItems as $bundleItem) {
+                $shipment->addItem($bundleItem);
             }
 
             if ($shipment->getItems() === null) {
@@ -322,9 +342,10 @@ class OrderStatusChangeManagement implements OrderStatusChangeManagementInterfac
     }
 
     /**
-     * @param OrderItemInterface[] $orderItems
+     * @param array $orderItems
      * @param ShippedItemInterface $shippedItem
      * @param ProductInterface $product
+     * @param Order $order
      * @param \Magento\Sales\Model\Convert\Order $converter
      * @return array
      * @throws \Magento\Framework\Exception\LocalizedException
@@ -333,24 +354,32 @@ class OrderStatusChangeManagement implements OrderStatusChangeManagementInterfac
         array $orderItems,
         ShippedItemInterface $shippedItem,
         ProductInterface $product,
+        Order $order,
         \Magento\Sales\Model\Convert\Order $converter
     ): array
     {
         $result = [];
+
         foreach ($orderItems as $orderItem) {
             // Check if order item has qty to ship or is virtual
             $isVirtual = (bool) $orderItem->getIsVirtual();
-            $qtyToShip = (int) $orderItem->getQtyInvoiced() - (int) $orderItem->getQtyShipped();
-            if (!$qtyToShip || $isVirtual) {
-                continue;
-            }
+            $qtyToShip = (int) $orderItem->getQtyInvoiced() - (int) $orderItem->getQtyToShip();
 
             $qtyShipped = (int) $product->getPieces();
 
-            // Create shipment item with qty
-            $shipmentItem = $converter->itemToShipmentItem($orderItem)->setQty($qtyShipped);
+            if (!$qtyToShip || $isVirtual) {
+                // Create shipment item with qty
+                $shipmentItem = $converter->itemToShipmentItem($orderItem)->setQty($qtyShipped);
 
-            $result[] = $shipmentItem;
+                $result[] = $shipmentItem;
+            }
+
+            $orderItemExtenstionAttrs = $orderItem->getExtensionAttributes();
+            $qtyShipped = $orderItemExtenstionAttrs->getDistriMediaShippedQty() + $qtyShipped;
+            $orderItemExtenstionAttrs->setDistriMediaShippedQty($qtyShipped);
+            $orderItem->setExtensionAttributes($orderItemExtenstionAttrs);
+
+            $this->orderItemRepository->save($orderItem);
         }
 
         return $result;
@@ -379,11 +408,15 @@ class OrderStatusChangeManagement implements OrderStatusChangeManagementInterfac
             \Magento\Framework\DB\Transaction::class
         );
 
-        $transaction->addObject(
-            $shipment
-        )->addObject(
-            $shipment->getOrder()
-        )->save();
+        $this->shipmentRepository->save($shipment);
+
+        foreach ($shipment->getAllItems() as $item) {
+            $orderItem = $item->getOrderItem();
+            $this->orderItemRepository->save($orderItem);
+        }
+
+        $order = $this->orderFactory->create()->load($shipment->getOrderId());
+        $this->orderRepository->save($order);
 
         return $this;
     }

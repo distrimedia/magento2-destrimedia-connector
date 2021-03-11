@@ -261,7 +261,7 @@ class OrderStatusChangeManagement implements OrderStatusChangeManagementInterfac
             $simples = $bundle['simples'];
             /** @var OrderItemInterface $bundleItem */
             $bundleItem = $bundle['item'];
-            if (!array_contains($simples, false)) {
+            if (!in_array(false, $simples)) {
                 if ((int)$bundleItem->getQtyShipped() <= 0) {
                     $shipmentItem = $converter->itemToShipmentItem($bundleItem)->setQty($bundleItem->getQtyInvoiced());
                     $items[] = $shipmentItem;

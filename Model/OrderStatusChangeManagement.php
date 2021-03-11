@@ -178,7 +178,7 @@ class OrderStatusChangeManagement implements OrderStatusChangeManagementInterfac
                     break;
             }
 
-            $this->updateOrderStatus($order, $data);
+            $this->updateOrderStatus($order->getId(), $data);
         } catch (\Exception $exception) {
             $this->logger->critical($exception);
         }
@@ -197,8 +197,10 @@ class OrderStatusChangeManagement implements OrderStatusChangeManagementInterfac
         $this->logger->critical($message);
     }
 
-    private function updateOrderStatus(Order $order, array $data) {
+    private function updateOrderStatus(string $orderId, array $data) {
         try {
+            $order = $this->orderFactory->create()->load($orderId);
+
             $possibleOptions = Options::getDistriMediaStatusses();
             $extAttrs = $order->getExtensionAttributes();
 

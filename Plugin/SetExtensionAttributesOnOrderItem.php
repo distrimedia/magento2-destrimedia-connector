@@ -20,6 +20,7 @@ class SetExtensionAttributesOnOrderItem
     const DISTRI_MEDIA_EXTERNAL_REF = 'distri_media_external_ref';
     const DISTRI_MEDIA_HS_CODE = 'distri_media_hs_code';
     const DISTRI_MEDIA_COUNTRY_ORIGIN = 'distri_media_country_origin';
+    const DISTRI_MEDIA_SHIPPED_QTY = 'distri_media_shipped_qty';
 
     /**
      * @var OrderItemExtensionFactory
@@ -67,6 +68,10 @@ class SetExtensionAttributesOnOrderItem
     ) {
         $extensionAttributes = $orderItem->getExtensionAttributes() ?: $this->extensionFactory->create();
         if ($extensionAttributes !== null) {
+            if ($extensionAttributes->getDistriMediaShippedQty() !== null) {
+                $orderItem->setDistriMediaShippedQty($extensionAttributes->getDistriMediaShippedQty());
+            }
+
             if ($extensionAttributes->getDistriMediaEanCode() !== null &&
                 $extensionAttributes->getDistriMediaExternalRef() !== null &&
                 $extensionAttributes->getDistriMediaHsCode() !== null &&
@@ -118,6 +123,7 @@ class SetExtensionAttributesOnOrderItem
             $extensionAttributes->setDistriMediaExternalRef($entity->getData(self::DISTRI_MEDIA_EXTERNAL_REF));
             $extensionAttributes->setDistriMediaHsCode($entity->getData(self::DISTRI_MEDIA_HS_CODE));
             $extensionAttributes->setDistriMediaCountryOrigin($entity->getData(self::DISTRI_MEDIA_COUNTRY_ORIGIN));
+            $extensionAttributes->setDistriMediaShippedQty($entity->getData(self::DISTRI_MEDIA_SHIPPED_QTY));
 
             $entity->setExtensionAttributes($extensionAttributes);
 

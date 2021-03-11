@@ -38,5 +38,10 @@
                 <field>distri_media_country_origin</field>
             </join>
         </attribute>
+        <attribute code="distri_media_shipped_qty" type="string">
+            <join reference_table="sales_order_item" reference_field="entity_id" join_on_field="entity_id">
+                <field>distri_media_shipped_qty</field>
+            </join>
+        </attribute>
     </extension_attributes>
 </config>

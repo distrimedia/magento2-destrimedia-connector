@@ -16,5 +16,6 @@
         <column xsi:type="varchar" name="distri_media_external_ref" length="255" nullable="true"  comment="DistriMedia External Ref"/>
         <column xsi:type="varchar" name="distri_media_hs_code" length="255" nullable="true"  comment="DistriMedia HS code"/>
         <column xsi:type="varchar" name="distri_media_country_origin" length="255" nullable="true"  comment="DistriMedia Country of Origin"/>
+        <column xsi:type="varchar" name="distri_media_shipped_qty" length="255" nullable="true"  comment="DistriMedia Shipped Qty"/>
     </table>
 </schema>

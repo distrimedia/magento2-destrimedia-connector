@@ -392,8 +392,8 @@ class OrderStatusChangeManagement implements OrderStatusChangeManagementInterfac
         /* @var Track $track */
         $track = $this->trackFactory->create();
 
-        $track->setDescription('BPost');
-        $track->setTitle('BPost');
+        $track->setDescription('Uw transporteur');
+        $track->setTitle('Uw transporteur');
         $track->setCarrierCode($carrierCode);
         $track->setNumber($trackNumber);
 

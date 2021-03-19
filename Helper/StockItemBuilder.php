@@ -9,6 +9,9 @@ use Magento\AsynchronousOperations\Model\MassScheduleFactory;
 use Magento\CatalogInventory\Api\Data\StockItemInterface;
 use Magento\CatalogInventory\Api\Data\StockItemInterfaceFactory;
 use Magento\Framework\App\ObjectManager;
+use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\CatalogInventory\Model\Stock;
+use Magento\CatalogInventory\Model\Configuration;
 
 class StockItemBuilder
 {
@@ -24,12 +27,18 @@ class StockItemBuilder
 
     private $sourceItemInterfaceFactory;
 
+    private $scopeConfig;
+
+    private $backordersEnabled;
+
     public function __construct(
         StockItemInterfaceFactory $stockItemInterfaceFactory,
-        MassScheduleFactory $massScheduleFactory
+        MassScheduleFactory $massScheduleFactory,
+        ScopeConfigInterface $scopeConfig
     ) {
         $this->massScheduleFactory       = $massScheduleFactory;
         $this->stockItemInterfaceFactory = $stockItemInterfaceFactory;
+        $this->scopeConfig = $scopeConfig;
     }
 
     /**
@@ -38,6 +47,11 @@ class StockItemBuilder
      */
     public function createStockItemInterface(int $qty): StockItemInterface
     {
+        $stockStatus = (int) ($qty > 0);
+
+        if ($qty == 0 && $this->getBackordersEnabled()) {
+            $stockStatus = Stock::STOCK_IN_STOCK;
+        }
         /* @var StockItemInterface $stockItemInterface */
         $stockItemInterface = $this->stockItemInterfaceFactory->create();
 
@@ -52,7 +66,7 @@ class StockItemBuilder
         $stockItemInterface->setUseConfigQtyIncrements(true);
         $stockItemInterface->setStockStatusChangedAuto(1);
         $stockItemInterface->setUseConfigMinQty(true);
-        $stockItemInterface->setIsInStock($qty > 0);
+        $stockItemInterface->setIsInStock($stockStatus);
 
         return $stockItemInterface;
     }
@@ -69,8 +83,14 @@ class StockItemBuilder
             'Magento\InventoryApi\Api\Data\SourceItemInterfaceFactory'
         );
 
+        $stockStatus = (int) ($qty > 0);
+
+        if ($qty == 0 && $this->getBackordersEnabled()) {
+            $stockStatus = Stock::STOCK_IN_STOCK;
+        }
+
         $sourceItemInterface = $sourceItemInterfaceFactory->create();
-        $sourceItemInterface->setStatus((int) ($qty > 0));
+        $sourceItemInterface->setStatus($stockStatus);
         $sourceItemInterface->setQuantity($qty);
         $sourceItemInterface->setSku($sku);
         $sourceItemInterface->setSourceCode($sourceCode);
@@ -87,5 +107,20 @@ class StockItemBuilder
             $topic,
             $data
         );
+    }
+
+    public function getBackordersEnabled()
+    {
+        if ($this->backordersEnabled !== null) {
+            return $this->backordersEnabled;
+        }
+
+        $backorders = $this->scopeConfig->getValue(Configuration::XML_PATH_BACKORDERS);
+        $backordersThreshold = $this->scopeConfig->getValue(Configuration::XML_PATH_MIN_QTY);
+        $this->backordersEnabled = (
+                $backorders == Stock::BACKORDERS_YES_NONOTIFY || $backorders == Stock::BACKORDERS_YES_NOTIFY
+            ) && $backordersThreshold < 0;
+
+        return $this->backordersEnabled;
     }
 }

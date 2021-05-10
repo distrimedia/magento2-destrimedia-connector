@@ -223,7 +223,7 @@ class Config implements ConfigInterface
      */
     public function sendInvoices(): int
     {
-        $value = (int) $this->scopeConfig->getValue(self::XML_PATH_DISTRIMEDIA_SETTINGS_SEND_INVOICES) ?: false;
+        $value = (int) $this->scopeConfig->getValue(self::XML_PATH_DISTRIMEDIA_SETTINGS_SEND_INVOICES) ?: 0;
 
         return $value;
     }

@@ -1,5 +1,31 @@
 
 ## Current
+ * 2021-05-10 09:05:38 | ISSUE-3 default Return type must be int, not boolean for "send invoices" configuration [Tristan Hofman (baldwinonlightspeed)]
+
+## v1.0.16
+ * 2021-03-25 15:03:18 | SPORT-535 -added css to hide unwanted bPost message [Adrian Sinpietru]
+
+## v1.0.15
+ * 2021-03-18 13:03:20 | SPORT-544 -added logic fix for the stock status when backorders are enabled [Adrian Sinpietru]
+
+## v1.0.14
+ * 2021-03-16 11:03:57 | SPORT-542 -updated tracking title/description [Adrian Sinpietru]
+
+## v1.0.13
+ * 2021-03-11 10:03:09 | fixed issue with unknown function [Tristan Hofman (baldwinonlightspeed)]
+
+## v1.0.12
+ * 2021-03-11 10:03:57 | Added missing attribute [Tristan Hofman (baldwinonlightspeed)]
+
+## v1.0.11
+ * 2021-03-10 17:03:59 | fixed issue with shipping bundled products [Tristan Hofman (baldwinonlightspeed)]
+ * 2021-03-08 18:03:50 | part 1 of bundle products shipment [Tristan Hofman (baldwinonlightspeed)]
+
+## v1.0.10
+ * 2021-03-08 12:03:50 | Revert "fixed issue with shipments of bundled products" [Tristan Hofman (baldwinonlightspeed)]
+
+## v1.0.9
+ * 2021-03-08 12:03:27 | updated changelog [Tristan Hofman (baldwinonlightspeed)]
  * 2021-03-08 12:03:32 | we use an overflow for the product name [Tristan Hofman (baldwinonlightspeed)]
  * 2021-03-05 16:03:31 | fixed issue with shipments of bundled products [Tristan Hofman (baldwinonlightspeed)]
 

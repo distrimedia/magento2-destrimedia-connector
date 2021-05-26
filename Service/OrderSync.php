@@ -141,7 +141,7 @@ class OrderSync extends AbstractSync implements OrderSyncInterface
                     throw new DistriMediaException($result->getReason());
                 }
             }
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             //if the order already exists, we set the status to synced.
             if (strpos($e->getMessage(), __('Ordernumber %1 already exists', $order->getIncrementId())->render())
                 !== false

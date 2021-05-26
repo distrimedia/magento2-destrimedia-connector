@@ -9,7 +9,6 @@ use DistriMedia\Connector\Model\OrderFetcherInterface;
 use DistriMedia\Connector\Service\OrderSyncInterface;
 use DistriMedia\Connector\Ui\Component\Listing\Column\SyncStatus\Options;
 use Magento\Sales\Model\Order;
-use Psr\Log\LoggerInterface;
 
 /**
  * I am responsible for syncing Paid orders and canceled orders to DistriMedia
@@ -22,22 +21,14 @@ class SyncOrders
     private $orderFetcher;
     private $config;
 
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
-
-
     public function __construct(
         OrderSyncInterface $orderSync,
         OrderFetcherInterface $orderFetcher,
-        ConfigInterface $config,
-        LoggerInterface $logger
+        ConfigInterface $config
     ) {
         $this->orderFetcher = $orderFetcher;
         $this->orderSync = $orderSync;
         $this->config = $config;
-        $this->logger = $logger;
     }
 
     /**
@@ -60,14 +51,7 @@ class SyncOrders
                     [Options::SYNC_STATUS_NOT_SYNCED, Options::SYNC_STATUS_RETRY]
                 ) ? true : false;
                 if ($isPaid && $allowedStatus && $syncAttempts < self::MAX_SYNC_ATTEMPTS) {
-                    try {
-                        $this->orderSync->preprareOrderForSync($order);
-                    } catch (\Throwable $e) {
-                        $this->logger->error(
-                            'Failed to sync order with id: ' . $order->getId(),
-                            ['exception' => $e]
-                        );
-                    }
+                    $this->orderSync->preprareOrderForSync($order);
                 }
             }
 

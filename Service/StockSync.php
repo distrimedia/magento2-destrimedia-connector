@@ -8,18 +8,22 @@ use DistriMedia\Connector\DistriMediaException;
 use DistriMedia\Connector\Helper\StockItemBuilder;
 use DistriMedia\Connector\Model\ConfigInterface;
 use DistriMedia\SoapClient\Service\Inventory as DistriMediaInventoryService;
-use Magento\AsynchronousOperations\Model\MassSchedule;
 use Magento\AsynchronousOperations\Model\MassScheduleFactory;
+use Magento\Catalog\Model\Product;
 use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory as ProductCollectionFactory;
+use Magento\CatalogInventory\Api\StockRegistryInterface;
+use Magento\CatalogInventory\Api\StockRegistryInterfaceFactory;
+use Magento\Framework\App\Cache;
+use Magento\Framework\App\ObjectManager;
+use Magento\Framework\Event\ManagerInterface;
+use Magento\Framework\Indexer\CacheContext;
+use Magento\Framework\Indexer\CacheContextFactory;
 use Magento\Framework\Module\Manager as ModuleManager;
 use Psr\Log\LoggerInterface;
 
 class StockSync extends AbstractSync implements StockSyncInterface
 {
     const SKU_ATTRIBUTE = 'sku';
-    const PRODUCT_MASS_SCHEDULE_PUT =
-        'async.magento.cataloginventory.api.stockregistryinterface.updatestockitembysku.put';
-    const PRODUCT_MSI_MASS_SCHEDULE_POST = 'async.magento.inventoryapi.api.sourceitemssaveinterface.execute.post';
     const MSI_MODULE = 'Magento_Inventory';
 
     private $inventoryService;
@@ -28,6 +32,12 @@ class StockSync extends AbstractSync implements StockSyncInterface
     private $moduleManager;
     private $productCollectionFactory;
     private $_productCollection;
+    private $stockRegistryFactory;
+    private $stockRegistry;
+    private $sourceItemsSaveInterface;
+    private $cacheContextFactory;
+    private $appCache;
+    private $eventManager;
 
     public function __construct(
         LoggerInterface $logger,
@@ -35,13 +45,21 @@ class StockSync extends AbstractSync implements StockSyncInterface
         StockItemBuilder $stockItemBuilder,
         MassScheduleFactory $massScheduleFactory,
         ModuleManager $moduleManager,
-        ProductCollectionFactory $productCollectionFactory
+        ProductCollectionFactory $productCollectionFactory,
+        StockRegistryInterfaceFactory $stockRegistryFactory,
+        CacheContextFactory $cacheContextFactory,
+        Cache $appCache,
+        ManagerInterface $eventManager
     ) {
         $this->config = $config;
         $this->stockItemBuilder = $stockItemBuilder;
         $this->massScheduleFactory = $massScheduleFactory;
         $this->moduleManager = $moduleManager;
         $this->productCollectionFactory = $productCollectionFactory;
+        $this->stockRegistryFactory = $stockRegistryFactory;
+        $this->cacheContextFactory = $cacheContextFactory;
+        $this->appCache = $appCache;
+        $this->eventManager = $eventManager;
         parent::__construct($logger, $config);
     }
 
@@ -79,7 +97,7 @@ class StockSync extends AbstractSync implements StockSyncInterface
     /**
      * {@inheritDoc}
      */
-    public function processStock(array $stockItems): array
+    public function processStock(array $stockDatas): array
     {
         $errors = [];
 
@@ -90,15 +108,16 @@ class StockSync extends AbstractSync implements StockSyncInterface
 
         $eanAttr = $this->config->getEanCodeAttributeCode();
 
-        $bulkMessage = [];
-
-        foreach ($stockItems as $stockItem) {
+        $stockItems = [];
+        $productIds = [];
+        foreach ($stockDatas as $stockData) {
             try {
-                $ean = $stockItem->getEan();
+                $ean = $stockData->getEan();
+                $product = $this->getProductByEan($ean, $eanAttr);
+
                 if ($eanAttr === self::SKU_ATTRIBUTE) {
                     $sku = $ean;
                 } else {
-                    $product = $this->getProductByEan($ean, $eanAttr);
                     if ($product !== null) {
                         $sku = $product->getData('sku');
                     } else {
@@ -107,50 +126,71 @@ class StockSync extends AbstractSync implements StockSyncInterface
                         );
                     }
                 }
-                $qty = (int) $stockItem->getClaimable();
+                $qty = (int) $stockData->getClaimable();
 
                 if ($useMsi) {
                     $sourceItem = $this->stockItemBuilder->createSourceItemInterface($qty, $sku);
-                    $bulkMessage[] = $sourceItem;
+                    $stockItems[$sku] = $sourceItem;
                 } else {
                     $stockItemInterface = $this->stockItemBuilder->createStockItemInterface($qty);
-
-                    $productArray = [
-                        'productSku' => $sku,
-                        'stockItem' => $stockItemInterface,
-                    ];
-
-                    $bulkMessage[] = $productArray;
+                    $stockItems[$sku] = $stockItemInterface;
                 }
+                $productIds[] = $product->getId();
             } catch (\Exception $exception) {
                 $errors[] = $exception->getMessage();
                 $this->logger->critical($exception->getMessage());
             }
         }
 
-        if (!empty($bulkMessage)) {
-            /** @var MassSchedule $massSchedule */
-            $massSchedule = $this->massScheduleFactory->create();
-
-            $topic = self::PRODUCT_MASS_SCHEDULE_PUT;
-
-            if ($useMsi === true) {
-                $topic = self::PRODUCT_MSI_MASS_SCHEDULE_POST;
-                $bulkMessage = ['sourceItems' => [$bulkMessage]];
+        if ($useMsi) {
+            $inventorySaveApi = $this->getSourceItemsSaveInterface();
+            $inventorySaveApi->execute($stockItems);
+        } else {
+            foreach ($stockItems as $sku => $stockItem) {
+                $this->getStockRegistry()->updateStockItemBySku($sku, $stockItem);
             }
-
-            $massSchedule->publishMass(
-                $topic,
-                $bulkMessage
-            );
         }
 
-        $errors[] = __(count($bulkMessage) . ' Products are updated');
+        $this->flushCache($productIds);
+        $errors[] = __(count($stockItems) . ' Products are updated');
 
         return $errors;
     }
 
-    private function getProductByEan(string $eanValue, string $eanAttributeCode)
+    private function flushCache(array $productIds = []): void
+    {
+        /** @var CacheContext $cacheContext */
+        $cacheContext = $this->cacheContextFactory->create();
+
+        $cacheContext->registerEntities(Product::CACHE_TAG, $productIds);
+
+        //Emulate Magento\Indexer\Model\Indexer\CacheCleaner
+        $this->eventManager->dispatch('clean_cache_by_tags', ['object' => $cacheContext]);
+        $identities = $cacheContext->getIdentities();
+        if (!empty($identities)) {
+            $this->appCache->clean($identities);
+        }
+    }
+
+    private function getStockRegistry(): StockRegistryInterface
+    {
+        if ($this->stockRegistry === null) {
+            $this->stockRegistry = $this->stockRegistryFactory->create();
+        }
+
+        return $this->stockRegistry;
+    }
+
+    private function getSourceItemsSaveInterface()
+    {
+        if ($this->sourceItemsSaveInterface === null) {
+            $this->sourceItemsSaveInterface = ObjectManager::getInstance()->create('\Magento\InventoryApi\Api\SourceItemsSaveInterface');
+        }
+
+        return $this->sourceItemsSaveInterface;
+    }
+
+    private function getProductByEan(string $eanValue, string $eanAttributeCode): Product
     {
         if ($this->_productCollection === null) {
             $this->_productCollection = $this->productCollectionFactory->create()

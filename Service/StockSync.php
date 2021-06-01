@@ -118,8 +118,8 @@ class StockSync extends AbstractSync implements StockSyncInterface
                 if ($eanAttr === self::SKU_ATTRIBUTE) {
                     $sku = $ean;
                 } else {
-                    if ($product !== null) {
-                        $sku = $product->getData('sku');
+                    if ($product instanceof Product) {
+                        $sku = $product->getSku();
                     } else {
                         throw new DistriMediaException(
                             "Stock sync problem: Could not find product with {$eanAttr} = {$ean}"
@@ -135,7 +135,9 @@ class StockSync extends AbstractSync implements StockSyncInterface
                     $stockItemInterface = $this->stockItemBuilder->createStockItemInterface($qty);
                     $stockItems[$sku] = $stockItemInterface;
                 }
-                $productIds[] = $product->getId();
+                if ($product instanceof Product) {
+                    $productIds[] = $product->getId();
+                }
             } catch (\Exception $exception) {
                 $errors[] = $exception->getMessage();
                 $this->logger->critical($exception->getMessage());
@@ -190,12 +192,12 @@ class StockSync extends AbstractSync implements StockSyncInterface
         return $this->sourceItemsSaveInterface;
     }
 
-    private function getProductByEan(string $eanValue, string $eanAttributeCode): Product
+    private function getProductByEan(string $eanValue, string $eanAttributeCode): ?Product
     {
         if ($this->_productCollection === null) {
             $this->_productCollection = $this->productCollectionFactory->create()
-                ->addAttributeToSelect($eanAttributeCode)
-                ->addAttributeToSelect('sku');
+                                            ->addAttributeToSelect($eanAttributeCode)
+                                            ->addAttributeToSelect('sku');
         }
 
         return $this->_productCollection->getItemByColumnValue($eanAttributeCode, $eanValue);

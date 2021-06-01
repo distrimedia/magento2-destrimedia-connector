@@ -196,8 +196,8 @@ class StockSync extends AbstractSync implements StockSyncInterface
     {
         if ($this->_productCollection === null) {
             $this->_productCollection = $this->productCollectionFactory->create()
-                                            ->addAttributeToSelect($eanAttributeCode)
-                                            ->addAttributeToSelect('sku');
+                                               ->addAttributeToSelect($eanAttributeCode)
+                                               ->addAttributeToSelect('sku');
         }
 
         return $this->_productCollection->getItemByColumnValue($eanAttributeCode, $eanValue);

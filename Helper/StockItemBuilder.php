@@ -4,14 +4,12 @@ declare(strict_types=1);
 
 namespace DistriMedia\Connector\Helper;
 
-use Magento\AsynchronousOperations\Model\MassSchedule;
-use Magento\AsynchronousOperations\Model\MassScheduleFactory;
 use Magento\CatalogInventory\Api\Data\StockItemInterface;
 use Magento\CatalogInventory\Api\Data\StockItemInterfaceFactory;
-use Magento\Framework\App\ObjectManager;
-use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\CatalogInventory\Model\Stock;
 use Magento\CatalogInventory\Model\Configuration;
+use Magento\CatalogInventory\Model\Stock;
+use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Framework\App\ObjectManager;
 
 class StockItemBuilder
 {
@@ -20,23 +18,14 @@ class StockItemBuilder
      */
     private $stockItemInterfaceFactory;
 
-    /**
-     * @var MassScheduleFactory
-     */
-    private $massScheduleFactory;
-
-    private $sourceItemInterfaceFactory;
-
     private $scopeConfig;
 
     private $backordersEnabled;
 
     public function __construct(
         StockItemInterfaceFactory $stockItemInterfaceFactory,
-        MassScheduleFactory $massScheduleFactory,
         ScopeConfigInterface $scopeConfig
     ) {
-        $this->massScheduleFactory       = $massScheduleFactory;
         $this->stockItemInterfaceFactory = $stockItemInterfaceFactory;
         $this->scopeConfig = $scopeConfig;
     }
@@ -96,17 +85,6 @@ class StockItemBuilder
         $sourceItemInterface->setSourceCode($sourceCode);
 
         return $sourceItemInterface;
-    }
-
-    public function massScheduleDataToQueue(array $data, string $topic)
-    {
-        /* @var MassSchedule $massSchedule */
-        $massSchedule = $this->massScheduleFactory->create();
-
-        $massSchedule->publishMass(
-            $topic,
-            $data
-        );
     }
 
     public function getBackordersEnabled()

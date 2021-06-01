@@ -21,7 +21,7 @@ interface StockSyncInterface
      * I can process an array of stock items and save the values in magento using bulk actions.
      * if Magento's MSI system is not used, a slightly different approach will be executed.
      * Returns array of errors
-     * @param StockItem[] $stockItems
+     * @param StockItem[] $stockDatas
      */
-    public function processStock(array $stockItems): array;
+    public function processStock(array $stockDatas): array;
 }

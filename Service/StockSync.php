@@ -145,8 +145,10 @@ class StockSync extends AbstractSync implements StockSyncInterface
         }
 
         if ($useMsi) {
-            $inventorySaveApi = $this->getSourceItemsSaveInterface();
-            $inventorySaveApi->execute($stockItems);
+            if (!empty($stockItems)) {
+                $inventorySaveApi = $this->getSourceItemsSaveInterface();
+                $inventorySaveApi->execute($stockItems);
+            }
         } else {
             foreach ($stockItems as $sku => $stockItem) {
                 $this->getStockRegistry()->updateStockItemBySku($sku, $stockItem);

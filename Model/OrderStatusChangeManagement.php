@@ -443,7 +443,7 @@ class OrderStatusChangeManagement implements OrderStatusChangeManagementInterfac
         foreach ($shippedItems as $key => $shippedItemData) {
             $shippedItem = $this->shippedItemInterfaceFactory->create(['data' => $shippedItemData]);
             /* @var ProductInterface $product */
-            $products = $shippedItem->getProduct();
+            $products = $shippedItem->getProduct() ?: [];
             if (array_key_exists(ProductInterface::EAN, $products)) {
                 $products = [$products];
             }

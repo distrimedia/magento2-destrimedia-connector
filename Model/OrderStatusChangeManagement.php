@@ -52,6 +52,8 @@ class OrderStatusChangeManagement implements OrderStatusChangeManagementInterfac
     const TRACK_IDS = 'TrackIDs';
     const SHIPPED_ITEMS = 'ShippedItems';
     const STATUS_OK = 'OK';
+    const STATUS_ERROR = 'ERROR';
+
     private $deserializer;
     private $orderSync;
     private $orderManagement;
@@ -181,6 +183,8 @@ class OrderStatusChangeManagement implements OrderStatusChangeManagementInterfac
             $this->updateOrderStatus($order->getId(), $data);
         } catch (\Exception $exception) {
             $this->logger->critical($exception);
+            return '<Status>' . self::STATUS_ERROR . '</Status>' .
+                '<Message>' . $exception->getMessage() . '</Message>';
         }
 
         return '<Status>' . self::STATUS_OK . '</Status>';

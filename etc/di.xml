@@ -131,4 +131,9 @@
     <!-- We have to overwrite some core logic to change the structure of the invoice PDF -->
     <preference for="Magento\Sales\Model\Order\Pdf\Invoice" type="DistriMedia\Connector\Model\Order\Pdf\Invoice" />
     <preference for="Magento\Sales\Model\Order\Pdf\Items\Invoice\DefaultInvoice" type="DistriMedia\Connector\Model\Order\Pdf\Items\Invoice\DefaultInvoice" />
+
+    <!--  Remove the stock validation for the order change request  -->
+    <type name="Magento\InventorySourceDeductionApi\Model\SourceDeductionService">
+        <plugin name="around_stock_check" type="DistriMedia\Connector\Plugin\AroundStockCheck"/>
+    </type>
 </config>

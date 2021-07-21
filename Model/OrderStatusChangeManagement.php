@@ -369,11 +369,11 @@ class OrderStatusChangeManagement implements OrderStatusChangeManagementInterfac
         foreach ($orderItems as $orderItem) {
             // Check if order item has qty to ship or is virtual
             $isVirtual = (bool) $orderItem->getIsVirtual();
-            $qtyToShip = (int) $orderItem->getQtyInvoiced() - (int) $orderItem->getQtyToShip();
+            $qtyToShip = (int) $orderItem->getQtyInvoiced() - (int) $orderItem->getQtyToShip() - (int) $orderItem->getQtyShipped();
 
             $qtyShipped = (int) $product->getPieces();
 
-            if (!$qtyToShip || $isVirtual) {
+            if (($orderItem->getQtyInvoiced() != $orderItem->getQtyShipped()) && (!$qtyToShip || $isVirtual)) {
                 // Create shipment item with qty
                 $shipmentItem = $converter->itemToShipmentItem($orderItem)->setQty($qtyShipped);
 

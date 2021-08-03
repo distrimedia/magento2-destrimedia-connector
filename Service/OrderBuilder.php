@@ -166,6 +166,9 @@ class OrderBuilder
             }
 
             $distriMediaCustomer->setName($order->getCustomerFirstname() . ' ' . $order->getCustomerLastname());
+            $shippingAddressCompany = $order->getShippingAddress()->getCompany();
+            $billingAddressCompany = $order->getBillingAddress()->getCompany();
+            $distriMediaCustomer->setName2($shippingAddressCompany ? $shippingAddressCompany : $billingAddressCompany);
             $distriMediaCustomer->setPostcode1($shippingAddress->getPostcode());
             $distriMediaCustomer->setCity($shippingAddress->getCity());
             $distriMediaCustomer->setCountry($shippingAddress->getCountryId());

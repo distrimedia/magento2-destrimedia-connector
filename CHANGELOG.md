@@ -1,5 +1,39 @@
 
 ## Current
+
+## v1.0.26
+ * 2021-08-12 09:08:19 | DS-44 hotfix, name2 can be empty string [Tristan Hofman (baldwinonlightspeed)]
+
+## v1.0.25
+ * 2021-08-03 23:08:31 | DS-44 -added the company name to the info sent to DM [Adrian Sinpietru]
+
+## v1.0.24
+ * 2021-07-21 15:07:34 | DS-43 -fixed logic for partial shipment genration and removed the stock validation for the order update endpoint [Adrian Sinpietru]
+
+## v1.0.23
+ * 2021-07-02 12:07:09 | DS-42 -added logic to return an error response if something fails [Adrian Sinpietru]
+
+## v1.0.22
+ * 2021-06-23 10:06:35 | SPORT-559 added a failsafe when no products are defined [Tristan Hofman (baldwinonlightspeed)]
+ * 2021-06-01 15:06:58 | fixed issue with product being null [Tristan Hofman (baldwinonlightspeed)]
+ * 2021-05-10 09:05:58 | ISSUE-3 default Return type must be int, not boolean for "send invoices" configuration [Tristan Hofman (baldwinonlightspeed)]
+ * 2021-03-08 12:03:35 | Revert "fixed issue with shipments of bundled products" [Tristan Hofman (baldwinonlightspeed)]
+
+## v1.0.21
+ * 2021-06-07 11:06:34 | Only update source items if there are actual items to save [Tristan Hofman (baldwinonlightspeed)]
+
+## v1.0.20
+ * 2021-06-01 15:06:53 | fixed issue with product being null [Tristan Hofman (baldwinonlightspeed)]
+ * 2021-06-01 15:06:42 | removed dependency on rabbitmq, we now directly update the stock/source items [Tristan Hofman (baldwinonlightspeed)]
+
+## v1.0.19
+ * 2021-05-26 15:05:01 | SPORT-557 -moved try/catch logic in order to avoid logs pollution [Adrian Sinpietru]
+
+## v1.0.18
+ * 2021-05-26 11:05:24 | SPORT-557 -added logic to handle errors that would break the cron [Adrian Sinpietru]
+ * 2021-05-10 09:05:13 | updated changelog [Tristan Hofman (baldwinonlightspeed)]
+
+## v1.0.17
  * 2021-05-10 09:05:38 | ISSUE-3 default Return type must be int, not boolean for "send invoices" configuration [Tristan Hofman (baldwinonlightspeed)]
 
 ## v1.0.16

@@ -8,6 +8,7 @@ use Magento\Sales\Api\Data\OrderExtension;
 use Magento\Sales\Api\Data\OrderExtensionFactory;
 use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Model\OrderRepository as MagentoOrderRepository;
+use Magento\Sales\Api\Data\OrderSearchResultInterface;
 
 class SetExtensionAttributesOnOrder
 {
@@ -47,6 +48,23 @@ class SetExtensionAttributesOnOrder
         $order->setExtensionAttributes($extensionAttributes);
 
         return $order;
+    }
+
+    public function afterGetList(MagentoOrderRepository $subject, OrderSearchResultInterface $result)
+    {
+        $orders = [];
+        foreach ($result->getItems() as $order) {
+            /** @var OrderExtension $extensionAttributes */
+            $extensionAttributes = $order->getExtensionAttributes() ?: $this->extensionFactory->create();
+
+            $extensionAttributes->setDistriMediaSyncStatus($order->getData(self::DISTRI_MEDIA_SYNC_STATUS));
+            $extensionAttributes->setDistriMediaSyncAttempts($order->getData(self::DISTRI_MEDIA_SYNC_ATTEMPTS));
+            $extensionAttributes->setDistriMediaIncrementId($order->getData(self::DISTRI_MEDIA_INCREMENT_ID));
+
+            $order->setExtensionAttributes($extensionAttributes);
+        }
+
+        return $result;
     }
 
     public function beforeSave(

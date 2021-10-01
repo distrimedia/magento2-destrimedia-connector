@@ -65,7 +65,7 @@ class SyncOrders
     private function isOrderCompletelyPaid(Order $order): bool
     {
         $totalDue = $order->getBaseTotalDue();
-        if ($totalDue === floatval(0)) {
+        if (floatval($totalDue) === floatval(0)) {
             return true;
         }
 

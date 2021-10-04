@@ -61,4 +61,6 @@ interface ConfigInterface
     public function getErrorEmailTemplate(): ? string;
 
     public function getEuCountries(): array;
+
+    public function isStockSyncEnabled(): bool;
 }

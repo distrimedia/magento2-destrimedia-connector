@@ -34,6 +34,7 @@ class Config implements ConfigInterface
     const XML_PATH_ERROR_RECIPIENT = 'distrimedia/settings/error_email';
     const XML_PATH_EU_COUNTRIES = 'general/country/eu_countries';
     const XML_PATH_SITE_INDICATION = 'distrimedia/settings/site_indication';
+    const XML_PATH_ENABLE_STOCK_SYNC = 'distrimedia/stock_subscription_cron/enable_stock_sync';
 
     const BREXIT = 'GB';
 
@@ -296,5 +297,10 @@ class Config implements ConfigInterface
         }
 
         return $result;
+    }
+
+    public function isStockSyncEnabled(): bool
+    {
+        return (bool) $this->scopeConfig->getValue(self::XML_PATH_ENABLE_STOCK_SYNC) ?: false;
     }
 }

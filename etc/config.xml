@@ -19,6 +19,9 @@
                 <timout_after_seconds>3</timout_after_seconds>
                 <error_email />
             </settings>
+            <stock_subscription_cron>
+                <enable_stock_sync>1</enable_stock_sync>
+            </stock_subscription_cron>
         </distrimedia>
     </default>
 </config>

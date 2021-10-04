@@ -49,7 +49,7 @@ class SyncStock
      */
     public function execute()
     {
-        if ($this->config->isEnabled()) {
+        if ($this->config->isEnabled() && $this->config->isStockSyncEnabled()) {
             $lastExecutionFlag = $this->lastExecutionFlag->loadSelf();
             $now = $this->dateTime->gmtDate();
             $lastExecutionFlag->setFlagData($now);
